@@ -105,7 +105,14 @@ a{color:var(--arcane-bright);}
 .xp-toast{margin:8px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(193,154,91,.16);border:1px solid var(--brass);font-size:12px;color:var(--brass-bright);font-weight:600;display:flex;align-items:center;gap:8px;animation:msgin .3s ease;}
 .new-msg-pill{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;z-index:5;padding:8px 16px;border-radius:999px;border:1px solid var(--brass);background:var(--void-3);color:var(--brass-bright);font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);animation:msgin .2s ease;}
 .skill-check{margin:10px 16px 0;padding:11px 13px;border-radius:11px;background:linear-gradient(160deg,rgba(79,143,124,.16),var(--void-3));border:1px solid var(--arcane);animation:msgin .25s ease;}
-.sc-title{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--arcane-bright);font-weight:700;margin-bottom:8px;}
+.sc-title{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--arcane-bright);font-weight:700;}
+.sc-head{display:flex;align-items:center;gap:10px;margin-bottom:9px;flex-wrap:wrap;}
+.sc-mode{display:flex;gap:2px;margin-left:auto;background:var(--void-3);border:1px solid var(--line);border-radius:8px;padding:2px;}
+.sc-mode button{border:none;background:transparent;color:var(--text-faint);font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;}
+.sc-mode button.active{background:var(--arcane);color:var(--void);}
+.sc-manual{flex:1;min-width:120px;padding:9px 11px;border-radius:9px;border:1px solid var(--brass-dim);background:var(--void-3);color:var(--text-hi);font-family:var(--font-mono);font-size:14px;}
+.sc-manual::placeholder{color:var(--text-faint);font-family:var(--font-body);font-size:12.5px;}
+.sc-error{font-size:11.5px;color:var(--ember-bright);margin-top:6px;}
 .sc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .sc-select{flex:1;min-width:150px;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--void-3);color:var(--text-hi);font-size:13.5px;}
 .sc-mod{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--brass-bright);min-width:42px;text-align:center;}
@@ -200,6 +207,7 @@ a{color:var(--arcane-bright);}
 .roll-entry .re-total{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--brass-bright);}
 .empty-log{font-size:12px;color:var(--text-faint);padding:10px 2px;}
 .roll-intro{font-size:12px;color:var(--text-lo);line-height:1.6;margin:6px 0 4px;}
+.re-manual{font-size:11px;opacity:.75;}
 
 /* ---------- Auth / cards screens ---------- */
 .centered-screen{height:100%;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:30px 16px;}
@@ -521,13 +529,21 @@ a{color:var(--arcane-bright);}
         <div id="pdf-banner" class="pdf-banner hidden"></div>
         <div id="timer-pill" class="timer-pill hidden"></div>
         <div id="skill-check-box" class="skill-check hidden">
-          <div class="sc-title" id="sc-title">Teste solicitado</div>
+          <div class="sc-head">
+            <div class="sc-title" id="sc-title">Teste solicitado</div>
+            <div class="sc-mode" id="sc-mode">
+              <button type="button" data-mode="auto" class="active">Automático</button>
+              <button type="button" data-mode="manual">Manual</button>
+            </div>
+          </div>
           <div class="sc-row">
             <select id="sc-select" class="sc-select"></select>
             <span class="sc-mod" id="sc-mod">+0</span>
+            <input type="text" id="sc-manual" class="sc-manual hidden" inputmode="numeric" autocomplete="off" placeholder="resultado do dado">
             <button type="button" class="sc-roll" id="sc-roll">🎲 Rolar</button>
           </div>
           <div class="sc-hint" id="sc-hint"></div>
+          <div class="sc-error hidden" id="sc-error"></div>
         </div>
         <div id="chat-scroll"></div>
         <button type="button" id="new-msg-pill" class="new-msg-pill hidden">↓ Novas mensagens</button>
@@ -710,7 +726,7 @@ var EMPTY_CHARACTER = {
 var XP_PER_LEVEL = 1000; // Pathfinder 2E: 1000 XP advances a character one level
 var DEFAULT_MODEL_FALLBACK = "gemini-3.6-flash";
 var ADMIN_EMAIL = "azevedo.hebert@gmail.com";
-var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzvhtF8Tpew3o-lppr2bLX6Xv8rPkJm3vCfOJTAsXdHw9YsGNHH0T7hRXcIsrZ82n6B/exec";
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbxmw5O3rNuFOYStis1ShHG04-eCD5iJLY-J-rPTDanY2WNmIo0rPFKaSfggnkGOuQ8t/exec";
 var adminConfig = null; // {sheetsWebhookUrl}
 
 /* ---------------------------------------------------------
@@ -1188,7 +1204,7 @@ function advBody(isGroup){
 "- SEJA CONCISO: cada resposta deve ter no máximo 3 parágrafos curtos (idealmente 120 a 180 palavras). Descreva o essencial com força, corte adjetivos supérfluos e não repita o que o jogador já sabe. Prefira uma imagem marcante a três frases de enfeite.\n" +
 "- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
-"- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- Aplique com justiça as regras de Pathfinder 2ª Edição: graus de sucesso, três ações por turno, condições, CDs por nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- Golarion é o cenário padrão, mas acomode o que os jogadores preferirem. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
+"- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras de Pathfinder 2ª Edição: graus de sucesso, três ações por turno, condições, CDs por nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- Golarion é o cenário padrão, mas acomode o que os jogadores preferirem. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de Pathfinder 2ª Edição: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
 "CONTROLE DE CENA: a aventura pode ter uma ou mais cenas simultâneas (ex: o grupo se dividiu). Apenas UMA cena está \"em foco\" por vez (campo \"cenaAtiva\"). Jogadores fora da cena ativa não veem nada até você voltar a atenção para eles. Prefira manter todos numa cena só; separe apenas quando fizer sentido narrativo, e sempre avise no texto quando cortar de uma cena para outra. Para reunir o grupo, volte a colocar todos na mesma cena.\n\n" +
@@ -2531,7 +2547,8 @@ function renderRollLog(){
   box.innerHTML = localDiceHistory.map(function(entry){
     var modStr = entry.modifier===0?"":(entry.modifier>0?" +"+entry.modifier:" "+entry.modifier);
     var formula = entry.qty+"d"+entry.sides+modStr;
-    return '<div class="roll-entry"><span class="re-formula">'+formula+'</span><span class="re-label">'+(entry.label?esc(entry.label):"")+'</span><span class="re-total">'+entry.total+'</span></div>';
+    var mark = entry.manual ? '<span class="re-manual" title="Dado físico">✋</span>' : '';
+    return '<div class="roll-entry"><span class="re-formula">'+formula+'</span><span class="re-label">'+(entry.label?esc(entry.label):"")+'</span>'+mark+'<span class="re-total">'+entry.total+'</span></div>';
   }).join("");
 }
 
@@ -2773,6 +2790,18 @@ function downloadText(filename, text){
    on the sheet so the player never has to compute anything.
    ========================================================= */
 var pendingCheck = null;
+var rollMode = "auto";   // "auto" = app rolls | "manual" = player types the dice results
+function setRollMode(mode){
+  rollMode = (mode==="manual") ? "manual" : "auto";
+  document.querySelectorAll("#sc-mode button").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-mode")===rollMode);
+  });
+  try{ localStorage.setItem("mestre-solo-roll-mode", rollMode); }catch(e){}
+  if(pendingCheck) renderSkillCheck(pendingCheck);
+}
+document.querySelectorAll("#sc-mode button").forEach(function(b){
+  b.addEventListener("click", function(){ setRollMode(b.getAttribute("data-mode")); });
+});
 function modifierFor(name){
   if(!character || !name) return null;
   var n = String(name).toLowerCase().trim();
@@ -2812,6 +2841,10 @@ function renderSkillCheck(check){
     return;
   }
   var sel = el("sc-select");
+  var manual = el("sc-manual");
+  var isManual = rollMode==="manual";
+  el("sc-error").classList.add("hidden");
+  manual.value = "";
   if(hasSkills){
     el("sc-title").textContent = check.cd ? ("Teste solicitado · CD "+check.cd) : "Teste solicitado";
     sel.classList.remove("hidden");
@@ -2821,15 +2854,27 @@ function renderSkillCheck(check){
       return '<option value="'+esc(p)+'">'+esc(p)+(mod===null?"":" ("+fmtMod(mod)+")")+'</option>';
     }).join("");
     updateScMod();
-    el("sc-roll").textContent = "🎲 Rolar";
+    manual.classList.toggle("hidden", !isManual);
+    manual.placeholder = "resultado do d20";
+    el("sc-roll").textContent = isManual ? "Aplicar" : "🎲 Rolar";
   } else {
     el("sc-title").textContent = "Rolagem solicitada";
     sel.classList.add("hidden");
     el("sc-mod").classList.add("hidden");
-    el("sc-roll").textContent = "🎲 Rolar "+check.formula;
+    manual.classList.toggle("hidden", !isManual);
+    manual.placeholder = formula.qty>1 ? ("os "+formula.qty+" dados, ex: "+Array(formula.qty).fill("3").join(", ")) : ("resultado do d"+formula.sides);
+    el("sc-roll").textContent = isManual ? "Aplicar" : ("🎲 Rolar "+check.formula);
   }
-  el("sc-hint").textContent = check.descricao || "";
+  el("sc-hint").textContent = (check.descricao || "") + (isManual ? (check.descricao?" · ":"")+"Role seus dados e digite o resultado — os modificadores são aplicados automaticamente." : "");
   box.classList.remove("hidden");
+}
+function parseManualRolls(raw, qty, sides){
+  var nums = String(raw||"").split(/[^0-9]+/).filter(function(x){ return x!==""; }).map(Number);
+  if(nums.length!==qty) return {err:"Informe "+qty+" número"+(qty>1?"s":"")+" (o resultado de cada dado)."};
+  for(var i=0;i<nums.length;i++){
+    if(!(nums[i]>=1 && nums[i]<=sides)) return {err:"Cada valor precisa estar entre 1 e "+sides+"."};
+  }
+  return {rolls:nums};
 }
 function updateScMod(){
   var name = el("sc-select").value;
@@ -2840,27 +2885,46 @@ el("sc-select").addEventListener("change", updateScMod);
 el("sc-roll").addEventListener("click", function(){
   if(!pendingCheck || loading) return;
   var hasSkills = pendingCheck.pericias && pendingCheck.pericias.length;
+  var isManual = rollMode==="manual";
+  var errBox = el("sc-error");
+  errBox.classList.add("hidden");
   var txt, entry;
+
   if(hasSkills){
     var name = el("sc-select").value;
     var mod = modifierFor(name);
     var usedMod = (mod===null) ? 0 : mod;
-    var die = rollOne(20);
+    var die;
+    if(isManual){
+      var pm = parseManualRolls(el("sc-manual").value, 1, 20);
+      if(pm.err){ errBox.textContent = pm.err; errBox.classList.remove("hidden"); return; }
+      die = pm.rolls[0];
+    } else {
+      die = rollOne(20);
+    }
     var total = die + usedMod;
     var cdPart = pendingCheck.cd ? (" contra CD "+pendingCheck.cd) : "";
-    txt = "🎲 "+name+cdPart+": 1d20 ("+die+") "+(usedMod>=0?"+":"")+usedMod+" = "+total;
-    entry = {qty:1, sides:20, modifier:usedMod, rolls:[die], total:total, label:name};
+    txt = "🎲 "+name+cdPart+": 1d20 ("+die+") "+(usedMod>=0?"+":"")+usedMod+" = "+total+(isManual?" [dado físico]":"");
+    entry = {qty:1, sides:20, modifier:usedMod, rolls:[die], total:total, label:name, manual:isManual};
   } else {
     var f = parseFormula(pendingCheck.formula);
     if(!f) return;
-    var rolls = [];
-    for(var i=0;i<f.qty;i++) rolls.push(rollOne(f.sides));
+    var rolls;
+    if(isManual){
+      var pf = parseManualRolls(el("sc-manual").value, f.qty, f.sides);
+      if(pf.err){ errBox.textContent = pf.err; errBox.classList.remove("hidden"); return; }
+      rolls = pf.rolls;
+    } else {
+      rolls = [];
+      for(var i=0;i<f.qty;i++) rolls.push(rollOne(f.sides));
+    }
     var sum = rolls.reduce(function(a,b){return a+b;},0);
     var tot = sum + f.mod;
     var label = pendingCheck.descricao || pendingCheck.formula;
-    txt = "🎲 "+label+": "+pendingCheck.formula+" → ["+rolls.join(" + ")+"]"+(f.mod?(f.mod>0?" +"+f.mod:" "+f.mod):"")+" = "+tot;
-    entry = {qty:f.qty, sides:f.sides, modifier:f.mod, rolls:rolls, total:tot, label:label};
+    txt = "🎲 "+label+": "+pendingCheck.formula+" → ["+rolls.join(" + ")+"]"+(f.mod?(f.mod>0?" +"+f.mod:" "+f.mod):"")+" = "+tot+(isManual?" [dado físico]":"");
+    entry = {qty:f.qty, sides:f.sides, modifier:f.mod, rolls:rolls, total:tot, label:label, manual:isManual};
   }
+
   el("skill-check-box").classList.add("hidden");
   pendingCheck = null;
   entry.id = Date.now()+"_"+Math.random().toString(36).slice(2);
@@ -2870,6 +2934,9 @@ el("sc-roll").addEventListener("click", function(){
   renderRollLog();
   if(gameMode==="creation") sendCreationMessage(txt, {display:true});
   else sendSceneMessage(txt, {display:true});
+});
+el("sc-manual").addEventListener("keydown", function(e){
+  if(e.key==="Enter"){ e.preventDefault(); el("sc-roll").click(); }
 });
 
 /* =========================================================
@@ -2881,6 +2948,10 @@ async function boot2AfterAuth(){
   else { character = character || JSON.parse(JSON.stringify(EMPTY_CHARACTER)); enterCreation(); }
 }
 async function boot(){
+  try{
+    var savedMode = localStorage.getItem("mestre-solo-roll-mode");
+    if(savedMode) setRollMode(savedMode);
+  }catch(e){}
   loadAdminConfig();
   var profile = await sGet("profile", false);
   if(profile && profile.email && profile.apiKey){
