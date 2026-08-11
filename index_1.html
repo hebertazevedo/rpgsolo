@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mestre Solo — Pathfinder 2ª Edição</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483062241581736" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#131319; --void-2:#1b1c24; --void-3:#23242f; --void-4:#2b2c39;
+  --line:#34343f; --line-soft:#2a2b35;
+  --parchment:#ece0c3; --parchment-2:#e2d2a8; --parchment-3:#d8c395; --parchment-line:#b39a5f;
+  --ink:#2b2213; --ink-soft:#5a4d34;
+  --brass:#c19a5b; --brass-bright:#e0bb7c; --brass-dim:#8a6f42;
+  --ember:#b0473a; --ember-bright:#d3665a;
+  --arcane:#4f8f7c; --arcane-bright:#6bb39e;
+  --violet:#8a5cc4; --violet-bright:#a67ee0;
+  --text-hi:#f1ead9; --text-lo:#9d9a8c; --text-faint:#6b6960;
+  --font-display:'Spectral', serif; --font-body:'Inter', sans-serif; --font-mono:'Space Mono', monospace;
+  --radius:14px; --radius-sm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0;background:radial-gradient(ellipse at 20% -10%, #1e2029 0%, var(--void) 45%, #0f0f14 100%);color:var(--text-hi);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow:hidden;}button{font-family:inherit;}
+input,textarea,select{font-family:inherit;}
+::selection{background:var(--brass-dim);color:var(--text-hi);}
+.hidden{display:none !important;}
+a{color:var(--arcane-bright);}
+*{scrollbar-width:thin;scrollbar-color:var(--brass-dim) transparent;}
+*::-webkit-scrollbar{width:8px;height:8px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:var(--brass-dim);border-radius:8px;}
+*::-webkit-scrollbar-thumb:hover{background:var(--brass);}
+:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px;}
+
+#app{position:relative;height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.view{position:absolute;inset:0;height:100%;min-height:0;flex-direction:column;background:radial-gradient(ellipse at 20% -10%, #1e2029 0%, var(--void) 45%, #0f0f14 100%);}
+.view:not(.active){display:none !important;}
+.view.active{display:flex;}
+
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0 10px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--parchment-line),transparent);}
+.divider span{font-size:11px;color:var(--ink-soft);}
+.divider.dark::before,.divider.dark::after{background:linear-gradient(90deg,transparent,var(--line),transparent);}
+.divider.dark span{color:var(--text-faint);}
+
+/* ---------- Top bar (game shell) ---------- */
+#top-bar{display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181920,#141419);flex-shrink:0;z-index:20;}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,var(--brass-bright),var(--brass-dim));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--void);flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.25);}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;}
+.brand-text b{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-hi);}
+.brand-text span{font-size:10.5px;color:var(--text-faint);letter-spacing:.04em;}
+#char-chip{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:999px;background:var(--void-3);border:1px solid var(--line);font-size:12.5px;color:var(--text-lo);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:300px;}
+#char-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--arcane-bright);flex-shrink:0;box-shadow:0 0 6px var(--arcane-bright);}
+#char-chip b{color:var(--text-hi);font-weight:600;}
+.tabbar{display:none;gap:4px;margin-left:auto;background:var(--void-3);padding:3px;border-radius:10px;border:1px solid var(--line);}
+.tabbar button{border:none;background:transparent;color:var(--text-lo);font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:7px;cursor:pointer;}
+.tabbar button.active{background:var(--brass);color:var(--void);}
+.topbar-actions{display:flex;gap:6px;margin-left:auto;flex-shrink:0;}
+.icon-btn{width:36px;height:36px;border-radius:9px;background:var(--void-3);border:1px solid var(--line);color:var(--text-lo);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, color .15s, border-color .15s;flex-shrink:0;}
+.icon-btn:hover{background:var(--void-4);color:var(--text-hi);border-color:var(--brass-dim);}
+.icon-btn svg{width:17px;height:17px;}
+.text-btn{background:none;border:none;color:var(--text-lo);font-size:12.5px;font-weight:600;cursor:pointer;padding:6px 8px;}
+.text-btn:hover{color:var(--text-hi);}
+
+/* ---------- Layout grid (creation & play) ---------- */
+#layout{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:308px 1fr 292px;gap:14px;padding:14px;}
+.panel{background:var(--void-2);border:1px solid var(--line);border-radius:var(--radius);min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+.panel-scroll{overflow-y:auto;flex:1;min-height:0;}
+.panel-head{padding:14px 16px 10px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.panel-head h2{font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--text-lo);margin:0;}
+.panel-head .spacer{flex:1;}
+
+/* ---------- Sheet panel (parchment) ---------- */
+#sheet-panel{background:var(--parchment);border-color:var(--parchment-line);}
+#sheet-panel .panel-head{background:linear-gradient(180deg,var(--parchment-2),var(--parchment));border-bottom:2px solid var(--parchment-line);padding:14px 16px;}
+#sheet-panel .panel-head h2{color:var(--ink-soft);}
+#sheet-panel .icon-btn{background:rgba(43,34,19,.06);border-color:var(--parchment-line);color:var(--ink-soft);}
+#sheet-panel .icon-btn:hover{background:rgba(43,34,19,.12);color:var(--ink);}
+#sheet-scroll{padding:14px 16px 20px;color:var(--ink);}
+.sheet-empty{text-align:center;padding:40px 14px;color:var(--ink-soft);}
+.sheet-empty .glyph{font-size:30px;margin-bottom:10px;opacity:.6;}
+.sheet-empty p{font-size:13px;line-height:1.6;margin:0;}
+.sheet-name{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink);margin:0 0 2px;}
+.sheet-sub{font-size:12.5px;color:var(--ink-soft);margin:0;}
+.sheet-sub b{color:var(--ink);font-weight:600;}
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.stat-box{background:var(--parchment-2);border:1px solid var(--parchment-line);border-radius:9px;padding:8px 6px;text-align:center;}
+.stat-box .v{font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--ink);}
+.stat-box .l{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px;}
+.hp-block{margin-top:10px;background:var(--parchment-2);border:1px solid var(--parchment-line);border-radius:9px;padding:10px 12px;}
+.hp-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.hp-row .l{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);}
+.hp-row .v{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--ink);}
+.hp-bar{height:8px;border-radius:5px;background:rgba(43,34,19,.12);overflow:hidden;}
+.hp-bar-fill{height:100%;background:linear-gradient(90deg,var(--ember),var(--ember-bright));border-radius:5px;transition:width .3s;}
+.xp-block{margin-top:8px;}
+.hp-bar-fill.xp-fill{background:linear-gradient(90deg,var(--brass-dim),var(--brass-bright));}
+.xp-note{margin:6px 0 0;font-size:10.5px;color:var(--ink-soft);letter-spacing:.01em;}
+.xp-toast{margin:8px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(193,154,91,.16);border:1px solid var(--brass);font-size:12px;color:var(--brass-bright);font-weight:600;display:flex;align-items:center;gap:8px;animation:msgin .3s ease;}
+.new-msg-pill{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;z-index:5;padding:8px 16px;border-radius:999px;border:1px solid var(--brass);background:var(--void-3);color:var(--brass-bright);font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);animation:msgin .2s ease;}
+.skill-check{margin:10px 16px 0;padding:11px 13px;border-radius:11px;background:linear-gradient(160deg,rgba(79,143,124,.16),var(--void-3));border:1px solid var(--arcane);animation:msgin .25s ease;}
+.sc-title{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--arcane-bright);font-weight:700;margin-bottom:8px;}
+.sc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sc-select{flex:1;min-width:150px;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--void-3);color:var(--text-hi);font-size:13.5px;}
+.sc-mod{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--brass-bright);min-width:42px;text-align:center;}
+.sc-roll{padding:9px 15px;border-radius:9px;border:none;background:linear-gradient(160deg,var(--arcane-bright),var(--arcane));color:var(--void);font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;}
+.sc-roll:hover{filter:brightness(1.08);}
+.sc-roll:disabled{opacity:.5;cursor:not-allowed;}
+.sc-hint{font-size:11.5px;color:var(--text-lo);margin-top:7px;line-height:1.5;}
+.new-msg-pill:hover{background:var(--void-4);}
+#chat-panel{position:relative;}
+.attr-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px;}
+.attr-box{text-align:center;background:var(--parchment-2);border:1px solid var(--parchment-line);border-radius:8px;padding:6px 2px;}
+.attr-box .v{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--ink);}
+.attr-box .l{font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);}
+.sheet-section-title{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 6px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+.sheet-section-title .car{font-size:10px;transition:transform .15s;color:var(--brass-dim);}
+.sheet-section.collapsed .sheet-section-title .car{transform:rotate(-90deg);}
+.sheet-section.collapsed .sheet-section-body{display:none;}
+.skill-row{display:flex;align-items:center;gap:8px;padding:4px 2px;border-bottom:1px solid rgba(43,34,19,.08);font-size:12.5px;}
+.skill-row:last-child{border-bottom:none;}
+.skill-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--ink-soft);}
+.skill-dot.treinado{background:var(--brass-dim);}
+.skill-dot.especialista{background:var(--arcane);}
+.skill-dot.mestre{background:var(--ember);}
+.skill-dot.lendario{background:#8a5cc4;}
+.skill-row .name{flex:1;color:var(--ink);}
+.skill-row .mod{font-family:var(--font-mono);font-weight:700;color:var(--ink);}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{background:var(--parchment-2);border:1px solid var(--parchment-line);border-radius:999px;padding:3px 10px;font-size:11.5px;color:var(--ink);}
+.chip.cond{background:rgba(176,71,58,.15);border-color:var(--ember);color:#7a2f26;}
+.list-plain{margin:0;padding:0;list-style:none;}
+.list-plain li{padding:5px 2px;font-size:12.5px;color:var(--ink);border-bottom:1px solid rgba(43,34,19,.08);}
+.list-plain li:last-child{border-bottom:none;}
+.sheet-note{font-size:12px;line-height:1.6;color:var(--ink-soft);white-space:pre-wrap;}
+.gold-line{font-family:var(--font-mono);font-weight:700;color:var(--ink);font-size:13px;}
+.party-row{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid rgba(43,34,19,.08);}
+.party-row:last-child{border-bottom:none;}
+.party-row .pv{width:8px;height:8px;border-radius:50%;background:var(--arcane);flex-shrink:0;}
+.party-row .pn{flex:1;min-width:0;}
+.party-row .pn b{display:block;font-size:12.5px;color:var(--ink);}
+.party-row .pn span{display:block;font-size:10.5px;color:var(--ink-soft);}
+.party-row .php{font-family:var(--font-mono);font-size:11.5px;color:var(--ink);}
+
+/* ---------- Chat panel ---------- */
+#chat-panel{background:var(--void-2);}
+#chat-panel .panel-head{border-bottom:1px solid var(--line);}
+.pdf-banner{margin:0 16px 0;padding:8px 12px;border-radius:8px;background:var(--void-3);border:1px solid var(--line-soft);font-size:11.5px;color:var(--text-faint);display:flex;align-items:center;gap:8px;}
+.pdf-banner a{color:var(--arcane-bright);text-decoration:none;font-weight:600;}
+.timer-pill{margin:10px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(176,71,58,.14);border:1px solid var(--ember);font-size:12px;color:var(--ember-bright);display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-weight:700;}
+.timer-pill.calm{background:var(--void-3);border-color:var(--line-soft);color:var(--text-lo);}
+#chat-scroll{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;}
+.msg{max-width:82%;display:flex;flex-direction:column;gap:4px;animation:msgin .25s ease;}
+@keyframes msgin{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.msg.gm{align-self:flex-start;}
+.msg.player{align-self:flex-end;}
+.msg.other{align-self:flex-start;}
+.msg .who{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);padding:0 2px;}
+.msg.player .who{text-align:right;}
+.msg .bubble{padding:12px 15px;border-radius:12px;font-size:14.5px;line-height:1.65;white-space:pre-wrap;word-wrap:break-word;}
+.msg.gm .bubble{background:var(--void-3);border-left:3px solid var(--brass);font-family:var(--font-display);color:var(--text-hi);font-size:15.5px;border-radius:4px 12px 12px 12px;}
+.msg.player .bubble{background:linear-gradient(160deg,var(--void-4),var(--void-3));border:1px solid var(--line);color:var(--text-hi);border-radius:12px 4px 12px 12px;}
+.msg.other .bubble{background:var(--void-3);border:1px solid var(--line-soft);color:var(--text-hi);border-radius:4px 12px 12px 12px;}
+.msg.system .bubble{background:transparent;border:1px dashed var(--line);color:var(--text-faint);font-size:12px;text-align:center;}
+.msg.error .bubble{border-left:3px solid var(--ember);background:rgba(176,71,58,.12);}
+.msg .retry-btn{align-self:flex-start;margin-top:2px;font-size:11.5px;color:var(--ember-bright);background:none;border:1px solid var(--ember);border-radius:7px;padding:4px 10px;cursor:pointer;}
+.msg .retry-btn:hover{background:rgba(176,71,58,.15);}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:14px 15px;background:var(--void-3);border-left:3px solid var(--brass);border-radius:4px 12px 12px 12px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--brass);animation:blink 1.2s infinite ease-in-out;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:scale(.8);}40%{opacity:1;transform:scale(1);}}
+#chat-form{flex-shrink:0;padding:12px 14px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-end;background:var(--void-2);padding-bottom:calc(12px + env(safe-area-inset-bottom));}
+#chat-input{flex:1;resize:none;max-height:130px;min-height:44px;background:var(--void-3);border:1px solid var(--line);border-radius:11px;padding:11px 13px;color:var(--text-hi);font-size:14px;line-height:1.4;}
+#chat-input:focus{border-color:var(--brass-dim);}
+#chat-input::placeholder{color:var(--text-faint);}
+.send-btn{flex-shrink:0;height:44px;padding:0 18px;border-radius:11px;border:none;background:var(--brass);color:var(--void);font-weight:700;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.send-btn:hover{background:var(--brass-bright);}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.scene-wait{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:10px;}
+.scene-wait .glyph{font-size:32px;animation:pulse 2s infinite ease-in-out;}
+@keyframes pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+.scene-wait h3{font-family:var(--font-display);font-size:18px;margin:0;color:var(--text-hi);}
+.scene-wait p{font-size:13px;color:var(--text-lo);max-width:320px;margin:0;line-height:1.6;}
+
+/* ---------- Dice panel ---------- */
+#dice-panel .panel-head{border-bottom:1px solid var(--line);}
+#dice-scroll{padding:6px 16px 16px;}
+.log-title{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin:18px 0 6px;}
+.roll-entry{display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid var(--line-soft);}
+.roll-entry .re-formula{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
+.roll-entry .re-label{font-size:11px;color:var(--text-lo);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.roll-entry .re-total{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--brass-bright);}
+.empty-log{font-size:12px;color:var(--text-faint);padding:10px 2px;}
+.roll-intro{font-size:12px;color:var(--text-lo);line-height:1.6;margin:6px 0 4px;}
+
+/* ---------- Auth / cards screens ---------- */
+.centered-screen{height:100%;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:30px 16px;}
+.card{width:100%;max-width:560px;background:var(--void-2);border:1px solid var(--line);border-radius:18px;padding:34px 32px 30px;}
+.card.narrow{max-width:460px;}
+.mark-row{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.mark-row .brand-mark{width:46px;height:46px;font-size:22px;border-radius:12px;}
+.card-title{font-family:var(--font-display);font-size:26px;font-weight:700;margin:0;color:var(--text-hi);}
+.card-sub{color:var(--text-lo);font-size:13.5px;margin:2px 0 0;}
+.card-lede{font-size:13.5px;line-height:1.7;color:var(--text-lo);margin:18px 0 6px;}
+.field{margin-top:16px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-hi);margin-bottom:6px;}
+.field .hint{font-size:11.5px;color:var(--text-faint);margin-top:5px;line-height:1.5;}
+.text-input, select.text-input{width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--line);background:var(--void-3);color:var(--text-hi);font-size:13.5px;}
+.text-input:focus{border-color:var(--brass-dim);}
+.input-with-btn{display:flex;gap:8px;}
+.input-with-btn .text-input{flex:1;}
+.ghost-btn{padding:0 14px;border-radius:9px;border:1px solid var(--line);background:var(--void-3);color:var(--text-lo);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.ghost-btn:hover{color:var(--text-hi);border-color:var(--brass-dim);}
+.dropzone{margin-top:8px;border:1.5px dashed var(--line);border-radius:11px;padding:18px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
+.dropzone:hover,.dropzone.drag{border-color:var(--brass-dim);background:var(--void-3);}
+.dropzone .dz-icon{font-size:20px;margin-bottom:6px;}
+.dropzone .dz-text{font-size:12.5px;color:var(--text-lo);}
+.dropzone .dz-sub{font-size:11px;color:var(--text-faint);margin-top:3px;}
+.file-row{margin-top:8px;display:flex;align-items:center;gap:10px;background:var(--void-3);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+.file-row .fi-icon{font-size:16px;flex-shrink:0;}
+.file-row .fi-meta{flex:1;min-width:0;}
+.file-row .fi-name{font-size:12.5px;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-row .fi-status{font-size:11px;color:var(--text-faint);margin-top:2px;}
+.file-row .fi-remove{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:16px;flex-shrink:0;}
+.file-row .fi-remove:hover{color:var(--ember-bright);}
+.progress-track{height:5px;border-radius:3px;background:var(--void-4);margin-top:8px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--arcane-bright);border-radius:3px;transition:width .2s;}
+.card-actions{margin-top:24px;display:flex;gap:10px;align-items:center;}
+.primary-btn{flex:1;padding:13px;border:none;border-radius:10px;background:linear-gradient(160deg,var(--brass-bright),var(--brass));color:var(--void);font-weight:700;font-size:14px;cursor:pointer;}
+.primary-btn:hover{filter:brightness(1.06);}
+.primary-btn:disabled{opacity:.5;cursor:not-allowed;}
+.card-error{margin-top:12px;font-size:12.5px;color:var(--ember-bright);}
+.card-switch{margin-top:16px;text-align:center;font-size:12.5px;color:var(--text-lo);}
+.card-switch a{cursor:pointer;font-weight:600;}
+.security-note{margin-top:14px;padding:10px 12px;border-radius:9px;background:var(--void-3);border:1px solid var(--line-soft);font-size:11px;color:var(--text-faint);line-height:1.6;}
+.info-link{display:block;margin:16px auto 0;text-align:center;font-size:12px;color:var(--arcane-bright);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.info-link:hover{color:var(--arcane);}
+.info-section{margin-bottom:22px;}
+.info-section:last-child{margin-bottom:4px;}
+.info-section h4{font-family:var(--font-display);font-size:15px;color:var(--brass-bright);margin:0 0 8px;letter-spacing:.02em;}
+.info-section ol, .info-section ul{margin:0 0 8px;padding-left:20px;color:var(--text-lo);font-size:12.5px;line-height:1.7;}
+.info-section p{margin:0 0 8px;color:var(--text-lo);font-size:12.5px;line-height:1.7;}
+.info-section .note{background:var(--void-3);border:1px solid var(--line-soft);border-radius:8px;padding:9px 11px;font-size:11.5px;color:var(--text-faint);line-height:1.6;}
+.class-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
+.class-grid .ci{font-size:12px;color:var(--text-lo);line-height:1.5;padding:6px 0;border-bottom:1px solid var(--line-soft);}
+.class-grid .ci b{color:var(--text-hi);display:block;font-size:12.5px;}
+@media (max-width:520px){.class-grid{grid-template-columns:1fr;}}
+
+/* ---------- Hub ---------- */
+#view-hub .hub-scroll{flex:1;overflow-y:auto;padding:24px;max-width:760px;width:100%;margin:0 auto;}
+.hub-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.hub-header .info{flex:1;}
+.hub-header h1{font-family:var(--font-display);font-size:24px;margin:0;}
+.hub-header p{margin:2px 0 0;font-size:13px;color:var(--text-lo);}
+.char-card{background:var(--void-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.char-card .cc-avatar{width:44px;height:44px;border-radius:11px;background:linear-gradient(145deg,var(--arcane-bright),var(--arcane));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--void);flex-shrink:0;}
+.char-card .cc-info b{display:block;font-size:14.5px;color:var(--text-hi);}
+.char-card .cc-info span{font-size:12px;color:var(--text-lo);}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:26px;}
+.action-card{background:var(--void-2);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:left;cursor:pointer;transition:border-color .15s,transform .1s;}
+.action-card:hover{border-color:var(--brass-dim);transform:translateY(-1px);}
+.action-card .glyph{font-size:22px;margin-bottom:8px;}
+.action-card b{display:block;font-family:var(--font-display);font-size:15.5px;color:var(--text-hi);margin-bottom:3px;}
+.action-card span{font-size:11.5px;color:var(--text-lo);line-height:1.5;}
+.adv-list-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin:0 0 10px;}
+.adv-card{background:var(--void-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.adv-card:hover{border-color:var(--brass-dim);}
+.adv-card .ac-icon{width:34px;height:34px;border-radius:9px;background:var(--void-3);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.adv-card .ac-info{flex:1;min-width:0;}
+.adv-card .ac-info b{display:block;font-size:13.5px;color:var(--text-hi);}
+.adv-card .ac-info span{font-size:11.5px;color:var(--text-lo);}
+.status-badge{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999px;flex-shrink:0;}
+.status-badge.lobby{background:rgba(193,154,91,.18);color:var(--brass-bright);}
+.status-badge.ativa{background:rgba(79,143,124,.2);color:var(--arcane-bright);}
+.status-badge.encerrada{background:var(--void-3);color:var(--text-faint);}
+.status-badge.pausada{background:rgba(138,92,196,.2);color:var(--violet-bright);}
+.status-badge.convite{background:rgba(176,71,58,.2);color:var(--ember-bright);}
+.empty-hint{font-size:12.5px;color:var(--text-faint);padding:16px 2px;}
+.ad-slot{margin:22px 0 4px;min-height:0;overflow:hidden;}
+.ad-slot .ad-label{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);opacity:.55;margin-bottom:5px;text-align:center;}
+.ad-slot ins{display:block;}
+.ad-slot.empty{display:none;}
+
+/* new-adventure form (in modal) */
+.invite-row{display:flex;gap:8px;margin-top:8px;align-items:center;}
+.invite-row .text-input{flex:1;}
+.invite-row .rm{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:16px;}
+.invite-row .rm:hover{color:var(--ember-bright);}
+.add-invite-btn{margin-top:8px;font-size:12px;color:var(--arcane-bright);background:none;border:1px dashed var(--line);border-radius:8px;padding:8px;width:100%;cursor:pointer;}
+.add-invite-btn:hover{border-color:var(--arcane);}
+.warn-line{font-size:11px;color:var(--brass-bright);margin-top:4px;}
+.mode-toggle{display:flex;gap:8px;margin-top:8px;}
+.mode-opt{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--void-3);text-align:center;cursor:pointer;}
+.mode-opt.active{border-color:var(--brass);background:rgba(193,154,91,.12);}
+.mode-opt .glyph{font-size:18px;}
+.mode-opt b{display:block;font-size:12.5px;color:var(--text-hi);margin-top:4px;}
+
+/* ---------- Lobby ---------- */
+#view-lobby .hub-scroll{flex:1;overflow-y:auto;padding:24px;max-width:560px;width:100%;margin:0 auto;}
+.lobby-timer{text-align:center;margin:10px 0 24px;}
+.lobby-timer .big{font-family:var(--font-mono);font-size:44px;font-weight:700;color:var(--brass-bright);}
+.lobby-timer .lbl{font-size:11.5px;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+.roster-row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line-soft);}
+.roster-row:last-child{border-bottom:none;}
+.roster-row .rr-av{width:32px;height:32px;border-radius:8px;background:var(--void-3);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--brass-bright);flex-shrink:0;}
+.roster-row .rr-name{flex:1;font-size:13px;color:var(--text-hi);}
+.rr-status{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 9px;border-radius:999px;}
+.rr-status.confirmado{background:rgba(79,143,124,.2);color:var(--arcane-bright);}
+.rr-status.convidado{background:rgba(193,154,91,.18);color:var(--brass-bright);}
+.rr-status.desistente{background:var(--void-3);color:var(--text-faint);}
+.lobby-actions{display:flex;gap:10px;margin-top:20px;}
+.decline-btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--void-3);color:var(--text-lo);font-weight:600;font-size:13.5px;cursor:pointer;}
+.decline-btn:hover{border-color:var(--ember);color:var(--ember-bright);}
+
+/* ---------- Modals ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,10,13,.72);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.modal-box{background:var(--void-2);border:1px solid var(--line);border-radius:16px;width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-head{padding:18px 20px 4px;display:flex;align-items:center;}
+.modal-head h3{font-family:var(--font-display);font-size:18px;margin:0;color:var(--text-hi);}
+.modal-head .icon-btn{margin-left:auto;}
+.modal-body{padding:14px 20px 20px;overflow-y:auto;}
+.modal-actions{display:flex;gap:10px;padding:0 20px 20px;}
+.danger-btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--ember);background:rgba(176,71,58,.12);color:var(--ember-bright);font-weight:700;font-size:13.5px;cursor:pointer;}
+.danger-btn:hover{background:rgba(176,71,58,.22);}
+.secondary-btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--void-3);color:var(--text-hi);font-weight:600;font-size:13.5px;cursor:pointer;}
+.secondary-btn:hover{border-color:var(--brass-dim);}
+#sheet-editor-modal textarea{width:100%;min-height:340px;background:var(--void-3);border:1px solid var(--line);border-radius:9px;color:var(--text-hi);font-family:var(--font-mono);font-size:11.5px;padding:12px;resize:vertical;line-height:1.5;}
+.modal-note{font-size:11.5px;color:var(--text-faint);margin:0 0 10px;line-height:1.6;}
+
+@media (max-width:960px){
+  #layout{grid-template-columns:1fr;padding:10px;gap:0;min-height:0;}
+  .panel{display:none;border-radius:12px;}
+  .panel.tab-active{display:flex;min-height:0;}
+  #chat-panel.tab-active{height:100%;}
+  .tabbar{display:flex;}
+  #char-chip{display:none;}
+  .action-grid{grid-template-columns:1fr;}
+  #chat-input{font-size:16px;}
+}
+@media (max-width:600px){
+  #top-bar, #top-bar-lobby, #top-bar-game{padding:8px 10px;gap:8px;}
+  .brand-text{display:none;}
+  .tabbar{margin-left:0;flex:1;justify-content:space-between;}
+  .tabbar button{flex:1;padding:8px 4px;font-size:11.5px;}
+  .icon-btn{width:32px;height:32px;}
+  .icon-btn svg{width:15px;height:15px;}
+  .brand-mark{width:30px;height:30px;font-size:15px;}
+  #view-hub .hub-scroll, #view-lobby .hub-scroll{padding:16px 14px;}
+  .hub-header h1{font-size:20px;}
+  .modal-overlay{padding:10px;}
+  .modal-head{padding:14px 14px 4px;}
+  .modal-body{padding:10px 14px 16px;}
+  .modal-actions{padding:0 14px 16px;}
+  .card{padding:24px 18px 20px;}
+}
+@media (max-width:400px){
+  .input-with-btn{flex-wrap:wrap;}
+  .input-with-btn .text-input{flex:1 1 100%;}
+  .input-with-btn .ghost-btn{flex:1;}
+  .class-grid .ci{padding:5px 0;}
+  .stat-strip{gap:6px;}
+  .attr-grid{gap:5px;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ AUTH VIEW ============ -->
+  <div id="view-auth" class="view centered-screen active">
+    <div class="card" id="auth-card">
+      <div class="mark-row"><div class="brand-mark">M</div>
+        <div><p class="card-title" id="auth-title">Entrar</p><p class="card-sub">Mestre Solo — Pathfinder 2ª Edição</p></div>
+      </div>
+      <p class="card-lede" id="auth-lede">Informe seu e-mail para continuar.</p>
+
+      <div class="field"><label for="auth-email">E-mail</label>
+        <input id="auth-email" class="text-input" type="email" placeholder="voce@gmail.com" autocomplete="email">
+      </div>
+
+      <div id="auth-extra" class="hidden">
+        <div class="field" id="auth-name-field"><label for="auth-name">Nome</label>
+          <input id="auth-name" class="text-input" type="text" placeholder="Como podemos te chamar" autocomplete="name">
+        </div>
+        <div class="field"><label for="auth-pass">Senha</label>
+          <div class="input-with-btn">
+            <input id="auth-pass" class="text-input" type="password" autocomplete="new-password">
+            <button type="button" class="ghost-btn" id="auth-pass-toggle">Mostrar</button>
+          </div>
+        </div>
+        <div class="field hidden" id="auth-key-field"><label for="auth-key">Chave de API do Gemini</label>
+          <div class="input-with-btn">
+            <input id="auth-key" class="text-input" type="password" placeholder="AIzaSy…" autocomplete="off">
+            <button type="button" class="ghost-btn" id="auth-key-toggle">Mostrar</button>
+          </div>
+          <p class="hint">Não tem uma? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Crie uma chave gratuita ↗</a>. Fica só neste dispositivo — nunca é compartilhada com outros jogadores.</p>
+        </div>
+      </div>
+
+      <div class="security-note">🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.</div>
+
+      <div class="card-actions"><button class="primary-btn" id="auth-continue">Continuar</button></div>
+      <p id="auth-error" class="card-error hidden"></p>
+      <p class="card-switch" id="auth-switch"></p>
+      <button type="button" class="info-link" id="open-info-auth">📖 Como conseguir uma chave gratuita do Gemini · guia rápido de Pathfinder 2E</button>
+    </div>
+  </div>
+
+  <!-- ============ CHARACTER CREATION (uses game-shell) ============ -->
+  <!-- shares markup with play, see #view-game below -->
+
+  <!-- ============ HUB VIEW ============ -->
+  <div id="view-hub" class="view">
+    <header id="top-bar">
+      <div class="brand"><div class="brand-mark">M</div><div class="brand-text"><b>Mestre Solo</b><span>Pathfinder 2ª Edição</span></div></div>
+      <div class="topbar-actions">
+        <button class="icon-btn hidden" id="hub-info" title="Guia rápido" aria-label="Guia rápido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </button>
+        <button class="icon-btn hidden" id="hub-admin" title="Painel Admin" aria-label="Painel Admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        </button>
+        <button class="icon-btn" id="hub-logout" title="Sair" aria-label="Sair">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="hub-scroll">
+      <div class="hub-header"><div class="info"><h1 id="hub-greeting">Olá</h1><p>Escolha uma aventura ou comece uma nova</p></div></div>
+      <div class="char-card" id="hub-char-card"></div>
+      <div class="action-grid">
+        <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b>Nova aventura solo</b><span>Só você e o Mestre. Pode anexar o livro de regras.</span></div>
+        <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b>Nova aventura em grupo</b><span>Convide outros jogadores cadastrados pelo e-mail.</span></div>
+      </div>
+      <p class="adv-list-title">Suas aventuras</p>
+      <div id="hub-adv-list"></div>
+      <div class="ad-slot" id="ad-hub">
+        <div class="ad-label">Publicidade</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5483062241581736"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LOBBY VIEW ============ -->
+  <div id="view-lobby" class="view">
+    <header id="top-bar-lobby" class="lobby-topbar" style="display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181920,#141419);flex-shrink:0;">
+      <button class="icon-btn" id="lobby-back" title="Voltar" aria-label="Voltar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="brand-text"><b id="lobby-adv-name">Aventura</b><span>Sala de espera</span></div>
+    </header>
+    <div class="hub-scroll">
+      <div class="lobby-timer"><div class="big" id="lobby-countdown">3:00</div><div class="lbl">para os convidados entrarem</div></div>
+      <p class="adv-list-title">Participantes</p>
+      <div id="lobby-roster"></div>
+      <div class="lobby-actions" id="lobby-join-actions"></div>
+      <div class="ad-slot" id="ad-lobby">
+        <div class="ad-label">Publicidade</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5483062241581736"
+             data-ad-slot=""
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GAME VIEW (creation + play share this shell) ============ -->
+  <div id="view-game" class="view">
+    <header id="top-bar-game" style="display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181920,#141419);flex-shrink:0;z-index:20;">
+      <button class="icon-btn" id="game-back" title="Voltar ao início" aria-label="Voltar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="brand-text"><b id="game-title">Criação de Personagem</b><span id="game-subtitle">Pathfinder 2ª Edição</span></div>
+      <div id="char-chip" class="hidden"><span class="dot"></span><span id="char-chip-text"></span></div>
+      <div class="tabbar" id="tabbar">
+        <button data-tab="sheet">Ficha</button>
+        <button data-tab="chat" class="active">Mestre</button>
+        <button data-tab="dice">Dados</button>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn hidden" id="btn-export" title="Exportar roteiro" aria-label="Exportar roteiro">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        </button>
+        <button class="icon-btn hidden" id="btn-pause" title="Pausar aventura" aria-label="Pausar aventura">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <button class="icon-btn hidden" id="btn-finish" title="Concluir aventura" aria-label="Concluir aventura">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
+        </button>
+        <button class="icon-btn hidden" id="btn-settings" title="Configurações" aria-label="Configurações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="layout">
+      <aside id="sheet-panel" class="panel tab-active">
+        <div class="panel-head"><h2>Ficha</h2><div class="spacer"></div>
+          <button class="icon-btn" id="btn-edit-sheet" title="Editar ficha manualmente" aria-label="Editar ficha">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+        </div>
+        <div id="sheet-scroll" class="panel-scroll"></div>
+      </aside>
+      <section id="chat-panel" class="panel tab-active">
+        <div class="panel-head"><h2 id="chat-panel-title">O Mestre</h2></div>
+        <div id="pdf-banner" class="pdf-banner hidden"></div>
+        <div id="timer-pill" class="timer-pill hidden"></div>
+        <div id="skill-check-box" class="skill-check hidden">
+          <div class="sc-title" id="sc-title">Teste solicitado</div>
+          <div class="sc-row">
+            <select id="sc-select" class="sc-select"></select>
+            <span class="sc-mod" id="sc-mod">+0</span>
+            <button type="button" class="sc-roll" id="sc-roll">🎲 Rolar</button>
+          </div>
+          <div class="sc-hint" id="sc-hint"></div>
+        </div>
+        <div id="chat-scroll"></div>
+        <button type="button" id="new-msg-pill" class="new-msg-pill hidden">↓ Novas mensagens</button>
+        <div id="scene-wait-block" class="scene-wait hidden">
+          <div class="glyph">🕯️</div>
+          <h3>Aguardando em outra cena…</h3>
+          <p id="scene-wait-text">O Mestre está com a atenção em outro grupo agora. Você volta para a história assim que a cena mudar.</p>
+        </div>
+        <form id="chat-form">
+          <textarea id="chat-input" placeholder="Diga o que seu personagem faz…" rows="1"></textarea>
+          <button type="submit" class="send-btn" id="chat-send">Enviar</button>
+        </form>
+      </section>
+      <aside id="dice-panel" class="panel">
+        <div class="panel-head"><h2>Rolagens</h2></div>
+        <div id="dice-scroll" class="panel-scroll">
+          <p class="roll-intro">O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.</p>
+          <div class="log-title">Histórico</div>
+          <div id="roll-log"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL (PDF only now — solo adventures) -->
+<div class="modal-overlay hidden" id="settings-overlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Livro de regras</h3><button class="icon-btn" id="settings-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p class="modal-note">Válido apenas para aventuras solo — em grupo, cada jogador usa sua própria chave, então o arquivo não pode ser compartilhado entre todos, e o Mestre usa conhecimento geral do sistema.</p>
+      <div id="s-dropzone" class="dropzone"><div class="dz-icon">📖</div><div class="dz-text">Clique ou arraste o PDF do livro aqui</div></div>
+      <input type="file" id="s-pdf-input" accept="application/pdf" class="hidden">
+      <div id="s-file-row" class="file-row hidden">
+        <div class="fi-icon">📄</div>
+        <div class="fi-meta"><div class="fi-name" id="s-fi-name">—</div><div class="fi-status" id="s-fi-status">—</div>
+          <div class="progress-track hidden" id="s-fi-progress-track"><div class="progress-fill" id="s-fi-progress-fill" style="width:0%"></div></div>
+        </div>
+        <button type="button" class="fi-remove" id="s-fi-remove" aria-label="Remover arquivo">✕</button>
+      </div>
+      <p id="settings-error" class="card-error hidden"></p>
+    </div>
+    <div class="modal-actions"><button class="primary-btn" id="settings-save">Salvar</button></div>
+  </div>
+</div>
+
+<!-- NEW GROUP ADVENTURE MODAL -->
+<div class="modal-overlay hidden" id="newadv-overlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="newadv-title">Nova aventura</h3><button class="icon-btn" id="newadv-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="field"><label for="newadv-name">Nome da aventura</label><input id="newadv-name" class="text-input" placeholder="Ex: Os Ecos de Kaer Maga"></div>
+      <div class="field" id="newadv-invite-field">
+        <label>Convidar por e-mail (precisa já ter cadastro no app)</label>
+        <div id="newadv-invites"></div>
+        <button type="button" class="add-invite-btn" id="newadv-add-invite">+ adicionar e-mail</button>
+      </div>
+      <p id="newadv-error" class="card-error hidden"></p>
+    </div>
+    <div class="modal-actions"><button class="primary-btn" id="newadv-create">Criar aventura</button></div>
+  </div>
+</div>
+
+<!-- SHEET EDITOR MODAL -->
+<div class="modal-overlay hidden" id="sheet-editor-modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Editar ficha</h3><button class="icon-btn" id="editor-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p class="modal-note">Ajuste os dados da sua ficha (formato JSON). O Mestre será avisado da mudança.</p>
+      <textarea id="editor-textarea" spellcheck="false"></textarea>
+      <p id="editor-error" class="card-error hidden"></p>
+    </div>
+    <div class="modal-actions"><button class="secondary-btn" id="editor-cancel">Cancelar</button><button class="primary-btn" id="editor-save">Salvar ficha</button></div>
+  </div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="modal-overlay hidden" id="info-overlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head"><h3>Guia rápido</h3><button class="icon-btn" id="info-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+
+      <div class="info-section">
+        <h4>🔑 Como conseguir uma chave gratuita do Gemini</h4>
+        <ol>
+          <li>Acesse <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> e entre com sua conta Google (a mesma do Gmail que você vai usar aqui).</li>
+          <li>Clique em "Create API key" (Criar chave de API).</li>
+          <li>Escolha "Create API key in new project" se for sua primeira chave — isso cria um projeto novo, geralmente já no nível gratuito.</li>
+          <li>Copie a chave gerada (começa com <code>AIzaSy…</code>) e cole no cadastro deste app.</li>
+        </ol>
+        <div class="note">O nível gratuito não pede cartão de crédito, mas tem limites de uso por minuto/dia — suficientes para jogar. Se aparecer um aviso pedindo para configurar faturamento (comum em algumas regiões desde 2026), a própria tela do Google explica os passos; você pode recusar e continuar apenas no nível gratuito se a opção existir.</div>
+      </div>
+
+      <div class="info-section">
+        <h4>🎲 Mecânica básica de Pathfinder 2ª Edição</h4>
+        <p><b style="color:var(--text-hi)">Testes:</b> role 1d20, some seu modificador (atributo + proficiência + outros bônus) e compare com a Classe de Dificuldade (CD) do desafio.</p>
+        <p><b style="color:var(--text-hi)">Quatro graus de sucesso:</b> se o total supera a CD em 10+, é sucesso crítico; se supera, sucesso; se fica abaixo, fracasso; se fica 10+ abaixo, fracasso crítico. Um 20 natural sobe um grau, um 1 natural desce um grau.</p>
+        <p><b style="color:var(--text-hi)">Combate:</b> cada turno você tem 3 ações + 1 reação. Atacar, mover-se, lançar magias e usar habilidades geralmente custam 1 ou 2 ações — dá pra combinar como quiser.</p>
+        <p><b style="color:var(--text-hi)">Proficiência:</b> vai de treinado → especialista → mestre → lendário, e soma um bônus crescente (junto com seu nível) aos testes daquela perícia, salvaguarda ou ataque.</p>
+      </div>
+
+      <div class="info-section">
+        <h4>🧬 Ancestralidades comuns</h4>
+        <p class="note" style="margin-bottom:10px;">Definem sua origem, tamanho, deslocamento e talentos únicos. As mais comuns nos livros principais:</p>
+        <div class="class-grid">
+          <div class="ci"><b>Humano</b>Versátil e adaptável, com um talento extra à escolha.</div>
+          <div class="ci"><b>Anão</b>Resistente, forte contra venenos e magia, ligado à tradição e à forja.</div>
+          <div class="ci"><b>Elfo</b>Ágil e perceptivo, longevo, conectado à magia antiga.</div>
+          <div class="ci"><b>Gnomo</b>Curioso e mágico por natureza, pequeno e cheio de energia.</div>
+          <div class="ci"><b>Goblin</b>Pequeno, rápido e criativo, com afinidade por fogo e engenhocas.</div>
+          <div class="ci"><b>Halfling</b>Sortudo e discreto, ágil e difícil de acertar.</div>
+          <div class="ci"><b>Leshy</b>Criatura vegetal criada por magia da natureza, ligada a um tipo de planta.</div>
+          <div class="ci"><b>Orc</b>Forte e resiliente, adaptado a ambientes hostis.</div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h4>⚔️ Classes comuns</h4>
+        <p class="note" style="margin-bottom:10px;">Definem seu papel, seus talentos e como você evolui. Alguns exemplos:</p>
+        <div class="class-grid">
+          <div class="ci"><b>Guerreiro</b>Mestre absoluto de armas, o mais preciso em combate.</div>
+          <div class="ci"><b>Bárbaro</b>Entra em fúria para golpear com força bruta.</div>
+          <div class="ci"><b>Patrulheiro</b>Caçador versátil, ótimo com arcos ou duas armas.</div>
+          <div class="ci"><b>Ladino</b>Ágil e furtivo, especialista em perícias e ataques surpresa.</div>
+          <div class="ci"><b>Campeão</b>Guerreiro devoto que protege aliados com reações divinas.</div>
+          <div class="ci"><b>Monge</b>Luta desarmado com golpes ágeis e mobilidade acrobática.</div>
+          <div class="ci"><b>Investigador</b>Raciocina antes de agir, usando dedução em combate.</div>
+          <div class="ci"><b>Alquimista</b>Cria bombas, elixires e venenos combinando ciência e magia.</div>
+          <div class="ci"><b>Mago</b>Conjurador acadêmico com um grimório de magias preparadas.</div>
+          <div class="ci"><b>Clérigo</b>Canal do poder de uma divindade, equilibra cura e dano.</div>
+          <div class="ci"><b>Druida</b>Guardião da natureza, transforma-se em animais.</div>
+          <div class="ci"><b>Feiticeiro</b>Magia inata conjurada de forma espontânea.</div>
+          <div class="ci"><b>Bardo</b>Inspira aliados com música e magia, versátil no apoio.</div>
+          <div class="ci"><b>Bruxo</b>Recebe magia de uma patrona misteriosa através de um familiar.</div>
+          <div class="ci"><b>Oráculo</b>Conjurador divino que aceita uma maldição em troca de poder profético.</div>
+          <div class="ci"><b>Espadachim</b>Duelista estiloso que ganha vantagens lutando com estilo.</div>
+        </div>
+        <p class="note" style="margin-top:10px;">Isso é só um resumo rápido — o Mestre te explica as opções com mais detalhes durante a criação do personagem, e o livro anexado (se houver) tem a palavra final sobre regras específicas.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal-overlay hidden" id="admin-overlay">
+  <div class="modal-box" style="max-width:760px;">
+    <div class="modal-head"><h3>Painel Admin</h3><button class="icon-btn" id="admin-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" id="admin-body">
+      <p class="modal-note">Carregando…</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+
+/* =========================================================
+   CONSTANTS
+   ========================================================= */
+var FICHA_START = "\u00a7\u00a7\u00a7FICHA-INICIO\u00a7\u00a7\u00a7";
+var FICHA_END = "\u00a7\u00a7\u00a7FICHA-FIM\u00a7\u00a7\u00a7";
+var JOIN_WINDOW_MS = 3*60*1000;
+var ACTION_WINDOW_MS = 7*60*1000;
+var TYPING_GRACE_MS = 60*1000; // extra time while the player is actively typing
+var POLL_MS = 4000;
+var LOCK_TTL_MS = 25000;
+
+var EMPTY_CHARACTER = {
+  nome:null, ancestralidade:null, linhagem:null, antecedente:null, classe:null, nivel:null,
+  experiencia:0,
+  pontosVida:{atual:null,maximo:null}, ca:null, cdClasse:null, percepcao:null, deslocamento:null,
+  resistencia:{fortitude:null,reflexos:null,vontade:null},
+  atributos:{for:null,des:null,con:null,int:null,sab:null,car:null},
+  pericias:[], talentos:[], equipamento:[], dinheiro:null, condicoes:[], magias:[],
+  aparencia:null, personalidade:null, notas:null
+};
+var XP_PER_LEVEL = 1000; // Pathfinder 2E: 1000 XP advances a character one level
+var DEFAULT_MODEL_FALLBACK = "gemini-3.6-flash";
+var ADMIN_EMAIL = "azevedo.hebert@gmail.com";
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzvhtF8Tpew3o-lppr2bLX6Xv8rPkJm3vCfOJTAsXdHw9YsGNHH0T7hRXcIsrZ82n6B/exec";
+var adminConfig = null; // {sheetsWebhookUrl}
+
+/* ---------------------------------------------------------
+   SHEETS BACKEND (shared online store)
+   Note: the Web App is public, so we NEVER send API keys and
+   only ever send password hashes — never raw passwords.
+   --------------------------------------------------------- */
+var sheetsOnline = true;
+var CHUNK_CHARS = 38000; // stay well under the backend's per-cell ceiling
+function sheetsUrl(){ return (adminConfig && adminConfig.sheetsWebhookUrl) || SHEETS_URL; }
+
+async function sheetsCall(action, payload){
+  var url = sheetsUrl();
+  if(!url) throw new Error("Backend não configurado.");
+  var body = JSON.stringify(Object.assign({action:action}, payload||{}));
+  var res = await fetch(url, {
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"}, // text/plain avoids CORS preflight
+    body: body
+  });
+  if(!res.ok) throw new Error("Backend HTTP "+res.status);
+  var data = await res.json();
+  if(data && data.ok===false) throw new Error(data.error||"Erro no backend.");
+  return data;
+}
+
+/* ---- Read cache -------------------------------------------------
+   Every shared read used to be a round-trip to Apps Script (~1s each,
+   serialized by its LockService). A short TTL cache plus request
+   coalescing keeps the UI responsive without going stale. */
+var readCache = {};       // key -> {value, at}
+var inflightReads = {};   // key -> Promise
+var READ_TTL_MS = 2500;
+var VOLATILE_TTL_MS = 1200;   // scene messages / pending actions
+function ttlFor(key){
+  if(/^scene-msgs:|^pending-action:|^gm-lock:/.test(key)) return VOLATILE_TTL_MS;
+  return READ_TTL_MS;
+}
+function cacheGet(key){
+  var e = readCache[key];
+  if(e && (Date.now()-e.at) < ttlFor(key)) return e;
+  return null;
+}
+function cachePut(key, value){ readCache[key] = {value:value, at:Date.now()}; }
+function cacheInvalidate(key){ delete readCache[key]; }
+async function sheetsGet(kind, key){
+  try{
+    var r = await sheetsCall("get", {kind:kind, key:key});
+    sheetsOnline = true;
+    var v = r.value;
+    if(v && typeof v==="object" && v.__chunked){
+      var parts = [];
+      for(var i=0;i<v.count;i++){
+        var pr = await sheetsCall("get", {kind:kind, key:key+"::part"+i});
+        if(!pr || pr.value===null || pr.value===undefined) return null; // incomplete write
+        parts.push(pr.value);
+      }
+      try{ return JSON.parse(parts.join("")); }catch(e){ return null; }
+    }
+    return (v===undefined) ? null : v;
+  }catch(e){ sheetsOnline=false; console.warn("sheetsGet falhou ("+kind+"/"+key+"):", e.message); return null; }
+}
+async function sheetsPut(kind, key, value){
+  try{
+    if(value===null || value===undefined){
+      await sheetsCall("put", {kind:kind, key:key, value:null});
+      sheetsOnline = true; return true;
+    }
+    var serialized = JSON.stringify(value);
+    if(serialized.length <= CHUNK_CHARS){
+      await sheetsCall("put", {kind:kind, key:key, value:value});
+      sheetsOnline = true; return true;
+    }
+    // Too big for one cell: split across numbered parts, then write the manifest last
+    // so a half-finished write is never treated as the current value.
+    var count = Math.ceil(serialized.length/CHUNK_CHARS);
+    for(var i=0;i<count;i++){
+      await sheetsCall("put", {kind:kind, key:key+"::part"+i, value:serialized.substr(i*CHUNK_CHARS, CHUNK_CHARS)});
+    }
+    await sheetsCall("put", {kind:kind, key:key, value:{__chunked:true, count:count, len:serialized.length}});
+    sheetsOnline = true; return true;
+  }catch(e){ sheetsOnline=false; console.warn("sheetsPut falhou ("+kind+"/"+key+"):", e.message); return false; }
+}
+async function sheetsList(kind){
+  try{
+    var r = await sheetsCall("list", {kind:kind});
+    sheetsOnline = true; return r.items || [];
+  }catch(e){ sheetsOnline=false; console.warn("sheetsList falhou ("+kind+"):", e.message); return []; }
+}
+
+/* =========================================================
+   SESSION STATE
+   ========================================================= */
+var session = { email:null, name:null, apiKey:null, model:DEFAULT_MODEL_FALLBACK, modelChain:[DEFAULT_MODEL_FALLBACK], pdfFile:null };
+var character = null; // own character JSON
+var view = "auth"; // auth | hub | lobby | game
+var gameMode = null; // 'creation' | 'play'
+var creationMessages = [];
+var currentAdv = null; // full adventure object (cached)
+var currentAdvId = null;
+var currentSceneId = null;
+var loading = false;
+var authMode = "login"; // 'login' | 'signup'
+var authKnownRegistered = null;
+var pendingUploadFile = null;
+var pendingSettingsFile = null;
+var newAdvMode = "solo";
+var newAdvInviteCount = 0;
+var pollTimer = null;
+var lastSeenMsgCount = 0;
+var partyCache = {}; // email -> character
+
+/* =========================================================
+   STORAGE HELPERS
+   Shared keys are mirrored to the Google Sheet backend so that
+   data survives across devices/browsers; local storage acts as
+   a fast cache and offline fallback.
+   ========================================================= */
+function isSyncedKey(key){
+  return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config)/.test(key);
+}
+/* Values are stored wrapped as {__v:rev, __t:ts, d:data} so a stale or failed
+   remote write can never overwrite newer local data on screen. */
+function unwrap(x){ return (x && typeof x==="object" && x.__v!==undefined) ? x.d : x; }
+function revOf(x){ return (x && typeof x==="object" && x.__v!==undefined) ? x.__v : 0; }
+function tsOf(x){ return (x && typeof x==="object" && x.__t!==undefined) ? x.__t : 0; }
+
+async function sGet(key, shared){
+  if(shared && isSyncedKey(key)){
+    var cached = cacheGet(key);
+    if(cached) return unwrap(cached.value);
+    if(inflightReads[key]) return unwrap(await inflightReads[key]);  // coalesce parallel reads
+    inflightReads[key] = (async function(){
+      var localRaw = null;
+      try{
+        if(window.storage){
+          var res = await window.storage.get(key, true);
+          localRaw = res ? JSON.parse(res.value) : null;
+        }
+      }catch(e){ localRaw = null; }
+      var remoteRaw = await sheetsGet("kv", key);
+      var chosen = localRaw;
+      if(remoteRaw!==null && remoteRaw!==undefined){
+        var takeRemote = (revOf(remoteRaw) > revOf(localRaw)) ||
+                         (revOf(remoteRaw)===revOf(localRaw) && tsOf(remoteRaw) >= tsOf(localRaw));
+        if(takeRemote){
+          chosen = remoteRaw;
+          try{ if(window.storage) await window.storage.set(key, JSON.stringify(remoteRaw), true); }catch(e){}
+        }
+      }
+      cachePut(key, chosen);
+      return chosen;
+    })();
+    try{ return unwrap(await inflightReads[key]); }
+    finally{ delete inflightReads[key]; }
+  }
+  var raw = null;
+  try{
+    if(window.storage){
+      var r2 = await window.storage.get(key, !!shared);
+      raw = r2 ? JSON.parse(r2.value) : null;
+    }
+  }catch(e){ raw = null; }
+  return unwrap(raw);
+}
+async function sSet(key, value, shared){
+  var ok = false;
+  var wrapped = value;
+  if(shared && isSyncedKey(key)){
+    var prevRev = 0;
+    var cachedPrev = readCache[key];
+    if(cachedPrev){ prevRev = revOf(cachedPrev.value); }
+    else{
+      try{
+        if(window.storage){
+          var prev = await window.storage.get(key, true);
+          if(prev) prevRev = revOf(JSON.parse(prev.value));
+        }
+      }catch(e){}
+    }
+    wrapped = (value===null||value===undefined) ? value : {__v:prevRev+1, __t:Date.now(), d:value};
+    cachePut(key, wrapped);   // our own write is the freshest truth
+  }
+  try{
+    if(window.storage){ await window.storage.set(key, JSON.stringify(wrapped), !!shared); ok = true; }
+  }catch(e){ console.warn("storage set failed", key, e); }
+  if(shared && isSyncedKey(key)){
+    // don't block the UI on the slow Apps Script round-trip
+    sheetsPut("kv", key, wrapped).catch(function(){});
+  }
+  return ok;
+}
+async function sDel(key, shared){
+  try{ if(window.storage) await window.storage.delete(key, !!shared); }catch(e){}
+  if(shared && isSyncedKey(key)) await sheetsPut("kv", key, null);
+}
+async function sList(prefix, shared){
+  var keys = [];
+  try{
+    if(window.storage){
+      var res = await window.storage.list(prefix, !!shared);
+      keys = (res && res.keys) ? res.keys : [];
+    }
+  }catch(e){ keys = []; }
+  if(shared){
+    var remote = await sheetsList("kv");
+    remote.forEach(function(k){ if(k.indexOf(prefix)===0 && keys.indexOf(k)===-1) keys.push(k); });
+  }
+  return keys;
+}
+
+function normEmail(e){ return (e||"").trim().toLowerCase(); }
+async function sha256Hex(str){
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+}
+
+/* =========================================================
+   UTIL
+   ========================================================= */
+function el(id){ return document.getElementById(id); }
+function esc(s){
+  if(s===null||s===undefined) return "";
+  return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; });
+}
+function fmtBytes(b){ return b < 1024*1024 ? Math.round(b/1024)+" KB" : (b/(1024*1024)).toFixed(1)+" MB"; }
+function fmtMod(n){ if(n===null||n===undefined||isNaN(n)) return "—"; return (n>=0? "+":"")+n; }
+function fmtClock(ms){
+  if(ms<0) ms=0;
+  var s = Math.ceil(ms/1000);
+  var m = Math.floor(s/60); s = s%60;
+  return m+":"+(s<10?"0":"")+s;
+}
+function initialsOf(name){ return (name||"?").trim().charAt(0).toUpperCase(); }
+function isPdfExpired(){ return !session.pdfFile || !session.pdfFile.expiresAt || Date.now() > session.pdfFile.expiresAt; }
+
+/* =========================================================
+   GEMINI API
+   ========================================================= */
+function apiBase(){ return "https://generativelanguage.googleapis.com"; }
+
+function friendlyApiError(err){
+  var m = (err && err.message) ? err.message : (typeof err==="string" ? err : "Erro desconhecido.");
+  var low = m.toLowerCase();
+  if(low.indexOf("prepay")>=0 || low.indexOf("credit")>=0 || low.indexOf("billing")>=0){
+    return "Sua chave do Gemini está sem créditos ou precisa de faturamento configurado. Acesse aistudio.google.com/projects (com a conta Google usada para criar a chave), veja a aba de faturamento e adicione créditos — ou crie uma chave nova em um projeto ainda no nível gratuito (Get API key > Create API key > novo projeto). Detalhe original do Google: "+m;
+  }
+  if((err && err.isQuotaError) || low.indexOf("resource_exhausted")>=0 || low.indexOf("quota")>=0 || low.indexOf("rate limit")>=0 || low.indexOf("429")>=0){
+    return "Todos os modelos Gemini disponíveis para sua chave estão com o limite de uso atingido agora (por minuto ou por dia) — o app já tentou os mais recentes e os mais antigos disponíveis. Espere um pouco e tente de novo, ou configure faturamento em aistudio.google.com/projects para um limite maior. Detalhe original: "+m;
+  }
+  if(low.indexOf("api key not valid")>=0 || low.indexOf("api_key_invalid")>=0 || low.indexOf("permission")>=0){
+    return "Sua chave de API parece inválida ou sem permissão. Confira se copiou a chave certa em aistudio.google.com/apikey. Detalhe original: "+m;
+  }
+  if(low.indexOf("token count")>=0 || low.indexOf("token_count")>=0 || low.indexOf("1048576")>=0){
+    return "A conversa ficou grande demais para o modelo processar de uma vez. O app tentará resumir automaticamente na próxima mensagem — tente enviar de novo. Detalhe original: "+m;
+  }
+  return "Não consegui falar com o Gemini: "+m;
+}
+
+async function detectModelChain(apiKey){
+  try{
+    var res = await fetch(apiBase()+"/v1beta/models", { headers:{"x-goog-api-key":apiKey} });
+    if(!res.ok) return [DEFAULT_MODEL_FALLBACK];
+    var data = await res.json();
+    var models = (data.models||[]).filter(function(m){
+      return m.name && m.supportedGenerationMethods && m.supportedGenerationMethods.indexOf("generateContent")>=0;
+    });
+    function idOf(m){ return m.name.replace("models/",""); }
+    function verKey(id){ return (id.match(/[\d]+(\.[\d]+)?/g)||["0"]).map(parseFloat); }
+    function cmpVerDesc(idA, idB){
+      var ka=verKey(idA), kb=verKey(idB);
+      for(var i=0;i<Math.max(ka.length,kb.length);i++){
+        var va=ka[i]||0, vb=kb[i]||0;
+        if(va!==vb) return vb-va; // newest (highest version) first
+      }
+      var aPrev = /preview|exp|experimental/i.test(idA), bPrev = /preview|exp|experimental/i.test(idB);
+      if(aPrev!==bPrev) return aPrev?1:-1; // stable before preview at same version
+      return 0;
+    }
+    var flashCore = models.filter(function(m){
+      var id=idOf(m);
+      return /flash/i.test(id) && !/lite/i.test(id) && !/image/i.test(id) && !/tts/i.test(id) && !/8b/i.test(id);
+    }).map(idOf).sort(cmpVerDesc);
+    var flashLite = models.filter(function(m){
+      var id=idOf(m);
+      return /flash/i.test(id) && /lite/i.test(id) && !/image/i.test(id) && !/tts/i.test(id);
+    }).map(idOf).sort(cmpVerDesc);
+    var chain = flashCore.concat(flashLite);
+    chain = chain.filter(function(id,idx){ return chain.indexOf(id)===idx; }); // dedupe
+    return chain.length ? chain : [DEFAULT_MODEL_FALLBACK];
+  }catch(e){ return [DEFAULT_MODEL_FALLBACK]; }
+}
+
+async function startResumableUpload(apiKey, file){
+  var res = await fetch(apiBase()+"/upload/v1beta/files", {
+    method:"POST",
+    headers:{
+      "x-goog-api-key": apiKey, "X-Goog-Upload-Protocol":"resumable", "X-Goog-Upload-Command":"start",
+      "X-Goog-Upload-Header-Content-Length": String(file.size), "X-Goog-Upload-Header-Content-Type": file.type || "application/pdf",
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({file:{display_name:file.name}})
+  });
+  if(!res.ok){ var t = await res.text().catch(function(){return "";}); throw new Error("Não foi possível iniciar o envio do PDF (HTTP "+res.status+"). "+t.slice(0,200)); }
+  var uploadUrl = res.headers.get("x-goog-upload-url");
+  if(!uploadUrl) throw new Error("O servidor do Gemini não retornou uma URL de envio (possível bloqueio de CORS).");
+  return uploadUrl;
+}
+function uploadBytes(uploadUrl, file, onProgress){
+  return new Promise(function(resolve, reject){
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", uploadUrl);
+    xhr.setRequestHeader("X-Goog-Upload-Offset","0");
+    xhr.setRequestHeader("X-Goog-Upload-Command","upload, finalize");
+    xhr.upload.onprogress = function(e){ if(e.lengthComputable && onProgress) onProgress(e.loaded/e.total); };
+    xhr.onload = function(){
+      if(xhr.status>=200 && xhr.status<300){ try{ resolve(JSON.parse(xhr.responseText)); }catch(e){ reject(new Error("Resposta inválida do envio.")); } }
+      else reject(new Error("Falha no envio do arquivo (HTTP "+xhr.status+")."));
+    };
+    xhr.onerror = function(){ reject(new Error("Erro de rede durante o envio.")); };
+    xhr.send(file);
+  });
+}
+async function waitForFileActive(apiKey, fileInfo){
+  var info = fileInfo;
+  for(var i=0;i<15;i++){
+    if(!info.state || info.state==="ACTIVE") return info;
+    if(info.state==="FAILED") throw new Error("O processamento do arquivo falhou no servidor do Gemini.");
+    await new Promise(function(r){ setTimeout(r,2000); });
+    try{
+      var res = await fetch(apiBase()+"/v1beta/"+info.name, { headers:{"x-goog-api-key":apiKey} });
+      if(!res.ok) break;
+      info = await res.json();
+    }catch(e){ break; }
+  }
+  return info;
+}
+async function uploadPdfToGemini(apiKey, file, onProgress){
+  var uploadUrl = await startResumableUpload(apiKey, file);
+  var result = await uploadBytes(uploadUrl, file, onProgress);
+  var fileInfo = await waitForFileActive(apiKey, result.file);
+  return { uri: fileInfo.uri, name: fileInfo.name, mimeType: fileInfo.mimeType||"application/pdf",
+    displayName: fileInfo.displayName||file.name, uploadedAt: Date.now(), expiresAt: Date.now()+47*60*60*1000 };
+}
+
+async function callGeminiOnce(systemText, contents, model){
+  var res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(model)+":generateContent", {
+    method:"POST", headers:{"x-goog-api-key":session.apiKey, "Content-Type":"application/json"},
+    body: JSON.stringify({ systemInstruction:{parts:[{text:systemText}]}, contents:contents, generationConfig:{maxOutputTokens:8192} })
+  });
+  var data = await res.json().catch(function(){return null;});
+  if(!res.ok){
+    var msg = (data && data.error && data.error.message) ? data.error.message : ("Erro HTTP "+res.status);
+    var err = new Error(msg);
+    var status = (data && data.error && data.error.status) || "";
+    err.isQuotaError = (res.status===429) || status==="RESOURCE_EXHAUSTED" || /quota|rate limit/i.test(msg);
+    err.httpStatus = res.status;
+    throw err;
+  }
+  var candidate = data && data.candidates && data.candidates[0];
+  if(!candidate){ var br = data && data.promptFeedback && data.promptFeedback.blockReason; throw new Error(br? ("Resposta bloqueada ("+br+")."):"Nenhuma resposta recebida do modelo."); }
+  if(candidate.finishReason==="SAFETY") throw new Error("A resposta foi bloqueada pelos filtros de segurança do modelo.");
+  var parts = (candidate.content && candidate.content.parts) || [];
+  var text = parts.map(function(p){ return p.text||""; }).join("");
+  if(!text) throw new Error("O modelo retornou uma resposta vazia.");
+  return text;
+}
+
+async function callGeminiRaw(systemText, contents){
+  var chain = (session.modelChain && session.modelChain.length) ? session.modelChain : [session.model];
+  var startIdx = chain.indexOf(session.model);
+  if(startIdx===-1) startIdx = 0;
+  var lastErr = null;
+  for(var i=startIdx; i<chain.length; i++){
+    var model = chain[i];
+    try{
+      var text = await callGeminiOnce(systemText, contents, model);
+      if(model!==session.model){
+        console.warn("Quota excedida em modelo anterior — usando "+model+" a partir de agora.");
+        session.model = model;
+        sSet("profile", {email:session.email, name:session.name, apiKey:session.apiKey, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
+      }
+      return text;
+    }catch(err){
+      lastErr = err;
+      if(err.isQuotaError && i<chain.length-1) continue; // try the next model, most recent to oldest
+      throw err;
+    }
+  }
+  throw lastErr || new Error("Não foi possível completar a chamada.");
+}
+function extractBlock(raw){
+  var s = raw.indexOf(FICHA_START), e = raw.indexOf(FICHA_END);
+  if(s===-1||e===-1||e<s) return {clean:raw.trim(), data:null};
+  var jsonStr = raw.slice(s+FICHA_START.length, e).trim();
+  jsonStr = jsonStr.replace(/^```json/i,"").replace(/^```/,"").replace(/```$/,"").trim();
+  var data=null; try{ data=JSON.parse(jsonStr); }catch(err){ console.warn("Falha ao interpretar bloco:", err); }
+  var clean = (raw.slice(0,s)+raw.slice(e+FICHA_END.length)).trim();
+  return {clean:clean, data:data};
+}
+function mergeCharacter(p){
+  var base = JSON.parse(JSON.stringify(EMPTY_CHARACTER));
+  function assign(target, source){
+    for(var k in target){
+      if(source && Object.prototype.hasOwnProperty.call(source,k) && source[k]!==undefined){
+        if(target[k] && typeof target[k]==="object" && !Array.isArray(target[k]) && source[k] && typeof source[k]==="object") assign(target[k], source[k]);
+        else target[k] = source[k];
+      }
+    }
+  }
+  assign(base, p||{});
+  return base;
+}
+
+/* =========================================================
+   CONTEXT WINDOW MANAGEMENT (avoid "input token count exceeds maximum")
+   ========================================================= */
+var COMPACT_TOKEN_THRESHOLD = 350000; // conservative; real Gemini limit is 1,048,576 tokens, this leaves headroom for PDF/system/output
+var COMPACT_KEEP_RECENT = 16;
+function estimateTokens(str){ return Math.ceil((str||"").length/4); } // rough heuristic (~4 chars/token)
+function estimateMessagesTokens(msgs){
+  var sum=0; for(var i=0;i<msgs.length;i++) sum += estimateTokens(msgs[i].text);
+  return sum;
+}
+async function compactMessagesIfNeeded(msgs, contextLabel){
+  if(msgs.length <= COMPACT_KEEP_RECENT+4) return msgs;
+  if(estimateMessagesTokens(msgs) < COMPACT_TOKEN_THRESHOLD) return msgs;
+  var toSummarize = msgs.slice(0, msgs.length-COMPACT_KEEP_RECENT);
+  var keep = msgs.slice(msgs.length-COMPACT_KEEP_RECENT);
+  var transcript = toSummarize.map(function(m){
+    var who = m.role==="model" ? "Mestre" : (m.authorName||"Jogador");
+    return who+": "+m.text;
+  }).join("\n\n");
+  if(transcript.length > 2800000) transcript = transcript.slice(transcript.length-2800000);
+  try{
+    var prompt = "Resuma a sessão de RPG de Pathfinder 2ª Edição abaixo em um resumo denso e objetivo (no máximo 500 palavras), preservando: personagens envolvidos e seu estado atual (pontos de vida, condições, inventário relevante), decisões importantes, NPCs e ganchos de história relevantes, e a situação exata em que a cena parou. Não invente nada que não esteja no texto. Responda apenas com o resumo corrido, sem títulos ou comentários.\n\n---\n\n"+transcript;
+    var raw = await callGeminiRaw("Você é um assistente que resume sessões de RPG com precisão e concisão, em português do Brasil.", [{role:"user", parts:[{text:prompt}]}]);
+    var summaryMsg = {role:"user", text:"[Resumo da "+contextLabel+" até este ponto, para preservar contexto sem reenviar tudo:]\n"+raw.trim(), display:false, kind:"system"};
+    return [summaryMsg].concat(keep);
+  }catch(err){
+    console.warn("Falha ao compactar histórico, cortando sem resumo:", err);
+    return keep;
+  }
+}
+
+/* =========================================================
+   SYSTEM PROMPTS
+   ========================================================= */
+var CREATION_INTRO = "Você é o Mestre de Jogo de Pathfinder — Segunda Edição, ajudando um jogador a criar seu personagem antes de ele entrar em qualquer aventura (solo ou em grupo). Responda sempre em português do Brasil, em tom acolhedor e envolvente.\n\n";
+var PDF_YES = "Um arquivo PDF do livro de regras de Pathfinder 2ª Edição (tradução em português) está anexado a esta conversa. Use-o como referência primária. Se algo não estiver claro nele, use seu conhecimento geral do sistema para preencher lacunas, narrando com suas próprias palavras.\n\n";
+var PDF_NO = "Nenhum arquivo de regras foi anexado. Use seu conhecimento geral do sistema Pathfinder Segunda Edição (incluindo o conteúdo aberto sob a Open Game License).\n\n";
+var CREATION_BODY =
+"SEJA CONCISO: no máximo 2 ou 3 parágrafos curtos por resposta. Apresente as opções de forma enxuta (uma linha por opção quando listar) e termine sempre com uma pergunta clara e direta sobre a próxima decisão.\n\n" +
+"Conduza o jogador pela criação de um personagem de nível 1, passo a passo, UMA decisão (ou pequeno grupo de decisões relacionadas) por vez, nesta ordem sugerida: 1) conceito geral do herói; 2) ancestralidade e linhagem; 3) antecedente; 4) classe; 5) atributos; 6) perícias treinadas; 7) talentos iniciais; 8) equipamento inicial e dinheiro; 9) nome, aparência e um traço de personalidade. Explique opções quando o jogador parecer indeciso, sugira caminhos interessantes, mas deixe a decisão final com ele. Vá preenchendo a ficha progressivamente a cada resposta, mesmo incompleta.\n\n" +
+"Quando a ficha estiver completa e jogável, resuma o personagem, pergunte se ele quer ajustar algo e, só após confirmação explícita, mude \"fase\" para \"pronto\" (isso encerra a criação e leva o jogador para a escolha de aventuras — não faça isso antes de confirmar com ele).\n\n" +
+"FORMATO DE SAÍDA OBRIGATÓRIO: depois de todo texto narrativo, a partir do momento em que a criação começar, inclua sempre, sem exceção, um bloco oculto (o jogador nunca o verá) no formato exato:\n\n" +
+FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n" +
+"Esquema exato (preencha com null, \"\" ou [] o que não foi decidido; nunca omita chaves):\n" +
+"{\n"+'  "fase": "criacao" | "pronto",\n'+'  "personagem": {\n'+
+'    "nome": string|null, "ancestralidade": string|null, "linhagem": string|null, "antecedente": string|null,\n'+
+'    "classe": string|null, "nivel": number|null, "experiencia": number,\n'+'    "pontosVida": {"atual": number|null, "maximo": number|null},\n'+
+'    "ca": number|null, "cdClasse": number|null, "percepcao": number|null, "deslocamento": string|null,\n'+
+'    "resistencia": {"fortitude": number|null, "reflexos": number|null, "vontade": number|null},\n'+
+'    "atributos": {"for": number|null, "des": number|null, "con": number|null, "int": number|null, "sab": number|null, "car": number|null},\n'+
+'    "pericias": [{"nome": string, "mod": number, "posto": "treinado"|"especialista"|"mestre"|"lendario"}],\n'+
+'    "talentos": [string], "equipamento": [string], "dinheiro": string|null, "condicoes": [], "magias": [],\n'+
+'    "aparencia": string|null, "personalidade": string|null, "notas": string|null\n  }\n}\n\n'+
+"Personagens recém-criados começam no nível 1 com \"experiencia\": 0.\n\n"+
+"Regra crítica: o bloco deve conter APENAS JSON válido (sem markdown, sem comentários), uma única vez, sempre ao final.";
+
+var ADV_INTRO_SOLO = "Você é o Mestre de Jogo de uma aventura SOLO de Pathfinder — Segunda Edição, narrando para um único jogador. Você assume todos os papéis: narrador, NPCs, criaturas e árbitro das regras. Responda sempre em português do Brasil, em prosa envolvente.\n\n";
+var ADV_INTRO_GROUP = "Você é o Mestre de Jogo de uma aventura EM GRUPO de Pathfinder — Segunda Edição, narrando para vários jogadores simultaneamente. Cada mensagem de jogador vem prefixada com o nome de quem falou (ex: \"Alice: eu ataco...\"). Você assume todos os papéis: narrador, NPCs, criaturas e árbitro das regras. Responda sempre em português do Brasil, em prosa envolvente, dando espaço para cada personagem do grupo brilhar.\n\n";
+function advBody(isGroup){
+  return "REGRAS GERAIS\n- Mantenha-se sempre no papel de Mestre.\n" +
+"- SEJA CONCISO: cada resposta deve ter no máximo 3 parágrafos curtos (idealmente 120 a 180 palavras). Descreva o essencial com força, corte adjetivos supérfluos e não repita o que o jogador já sabe. Prefira uma imagem marcante a três frases de enfeite.\n" +
+"- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
+"- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
+"- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- Aplique com justiça as regras de Pathfinder 2ª Edição: graus de sucesso, três ações por turno, condições, CDs por nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- Golarion é o cenário padrão, mas acomode o que os jogadores preferirem. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
+"PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de Pathfinder 2ª Edição: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
+(isGroup ?
+"CONTROLE DE CENA: a aventura pode ter uma ou mais cenas simultâneas (ex: o grupo se dividiu). Apenas UMA cena está \"em foco\" por vez (campo \"cenaAtiva\"). Jogadores fora da cena ativa não veem nada até você voltar a atenção para eles. Prefira manter todos numa cena só; separe apenas quando fizer sentido narrativo, e sempre avise no texto quando cortar de uma cena para outra. Para reunir o grupo, volte a colocar todos na mesma cena.\n\n" +
+"PEDIDOS DE AÇÃO E TEMPO: quando sua narração termina esperando uma ação de um ou mais jogadores da cena ativa, marque \"aguardandoAcao\": true e liste os e-mails desses jogadores em \"jogadoresEsperados\". O aplicativo dá até 7 minutos para cada um responder; quem não responder a tempo terá uma ação escolhida por você automaticamente na rodada seguinte. Quando não há pedido pendente, marque \"aguardandoAcao\": false e \"jogadoresEsperados\": [].\n\n"
+: "Esta é uma aventura SOLO: existe apenas o jogador e apenas uma cena contínua. Não divida cenas, não gerencie grupos e não use campos de cena — narre direto para ele e aguarde a resposta pelo tempo que ele precisar.\n\n") +
+"FORMATO DE SAÍDA OBRIGATÓRIO: depois de todo texto narrativo, inclua sempre, sem exceção, um bloco oculto (os jogadores nunca o verão):\n\n" +
+FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n" +
+"Esquema exato:\n{\n"+
+(isGroup ?
+'  "cenaAtiva": "id-da-cena",\n'+
+'  "cenas": [{"id": string, "nome": string, "membros": [email,...]}],\n'+
+'  "aguardandoAcao": boolean, "jogadoresEsperados": [email,...],\n' : "") +
+'  "fichas": { "email-do-jogador": { ...mesmo esquema de personagem de sempre (nome, ancestralidade, linhagem, antecedente, classe, nivel, experiencia, pontosVida{atual,maximo}, ca, cdClasse, percepcao, deslocamento, resistencia{fortitude,reflexos,vontade}, atributos{for,des,con,int,sab,car}, pericias[], talentos[], equipamento[], dinheiro, condicoes[], magias[], aparencia, personalidade, notas)... } },\n'+
+'  "xpConcedido": [{"email": string, "quantidade": number, "motivo": string}],\n'+
+'  "testeSolicitado": null | {"pericias": [string], "formula": string|null, "cd": number|null, "descricao": string},\n'+
+'  "itensGanhos": [{"email": string, "itens": [string]}],\n'+
+'  "itensPerdidos": [{"email": string, "itens": [string]}],\n'+
+'  "magiasAprendidas": [{"email": string, "magias": [string]}],\n'+
+'  "magiasPerdidas": [{"email": string, "magias": [string]}]\n'+
+"}\n\n" +
+(isGroup
+  ? "Regras críticas: 1) \"cenas\" deve sempre listar TODOS os jogadores confirmados da aventura, cada um em exatamente uma cena — nunca esqueça ninguém. 2) \"fichas\" deve sempre incluir a ficha atual de TODOS os membros da cena ativa (mesmo sem mudanças), com \"experiencia\" refletindo o total acumulado. "
+  : "Regras críticas: 1) Não existem cenas nem outros jogadores nesta aventura. 2) \"fichas\" deve conter a ficha atual do jogador (mesmo sem mudanças), com \"experiencia\" refletindo o total acumulado. ") + "3) NUNCA altere a identidade de um personagem: nome, ancestralidade, linhagem, antecedente e classe são definidos pelo jogador na criação e devem ser repetidos exatamente como estão. Se você não souber o valor de um campo, repita o valor anterior em vez de inventar ou deixar em branco. Nunca reduza o nível nem a experiência de um personagem. 4) INVENTÁRIO E MAGIAS: o aplicativo controla as listas \"equipamento\" e \"magias\" — o que você escrever nesses arrays é IGNORADO. Para dar ou tirar um item, ou ensinar/remover uma magia, use exclusivamente \"itensGanhos\", \"itensPerdidos\", \"magiasAprendidas\" e \"magiasPerdidas\", listando apenas o que mudou NESTE turno (arrays vazios quando nada mudou). Nunca remova algo do inventário do jogador sem um motivo narrado explicitamente na cena. 5) \"xpConcedido\" lista apenas o XP ganho NESTE turno (array vazio quando não houve ganho). 6) O bloco deve conter apenas JSON válido, uma única vez, sempre ao final.";
+}
+
+function buildCreationSystemPrompt(){
+  var pdfNote = (session.pdfFile && !isPdfExpired()) ? PDF_YES : PDF_NO;
+  return CREATION_INTRO + pdfNote + CREATION_BODY;
+}
+function sheetSummaryFor(c){
+  if(!c) return "(ficha indisponível)";
+  var bits = [];
+  bits.push("Nome: "+(c.nome||"—"));
+  bits.push("Ancestralidade: "+(c.ancestralidade||"—")+(c.linhagem?" ("+c.linhagem+")":""));
+  bits.push("Antecedente: "+(c.antecedente||"—"));
+  bits.push("Classe: "+(c.classe||"—")+" | Nível "+(c.nivel||1)+" | XP "+(c.experiencia||0));
+  if(c.pontosVida) bits.push("PV: "+(c.pontosVida.atual!==null?c.pontosVida.atual:"—")+"/"+(c.pontosVida.maximo!==null?c.pontosVida.maximo:"—"));
+  bits.push("CA "+(c.ca!==null&&c.ca!==undefined?c.ca:"—")+" | CD de classe "+(c.cdClasse!==null&&c.cdClasse!==undefined?c.cdClasse:"—")+" | Percepção "+fmtMod(c.percepcao)+" | Deslocamento "+(c.deslocamento||"—"));
+  if(c.resistencia) bits.push("Salvaguardas: Fort "+fmtMod(c.resistencia.fortitude)+", Ref "+fmtMod(c.resistencia.reflexos)+", Von "+fmtMod(c.resistencia.vontade));
+  if(c.atributos) bits.push("Atributos: FOR "+fmtMod(c.atributos.for)+", DES "+fmtMod(c.atributos.des)+", CON "+fmtMod(c.atributos.con)+", INT "+fmtMod(c.atributos.int)+", SAB "+fmtMod(c.atributos.sab)+", CAR "+fmtMod(c.atributos.car));
+  if(c.pericias && c.pericias.length) bits.push("Perícias: "+c.pericias.map(function(p){ return p.nome+" "+fmtMod(p.mod)+" ("+(p.posto||"treinado")+")"; }).join(", "));
+  if(c.talentos && c.talentos.length) bits.push("Talentos: "+c.talentos.join(", "));
+  if(c.equipamento && c.equipamento.length) bits.push("Equipamento: "+c.equipamento.join(", "));
+  if(c.dinheiro) bits.push("Dinheiro: "+c.dinheiro);
+  if(c.magias && c.magias.length) bits.push("Magias: "+c.magias.join(", "));
+  if(c.condicoes && c.condicoes.length) bits.push("Condições ativas: "+c.condicoes.join(", "));
+  if(c.aparencia) bits.push("Aparência: "+c.aparencia);
+  if(c.personalidade) bits.push("Personalidade: "+c.personalidade);
+  if(c.notas) bits.push("Notas: "+c.notas);
+  return bits.join("\n");
+}
+function buildSheetsBlock(adv, sheetsByEmail){
+  var out = ["FICHAS ATUAIS DOS PERSONAGENS (fonte da verdade — use estes dados, NUNCA peça ao jogador para recriar o personagem nem pergunte informações que já estão aqui):"];
+  var members = (adv.members||[]).filter(function(m){ return m.status==="confirmado"; });
+  if(!members.length) members = [{email:session.email, name:session.name}];
+  members.forEach(function(m){
+    var c = sheetsByEmail[m.email];
+    out.push("\n--- "+(m.name||m.email)+" <"+m.email+"> ---\n"+sheetSummaryFor(c));
+  });
+  return out.join("\n")+"\n\n";
+}
+function buildAdvSystemPrompt(mode, rosterText, allowPdf, sheetsBlock){
+  var intro = mode==="grupo" ? ADV_INTRO_GROUP : ADV_INTRO_SOLO;
+  var pdfNote = (allowPdf && session.pdfFile && !isPdfExpired()) ? PDF_YES : PDF_NO;
+  var roster = rosterText ? ("PARTICIPANTES DESTA AVENTURA:\n"+rosterText+"\n\n") : "";
+  return intro + pdfNote + (mode==="grupo" ? roster : "") + (sheetsBlock||"") + advBody(mode==="grupo");
+}
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+async function checkRegistered(email){
+  var pub = await sGet("pub:"+email, true);
+  return pub;
+}
+el("auth-email").addEventListener("blur", onAuthEmailChange);
+async function onAuthEmailChange(){
+  var email = normEmail(el("auth-email").value);
+  if(!email || email.indexOf("@")===-1){ return; }
+  var pub = await checkRegistered(email);
+  authKnownRegistered = !!pub;
+  el("auth-extra").classList.remove("hidden");
+  if(pub){
+    authMode = "login";
+    el("auth-title").textContent = "Entrar";
+    el("auth-lede").textContent = "Bem-vindo de volta! Digite sua senha para continuar.";
+    el("auth-name-field").classList.add("hidden");
+    var localProfile = await sGet("profile", false);
+    if(localProfile && normEmail(localProfile.email)===email && localProfile.apiKey){
+      el("auth-key-field").classList.add("hidden");
+    } else {
+      el("auth-key-field").classList.remove("hidden");
+    }
+    el("auth-switch").innerHTML = 'Ainda não tem conta com esse e-mail? <a id="auth-switch-link">Cadastre-se</a>';
+  } else {
+    authMode = "signup";
+    el("auth-title").textContent = "Criar conta";
+    el("auth-lede").textContent = "Esse e-mail ainda não tem cadastro — vamos criar sua conta.";
+    el("auth-name-field").classList.remove("hidden");
+    el("auth-key-field").classList.remove("hidden");
+    el("auth-switch").innerHTML = "";
+  }
+  var link = el("auth-switch-link");
+  if(link) link.addEventListener("click", function(){
+    // let them retype under a different assumption isn't needed; just clear and let them edit email
+    el("auth-email").focus();
+  });
+}
+el("auth-pass-toggle").addEventListener("click", function(){
+  var inp = el("auth-pass"); var vis = inp.type==="text";
+  inp.type = vis?"password":"text"; el("auth-pass-toggle").textContent = vis?"Mostrar":"Ocultar";
+});
+el("auth-key-toggle").addEventListener("click", function(){
+  var inp = el("auth-key"); var vis = inp.type==="text";
+  inp.type = vis?"password":"text"; el("auth-key-toggle").textContent = vis?"Mostrar":"Ocultar";
+});
+
+el("auth-continue").addEventListener("click", async function(){
+  var errBox = el("auth-error"); errBox.classList.add("hidden");
+  var email = normEmail(el("auth-email").value);
+  if(!email || email.indexOf("@")===-1){ errBox.textContent="Informe um e-mail válido."; errBox.classList.remove("hidden"); return; }
+  if(el("auth-extra").classList.contains("hidden")){ await onAuthEmailChange(); if(el("auth-extra").classList.contains("hidden")) return; }
+  var pass = el("auth-pass").value;
+  if(!pass || pass.length<4){ errBox.textContent="A senha precisa ter ao menos 4 caracteres."; errBox.classList.remove("hidden"); return; }
+
+  var btn = el("auth-continue"); btn.disabled=true; btn.textContent="Aguarde…";
+  try{
+    var pub = await checkRegistered(email);
+    var passHash = await sha256Hex(pass);
+
+    if(pub){
+      // LOGIN
+      if(pub.passwordHash !== passHash){
+        errBox.textContent = "Senha incorreta para esse e-mail."; errBox.classList.remove("hidden");
+        btn.disabled=false; btn.textContent="Continuar"; return;
+      }
+      var localProfile = await sGet("profile", false);
+      var apiKey = (localProfile && normEmail(localProfile.email)===email) ? localProfile.apiKey : null;
+      if(!apiKey){
+        apiKey = el("auth-key").value.trim();
+        if(!apiKey){ errBox.textContent="Este dispositivo ainda não tem sua chave — cole sua chave de API do Gemini."; errBox.classList.remove("hidden"); btn.disabled=false; btn.textContent="Continuar"; return; }
+      }
+      session.email = email; session.name = pub.name; session.apiKey = apiKey;
+      btn.textContent = "Verificando modelo…";
+      session.modelChain = await detectModelChain(apiKey);
+      session.model = session.modelChain[0];
+      await sSet("profile", {email:email, name:pub.name, apiKey:apiKey, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
+    } else {
+      // SIGNUP
+      var name = el("auth-name").value.trim();
+      if(!name){ errBox.textContent="Informe seu nome."; errBox.classList.remove("hidden"); btn.disabled=false; btn.textContent="Continuar"; return; }
+      var apiKey2 = el("auth-key").value.trim();
+      if(!apiKey2){ errBox.textContent="Cole sua chave de API do Gemini para criar a conta."; errBox.classList.remove("hidden"); btn.disabled=false; btn.textContent="Continuar"; return; }
+      session.email=email; session.name=name; session.apiKey=apiKey2;
+      btn.textContent = "Verificando modelo…";
+      session.modelChain = await detectModelChain(apiKey2);
+      session.model = session.modelChain[0];
+      await sSet("pub:"+email, {email:email, name:name, passwordHash:passHash, createdAt:Date.now()}, true);
+      await sSet("profile", {email:email, name:name, apiKey:apiKey2, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
+      logAdminEvent("signup", {email:email, name:name});
+    }
+    await boot2AfterAuth();
+  }catch(err){
+    console.error(err);
+    errBox.textContent = "Algo deu errado: "+err.message; errBox.classList.remove("hidden");
+    btn.disabled=false; btn.textContent="Continuar";
+  }
+});
+
+async function logout(){
+  await sDel("profile", false);
+  session = { email:null, name:null, apiKey:null, model:DEFAULT_MODEL_FALLBACK, pdfFile:null };
+  character = null;
+  el("auth-email").value=""; el("auth-pass").value=""; el("auth-name").value=""; el("auth-key").value="";
+  el("auth-extra").classList.add("hidden");
+  el("auth-error").classList.add("hidden");
+  showView("auth");
+}
+el("hub-logout").addEventListener("click", logout);
+
+/* =========================================================
+   VIEW ROUTER
+   ========================================================= */
+function showView(name){
+  view = name;
+  document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+  el("view-"+name).classList.add("active");
+}
+
+/* =========================================================
+   CHARACTER SHEET RENDER (reusable)
+   ========================================================= */
+var sheetCollapsed = {};
+function sectionHtml(key, title, bodyHtml){
+  var collapsed = !!sheetCollapsed[key];
+  return '<div class="sheet-section'+(collapsed?' collapsed':'')+'" data-key="'+key+'"><div class="sheet-section-title" data-toggle="'+key+'"><span class="car">▾</span>'+esc(title)+'</div><div class="sheet-section-body">'+bodyHtml+'</div></div>';
+}
+function renderCharacterSheet(c, rootId){
+  var root = el(rootId);
+  var hasAnything = c && (c.nome || c.ancestralidade || c.classe || (c.pericias&&c.pericias.length));
+  if(!hasAnything){
+    root.innerHTML = '<div class="sheet-empty"><div class="glyph">✦</div><p>A ficha vai aparecer aqui conforme você cria seu personagem com o Mestre.</p></div>';
+    return;
+  }
+  var html = "";
+  html += '<p class="sheet-name">'+esc(c.nome||"Sem nome")+'</p>';
+  var subBits=[];
+  if(c.ancestralidade) subBits.push(esc(c.ancestralidade)+(c.linhagem?" ("+esc(c.linhagem)+")":""));
+  if(c.antecedente) subBits.push(esc(c.antecedente));
+  if(c.classe) subBits.push("<b>"+esc(c.classe)+"</b>"+(c.nivel?" nv. "+esc(c.nivel):""));
+  html += '<p class="sheet-sub">'+subBits.join(" · ")+'</p>';
+  if(c.pontosVida && (c.pontosVida.atual!==null||c.pontosVida.maximo!==null)){
+    var atual=c.pontosVida.atual===null?"—":c.pontosVida.atual, max=c.pontosVida.maximo===null?"—":c.pontosVida.maximo;
+    var pct=(c.pontosVida.atual!==null&&c.pontosVida.maximo)?Math.max(0,Math.min(100,(c.pontosVida.atual/c.pontosVida.maximo)*100)):100;
+    html += '<div class="hp-block"><div class="hp-row"><span class="l">Pontos de Vida</span><span class="v">'+atual+' / '+max+'</span></div><div class="hp-bar"><div class="hp-bar-fill" style="width:'+pct+'%"></div></div></div>';
+  }
+  var xp = (typeof c.experiencia==="number" && !isNaN(c.experiencia)) ? c.experiencia : 0;
+  var xpInLevel = ((xp % XP_PER_LEVEL) + XP_PER_LEVEL) % XP_PER_LEVEL;
+  var xpPct = Math.max(0, Math.min(100, (xpInLevel/XP_PER_LEVEL)*100));
+  var xpToNext = XP_PER_LEVEL - xpInLevel;
+  html += '<div class="hp-block xp-block"><div class="hp-row"><span class="l">Experiência</span><span class="v">'+xpInLevel+' / '+XP_PER_LEVEL+'</span></div>'+
+    '<div class="hp-bar"><div class="hp-bar-fill xp-fill" style="width:'+xpPct+'%"></div></div>'+
+    '<p class="xp-note">'+xpToNext+' XP para o nível '+((c.nivel||1)+1)+' · total acumulado: '+xp+'</p></div>';
+  html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.ca===null?"—":c.ca)+'</div><div class="l">CA</div></div><div class="stat-box"><div class="v">'+(c.cdClasse===null?"—":c.cdClasse)+'</div><div class="l">CD Classe</div></div><div class="stat-box"><div class="v">'+(c.percepcao===null?"—":fmtMod(c.percepcao))+'</div><div class="l">Percepção</div></div></div>';
+  if(c.deslocamento || (c.resistencia && c.resistencia.fortitude!==null)){
+    html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.fortitude!==null?fmtMod(c.resistencia.fortitude):"—")+'</div><div class="l">Fortitude</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.reflexos!==null?fmtMod(c.resistencia.reflexos):"—")+'</div><div class="l">Reflexos</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.vontade!==null?fmtMod(c.resistencia.vontade):"—")+'</div><div class="l">Vontade</div></div></div>';
+    if(c.deslocamento) html += '<p class="sheet-sub" style="margin-top:8px;text-align:center;">Deslocamento: <b>'+esc(c.deslocamento)+'</b></p>';
+  }
+  if(c.atributos){
+    var labels=[["for","FOR"],["des","DES"],["con","CON"],["int","INT"],["sab","SAB"],["car","CAR"]];
+    html += '<div class="attr-grid">';
+    labels.forEach(function(pair){ var v=c.atributos[pair[0]]; html += '<div class="attr-box"><div class="v">'+(v===null||v===undefined?"—":fmtMod(v))+'</div><div class="l">'+pair[1]+'</div></div>'; });
+    html += '</div>';
+  }
+  if(c.condicoes && c.condicoes.length) html += sectionHtml("condicoes","Condições",'<div class="chip-list">'+c.condicoes.map(function(x){return '<span class="chip cond">'+esc(x)+'</span>';}).join("")+'</div>');
+  if(c.pericias && c.pericias.length){
+    var sorted = c.pericias.slice().sort(function(x,y){ return (x.nome||"").localeCompare(y.nome||"","pt-BR"); });
+    html += sectionHtml("pericias","Perícias", sorted.map(function(p){ var rank=(p.posto||"").toLowerCase(); return '<div class="skill-row"><span class="skill-dot '+esc(rank)+'"></span><span class="name">'+esc(p.nome)+'</span><span class="mod">'+fmtMod(p.mod)+'</span></div>'; }).join(""));
+  }
+  if(c.talentos && c.talentos.length) html += sectionHtml("talentos","Talentos",'<ul class="list-plain">'+c.talentos.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>');
+  if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>');
+  if((c.equipamento&&c.equipamento.length)||c.dinheiro){
+    var eqBody=""; if(c.dinheiro) eqBody+='<p class="gold-line">'+esc(c.dinheiro)+'</p>';
+    if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>';
+    html += sectionHtml("equip","Equipamento", eqBody);
+  }
+  if(c.aparencia||c.personalidade||c.notas){
+    var noteBody="";
+    if(c.aparencia) noteBody+='<p class="sheet-note"><b style="color:var(--ink)">Aparência —</b> '+esc(c.aparencia)+'</p>';
+    if(c.personalidade) noteBody+='<p class="sheet-note"><b style="color:var(--ink)">Personalidade —</b> '+esc(c.personalidade)+'</p>';
+    if(c.notas) noteBody+='<p class="sheet-note"><b style="color:var(--ink)">Notas —</b> '+esc(c.notas)+'</p>';
+    html += sectionHtml("notas","Sobre", noteBody);
+  }
+  if(gameMode==="play" && currentAdv && currentAdv.mode==="grupo"){
+    var others = Object.keys(partyCache).filter(function(em){ return em!==session.email; });
+    if(others.length){
+      var rows = others.map(function(em){
+        var pc = partyCache[em];
+        if(!pc) return "";
+        var hp = pc.pontosVida ? (pc.pontosVida.atual!==null? pc.pontosVida.atual:"—")+"/"+(pc.pontosVida.maximo!==null?pc.pontosVida.maximo:"—") : "—";
+        return '<div class="party-row"><span class="pv"></span><span class="pn"><b>'+esc(pc.nome||em)+'</b><span>'+esc(pc.classe||"")+(pc.nivel?" nv."+pc.nivel:"")+'</span></span><span class="php">'+hp+'</span></div>';
+      }).join("");
+      html += sectionHtml("grupo","Grupo", rows||'<p class="sheet-note">Sem outros membros na cena.</p>');
+    }
+  }
+  root.innerHTML = html;
+  root.querySelectorAll("[data-toggle]").forEach(function(elm){
+    elm.addEventListener("click", function(){ var key=elm.getAttribute("data-toggle"); sheetCollapsed[key]=!sheetCollapsed[key]; renderCharacterSheet(c, rootId); });
+  });
+}
+
+/* =========================================================
+   CHARACTER CREATION FLOW
+   ========================================================= */
+var KICKOFF_CREATION = "[O jogador acabou de entrar e ainda não tem personagem. Dê boas-vindas como Mestre de Pathfinder 2ª Edição, explique brevemente como vai funcionar a criação e pergunte sobre o conceito geral do herói que ele imagina.]";
+
+async function enterCreation(){
+  gameMode = "creation"; currentAdv=null; currentAdvId=null; currentSceneId=null;
+  el("game-back").classList.add("hidden");
+  el("game-title").textContent = "Criação de Personagem";
+  el("game-subtitle").textContent = session.name || "";
+  el("btn-settings").classList.remove("hidden");
+  el("chat-panel-title").textContent = "O Mestre";
+  el("scene-wait-block").classList.add("hidden");
+  el("timer-pill").classList.add("hidden");
+  var saved = await sGet("char-creation-chat", false);
+  creationMessages = (saved && saved.messages) || [];
+  character = character || JSON.parse(JSON.stringify(EMPTY_CHARACTER));
+  showView("game");
+  renderRollLog();
+  renderCharacterSheet(character, "sheet-scroll");
+  renderCreationChat({reset:true});
+  setActiveTab("chat");
+  updateSendUI();
+  renderPdfBanner();
+  if(creationMessages.length===0) sendCreationMessage(KICKOFF_CREATION, {display:false});
+}
+
+function renderCreationChat(opts){
+  opts = opts || {};
+  var scroll = el("chat-scroll");
+  if(opts.reset || renderedSceneKey!=="creation"){
+    scroll.innerHTML = "";
+    renderedMsgIds = {};
+    renderedSceneKey = "creation";
+  }
+  var wasNearBottom = (scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight) < 140;
+  var typing = el("typing-indicator");
+  var appended = 0;
+  creationMessages.forEach(function(m, idx){
+    if(m.display===false) return;
+    var key = (m.role||"")+"|"+idx;
+    if(renderedMsgIds[key]) return;
+    renderedMsgIds[key] = true;
+    var d = document.createElement("div");
+    d.className = "msg "+(m.role==="user"?"player":"gm")+(m.error?" error":"");
+    d.innerHTML = '<span class="who">'+(m.role==="user"?"Você":"Mestre")+'</span><div class="bubble">'+esc(m.text)+'</div>';
+    if(m.error){
+      var btn = document.createElement("button");
+      btn.className = "retry-btn"; btn.textContent = "Tentar novamente";
+      btn.addEventListener("click", retryCreation);
+      d.appendChild(btn);
+    }
+    if(typing && typing.parentNode===scroll) scroll.insertBefore(d, typing);
+    else scroll.appendChild(d);
+    appended++;
+  });
+  if(loading) showTyping(true);
+  if(appended>0 && (wasNearBottom || opts.reset)){
+    requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+  }
+}
+
+async function sendCreationMessage(text, opts){
+  opts=opts||{}; var display = opts.display!==false;
+  if(loading) return; text=(text||"").trim(); if(!text) return;
+  creationMessages.push({role:"user", text:text, display:display});
+  await sSet("char-creation-chat", {messages:creationMessages}, false);
+  renderCreationChat();
+  loading=true; updateSendUI(); showTyping(true);
+  try{
+    creationMessages = await compactMessagesIfNeeded(creationMessages, "criação de personagem");
+    await sSet("char-creation-chat", {messages:creationMessages}, false);
+    var contents=[]; var fileAttached=false;
+    for(var i=0;i<creationMessages.length;i++){
+      var m=creationMessages[i]; var parts=[];
+      if(m.role==="user" && !fileAttached && session.pdfFile && !isPdfExpired()){ parts.push({fileData:{fileUri:session.pdfFile.uri, mimeType:session.pdfFile.mimeType}}); fileAttached=true; }
+      parts.push({text:m.text}); contents.push({role:m.role, parts:parts});
+    }
+    var raw = await callGeminiRaw(buildCreationSystemPrompt(), contents);
+    var extracted = extractBlock(raw);
+    var finished=false;
+    if(extracted.data){
+      if(extracted.data.personagem) character = mergeCharacter(extracted.data.personagem);
+      if(extracted.data.fase==="pronto") finished=true;
+    }
+    creationMessages.push({role:"model", text:extracted.clean||"(o mestre ficou em silêncio…)", display:true});
+    await sSet("char-creation-chat", {messages:creationMessages}, false);
+    if(finished && character && character.nome){
+      await sSet("character:"+session.email, character, true);
+      logAdminEvent("character_created", {email:session.email, name:character.nome, ancestralidade:character.ancestralidade, classe:character.classe});
+    }
+    renderCharacterSheet(character, "sheet-scroll");
+    if(finished && character && character.nome){
+      loading=false; showTyping(false); updateSendUI();
+      setTimeout(function(){ enterHub(); }, 900);
+      return;
+    }
+  }catch(err){
+    console.error(err);
+    creationMessages.push({role:"model", text:friendlyApiError(err), display:true, error:true});
+    await sSet("char-creation-chat", {messages:creationMessages}, false);
+  }finally{
+    loading=false; showTyping(false); updateSendUI(); renderCreationChat();
+  }
+}
+async function retryCreation(){
+  if(loading) return;
+  var last = creationMessages[creationMessages.length-1];
+  if(last && last.role==="model" && last.error) creationMessages.pop();
+  renderCreationChat({reset:true});
+  loading=true; updateSendUI(); showTyping(true);
+  try{
+    creationMessages = await compactMessagesIfNeeded(creationMessages, "criação de personagem");
+    await sSet("char-creation-chat", {messages:creationMessages}, false);
+    var contents=[]; var fileAttached=false;
+    for(var i=0;i<creationMessages.length;i++){
+      var m=creationMessages[i]; var parts=[];
+      if(m.role==="user" && !fileAttached && session.pdfFile && !isPdfExpired()){ parts.push({fileData:{fileUri:session.pdfFile.uri, mimeType:session.pdfFile.mimeType}}); fileAttached=true; }
+      parts.push({text:m.text}); contents.push({role:m.role, parts:parts});
+    }
+    var raw = await callGeminiRaw(buildCreationSystemPrompt(), contents);
+    var extracted = extractBlock(raw); var finished=false;
+    if(extracted.data){ if(extracted.data.personagem) character=mergeCharacter(extracted.data.personagem); if(extracted.data.fase==="pronto") finished=true; }
+    creationMessages.push({role:"model", text:extracted.clean||"(o mestre ficou em silêncio…)", display:true});
+    await sSet("char-creation-chat", {messages:creationMessages}, false);
+    renderCharacterSheet(character,"sheet-scroll");
+    if(finished && character && character.nome){ await sSet("character:"+session.email, character, true); loading=false; showTyping(false); updateSendUI(); setTimeout(function(){enterHub();},900); return; }
+  }catch(err){ creationMessages.push({role:"model", text:friendlyApiError(err), display:true, error:true}); await sSet("char-creation-chat",{messages:creationMessages},false); }
+  finally{ loading=false; showTyping(false); updateSendUI(); renderCreationChat(); }
+}
+
+/* =========================================================
+   HUB
+   ========================================================= */
+async function enterHub(){
+  el("btn-settings").classList.add("hidden");
+  showView("hub");
+  el("hub-greeting").textContent = "Olá, "+(session.name||"");
+  var cc = el("hub-char-card");
+  cc.innerHTML = '<div class="cc-avatar">'+initialsOf(character&&character.nome)+'</div><div class="cc-info"><b>'+esc(character&&character.nome||"Personagem")+'</b><span>'+esc((character&&character.ancestralidade)||"")+' '+esc((character&&character.classe)||"")+(character&&character.nivel?" · nível "+character.nivel:"")+'</span></div>';
+  el("hub-info").classList.remove("hidden");
+  el("hub-admin").classList.toggle("hidden", session.email!==ADMIN_EMAIL);
+  await refreshHubAdventures();
+  startPolling();
+  setTimeout(function(){ initAdSlot("ad-hub"); }, 300);
+}
+el("hub-new-solo").addEventListener("click", async function(){
+  var card = el("hub-new-solo");
+  if(card.dataset.busy) return;
+  card.dataset.busy="1"; card.style.opacity=".55"; card.style.pointerEvents="none";
+  try{
+    var adv = await createAdventure("solo", "Aventura Solo", []);
+    logAdminEvent("adventure_created", {id:adv.id, name:adv.name, mode:adv.mode, hostEmail:session.email});
+    await enterPlay(adv.id, adv);
+  }catch(err){
+    console.error(err);
+    alert("Não foi possível criar a aventura: "+err.message+"\n\nVerifique sua conexão e tente novamente.");
+  }finally{
+    card.style.opacity=""; card.style.pointerEvents=""; delete card.dataset.busy;
+  }
+});
+el("hub-new-group").addEventListener("click", function(){ openNewAdvModal(); });
+
+async function refreshHubAdventures(){
+  var ids = await sGet("member-adv:"+session.email, true) || [];
+  var list = [];
+  for(var i=0;i<ids.length;i++){
+    var adv = await sGet("adv:"+ids[i], true);
+    if(adv) list.push(adv);
+  }
+  // maybe-activate any lobby adventures we're part of
+  var changed=false;
+  for(var j=0;j<list.length;j++){
+    var res = maybeActivateAdventure(list[j]);
+    if(res){ await sSet("adv:"+list[j].id, res, true); list[j]=res; changed=true; }
+  }
+  list.sort(function(a,b){ return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0); });
+  var box = el("hub-adv-list");
+  if(!list.length){ box.innerHTML = '<p class="empty-hint">Você ainda não tem aventuras. Crie uma acima.</p>'; return; }
+  box.innerHTML = list.map(function(adv){
+    var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
+    var isPendingInvite = adv.status==="lobby" && mine && mine.status==="convidado";
+    var badgeCls = isPendingInvite ? "convite" : adv.status;
+    var badgeText = isPendingInvite ? "Convite" : (adv.status==="lobby"?"Aguardando":adv.status==="ativa"?"Em andamento":adv.status==="pausada"?"Pausada":"Concluída");
+    var icon = adv.mode==="grupo" ? "👥" : "🗡️";
+    return '<div class="adv-card" data-adv="'+adv.id+'"><div class="ac-icon">'+icon+'</div><div class="ac-info"><b>'+esc(adv.name)+'</b><span>'+(adv.mode==="grupo"?"Em grupo":"Solo")+' · anfitrião: '+esc(adv.hostName||"")+'</span></div><span class="status-badge '+badgeCls+'">'+badgeText+'</span></div>';
+  }).join("");
+  box.querySelectorAll("[data-adv]").forEach(function(elm){
+    elm.addEventListener("click", async function(){
+      var id = elm.getAttribute("data-adv");
+      var adv = await sGet("adv:"+id, true);
+      if(!adv) return;
+      if(adv.status==="lobby") enterLobby(id, adv);
+      else if(adv.status==="pausada"){
+        adv.status="ativa"; adv.updatedAt=Date.now();
+        await sSet("adv:"+id, adv, true);
+        logAdminEvent("adventure_resumed", {id:id, name:adv.name, byEmail:session.email});
+        enterPlay(id, adv);
+      }
+      else if(adv.status==="ativa" || adv.status==="encerrada") enterPlay(id, adv);
+      else refreshHubAdventures();
+    });
+  });
+}
+
+function maybeActivateAdventure(adv){
+  if(adv.status!=="lobby") return null;
+  var now=Date.now();
+  var allResponded = (adv.members||[]).every(function(m){ return m.status!=="convidado"; });
+  var deadlinePassed = adv.joinDeadline && now>adv.joinDeadline;
+  if(!allResponded && !deadlinePassed) return null;
+  (adv.members||[]).forEach(function(m){ if(m.status==="convidado") m.status="desistente"; });
+  var confirmed = (adv.members||[]).filter(function(m){ return m.status==="confirmado"; }).map(function(m){ return m.email; });
+  if(confirmed.length===0){ adv.status="encerrada"; }
+  else{
+    adv.status="ativa";
+    adv.scenes=[{id:"principal", nome:"Principal", memberEmails:confirmed}];
+    adv.activeSceneId="principal";
+  }
+  adv.updatedAt = now;
+  return adv;
+}
+
+async function createAdventure(mode, name, inviteEmails){
+  var id = "adv_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);
+  var now = Date.now();
+  var members = [{email:session.email, name:session.name, status:"confirmado", invitedAt:now, respondedAt:now}];
+  inviteEmails.forEach(function(em){
+    em = normEmail(em);
+    if(em && em!==session.email) members.push({email:em, name:em, status:"convidado", invitedAt:now, respondedAt:null});
+  });
+  var adv = {
+    id:id, name:name||(mode==="grupo"?"Aventura em grupo":"Aventura solo"), mode:mode,
+    hostEmail:session.email, hostName:session.name, createdAt:now, updatedAt:now,
+    status: mode==="solo" ? "ativa" : "lobby",
+    joinDeadline: mode==="grupo" ? now+JOIN_WINDOW_MS : null,
+    members: members,
+    scenes: mode==="solo" ? [{id:"principal", nome:"Principal", memberEmails:[session.email]}] : [],
+    activeSceneId: mode==="solo" ? "principal" : null
+  };
+  await sSet("adv:"+id, adv, true);
+  for(var i=0;i<members.length;i++){
+    var idx = await sGet("member-adv:"+members[i].email, true) || [];
+    if(idx.indexOf(id)===-1){ idx.push(id); await sSet("member-adv:"+members[i].email, idx, true); }
+  }
+  return adv;
+}
+
+/* new group adventure modal */
+function openNewAdvModal(){
+  el("newadv-name").value=""; el("newadv-error").classList.add("hidden");
+  el("newadv-invites").innerHTML=""; newAdvInviteCount=0; addInviteRow();
+  el("newadv-overlay").classList.remove("hidden");
+}
+el("newadv-close").addEventListener("click", function(){ el("newadv-overlay").classList.add("hidden"); });
+el("newadv-overlay").addEventListener("click", function(e){ if(e.target===el("newadv-overlay")) el("newadv-overlay").classList.add("hidden"); });
+function addInviteRow(){
+  newAdvInviteCount++;
+  var id = "inv_"+newAdvInviteCount;
+  var row = document.createElement("div");
+  row.className="invite-row"; row.id=id;
+  row.innerHTML = '<input class="text-input" type="email" placeholder="amigo@gmail.com"><button type="button" class="rm">✕</button>';
+  row.querySelector(".rm").addEventListener("click", function(){ row.remove(); });
+  el("newadv-invites").appendChild(row);
+}
+el("newadv-add-invite").addEventListener("click", addInviteRow);
+el("newadv-create").addEventListener("click", async function(){
+  var name = el("newadv-name").value.trim();
+  var errBox = el("newadv-error"); errBox.classList.add("hidden");
+  if(!name){ errBox.textContent="Dê um nome para a aventura."; errBox.classList.remove("hidden"); return; }
+  var emails = Array.from(el("newadv-invites").querySelectorAll("input")).map(function(i){ return normEmail(i.value); }).filter(Boolean);
+  var btn = el("newadv-create"); btn.disabled=true; btn.textContent="Criando…";
+  try{
+    var adv = await createAdventure("grupo", name, emails);
+    logAdminEvent("adventure_created", {id:adv.id, name:adv.name, mode:adv.mode, hostEmail:session.email});
+    el("newadv-overlay").classList.add("hidden");
+    await enterLobby(adv.id, adv);
+  }catch(err){ errBox.textContent="Erro ao criar: "+err.message; errBox.classList.remove("hidden"); }
+  finally{ btn.disabled=false; btn.textContent="Criar aventura"; }
+});
+
+/* =========================================================
+   LOBBY
+   ========================================================= */
+var lobbyTickTimer=null;
+async function enterLobby(advId, preloaded){
+  currentAdvId = advId;
+  showView("lobby");
+  await refreshLobby(preloaded);
+  if(lobbyTickTimer) clearInterval(lobbyTickTimer);
+  lobbyTickTimer = setInterval(tickLobbyCountdown, 1000);
+  setTimeout(function(){ initAdSlot("ad-lobby"); }, 300);
+}
+el("lobby-back").addEventListener("click", function(){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); currentAdv=null; enterHub(); });
+
+function tickLobbyCountdown(){
+  if(view!=="lobby" || !currentAdv || currentAdv.status!=="lobby") return;
+  var remain = (currentAdv.joinDeadline||Date.now()) - Date.now();
+  el("lobby-countdown").textContent = fmtClock(remain);
+  if(remain<=0) refreshLobby();
+}
+
+async function refreshLobby(preloaded){
+  var adv = preloaded || await sGet("adv:"+currentAdvId, true);
+  if(!adv){ return; }
+  var res = maybeActivateAdventure(adv);
+  if(res){ await sSet("adv:"+currentAdvId, res, true); adv = res; }
+  if(adv.status==="ativa"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterPlay(currentAdvId); return; }
+  if(adv.status==="encerrada"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterHub(); return; }
+
+  currentAdv = adv;
+  el("lobby-adv-name").textContent = adv.name;
+  var remain = (adv.joinDeadline||Date.now()) - Date.now();
+  el("lobby-countdown").textContent = fmtClock(remain);
+  el("lobby-roster").innerHTML = (adv.members||[]).map(function(m){
+    return '<div class="roster-row"><div class="rr-av">'+initialsOf(m.name)+'</div><div class="rr-name">'+esc(m.name||m.email)+(m.email===adv.hostEmail?" (anfitrião)":"")+'</div><span class="rr-status '+m.status+'">'+ (m.status==="confirmado"?"Confirmado":m.status==="desistente"?"Desistiu":"Aguardando") +'</span></div>';
+  }).join("");
+  var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
+  var actions = el("lobby-join-actions");
+  if(mine && mine.status==="convidado"){
+    actions.innerHTML = '<button class="primary-btn" id="lobby-join-btn">Entrar na aventura</button><button class="decline-btn" id="lobby-decline-btn">Recusar</button>';
+    el("lobby-join-btn").addEventListener("click", async function(){
+      var fresh = await sGet("adv:"+currentAdvId, true);
+      var m = (fresh.members||[]).filter(function(x){ return x.email===session.email; })[0];
+      if(m){ m.status="confirmado"; m.respondedAt=Date.now(); fresh.updatedAt=Date.now(); await sSet("adv:"+currentAdvId, fresh, true); }
+      refreshLobby();
+    });
+    el("lobby-decline-btn").addEventListener("click", async function(){
+      var fresh = await sGet("adv:"+currentAdvId, true);
+      var m = (fresh.members||[]).filter(function(x){ return x.email===session.email; })[0];
+      if(m){ m.status="desistente"; m.respondedAt=Date.now(); fresh.updatedAt=Date.now(); await sSet("adv:"+currentAdvId, fresh, true); }
+      if(lobbyTickTimer) clearInterval(lobbyTickTimer);
+      enterHub();
+    });
+  } else {
+    actions.innerHTML = '<p class="empty-hint">Aguardando os demais jogadores…</p>';
+  }
+}
+
+/* =========================================================
+   PLAY (adventure in progress)
+   ========================================================= */
+async function enterPlay(advId, preloaded){
+  currentAdvId = advId; gameMode="play";
+  var adv = preloaded || await sGet("adv:"+advId, true);
+  if(!adv){ enterHub(); return; }
+  currentAdv = adv;
+  el("game-back").classList.remove("hidden");
+  el("btn-settings").classList.toggle("hidden", adv.mode!=="solo");
+  el("game-title").textContent = adv.name;
+  el("game-subtitle").textContent = (adv.mode==="grupo" ? "Aventura em grupo" : "Aventura solo") + (adv.status==="encerrada" ? " · concluída" : "");
+  character = await sGet("character:"+session.email, true) || character;
+  await loadPartyCache();
+  currentSceneId = mySceneId(adv);
+  lastSeenMsgCount = 0;
+  showView("game");
+  renderRollLog();
+  renderCharacterSheet(character, "sheet-scroll");
+  setActiveTab("chat");
+  updateSendUI();
+  renderPdfBanner();
+  el("chat-form").classList.toggle("hidden", adv.status!=="ativa");
+  updatePlayControls(adv);
+  await refreshPlay(true);
+}
+el("game-back").addEventListener("click", function(){
+  if(gameMode==="creation"){ /* stay, creation must finish first */ return; }
+  gameMode=null; currentAdvId=null; currentAdv=null; enterHub();
+});
+
+function mySceneId(adv){
+  if(!adv || !adv.scenes || !adv.scenes.length) return currentSceneId || "principal";
+  for(var i=0;i<adv.scenes.length;i++){
+    if((adv.scenes[i].memberEmails||[]).indexOf(session.email)>=0) return adv.scenes[i].id;
+  }
+  // player not listed (stale or incomplete read) — stay where we are instead of
+  // jumping scenes, which would wipe the chat on screen
+  if(currentSceneId) return currentSceneId;
+  return adv.scenes[0].id;
+}
+var partyCacheAt = 0;
+async function loadPartyCache(force){
+  if(!currentAdv || currentAdv.mode!=="grupo"){ partyCache = {}; return; }
+  // other players' sheets change slowly — refreshing every poll cost 9 round-trips
+  if(!force && (Date.now()-partyCacheAt) < 20000) return;
+  partyCacheAt = Date.now();
+  var others = (currentAdv.members||[]).filter(function(m){
+    return m.status==="confirmado" && m.email!==session.email;
+  });
+  var results = await Promise.all(others.map(function(m){
+    return sGet("character:"+m.email, true).then(function(c){ return {email:m.email, c:c}; });
+  }));
+  var next = {};
+  results.forEach(function(r){ if(r.c) next[r.email] = r.c; });
+  partyCache = next;
+}
+
+var refreshInFlight = false;
+async function refreshPlay(force){
+  if(view!=="game" || gameMode!=="play") return;
+  if(refreshInFlight && !force) return;   // never let slow cycles pile up
+  refreshInFlight = true;
+  try{
+    await refreshPlayInner(force);
+  } finally { refreshInFlight = false; }
+}
+async function refreshPlayInner(force){
+  if(view!=="game" || gameMode!=="play") return;
+  var advP = sGet("adv:"+currentAdvId, true);
+  var charP = sGet("character:"+session.email, true);
+  var adv = await advP;
+  if(!adv) return;
+  currentAdv = adv;
+  currentSceneId = mySceneId(adv);
+  character = (await charP) || character;
+  renderCharacterSheet(character, "sheet-scroll");
+
+  var onActiveScene = adv.mode!=="grupo" || (adv.activeSceneId===currentSceneId) || !adv.activeSceneId;
+  if(!onActiveScene){
+    el("chat-scroll").classList.add("hidden");
+    el("chat-form").classList.add("hidden");
+    el("scene-wait-block").classList.remove("hidden");
+    el("timer-pill").classList.add("hidden");
+    el("skill-check-box").classList.add("hidden");
+    return;
+  }
+  el("chat-scroll").classList.remove("hidden");
+  el("chat-form").classList.toggle("hidden", adv.status!=="ativa");
+  el("scene-wait-block").classList.add("hidden");
+  updatePlayControls(adv);
+
+  var msgsP = sGet("scene-msgs:"+currentAdvId+":"+currentSceneId, true);
+  var checkP = sGet("check:"+currentAdvId+":"+currentSceneId, true);
+  var pendP = (adv.mode==="grupo") ? sGet("pending-action:"+currentAdvId+":"+currentSceneId, true) : Promise.resolve(null);
+  var sceneMsgs = (await msgsP) || [];
+  if(force || sceneMsgs.length!==lastSeenMsgCount){
+    renderPlayChat(sceneMsgs, {reset: !!force});
+    lastSeenMsgCount = sceneMsgs.length;
+  }
+  if(force && sceneMsgs.length===0 && !loading && adv.status==="ativa"){
+    var kickoff = adv.mode==="grupo"
+      ? "[Este é o início de uma aventura em grupo. Dê boas-vindas a todos os jogadores listados no elenco, apresente a cena inicial reunindo o grupo, e narre a abertura de um gancho de aventura considerando as fichas de todos.]"
+      : "[Este é o início de uma aventura solo. Dê boas-vindas ao jogador e narre a abertura de um gancho de aventura para o personagem dele, considerando a ficha atual.]";
+    sendSceneMessage(kickoff, {display:false});
+    return;
+  }
+  loadPartyCache();   // slow-moving data; refreshes in the background
+
+  renderSkillCheck(await checkP);
+
+  // pending action timer — each player's clock starts when THEY see the prompt
+  currentPending = await pendP;
+  if(currentPending){
+    var amExp = (currentPending.expectedEmails||[]).indexOf(session.email)>=0;
+    var didResp = (currentPending.respondedEmails||[]).indexOf(session.email)>=0;
+    if(amExp && !didResp){
+      currentPending.seenAt = currentPending.seenAt || {};
+      if(!currentPending.seenAt[session.email]){
+        currentPending.seenAt[session.email] = Date.now();
+        await sSet("pending-action:"+currentAdvId+":"+currentSceneId, currentPending, true);
+      }
+    }
+  }
+  renderTimerPill();
+  if(currentPending) maybeResolveTimeout(currentPending);
+}
+
+var currentPending = null;
+var lastTypingAt = 0;
+function myActionDeadline(pending){
+  if(!pending) return 0;
+  var seen = (pending.seenAt && pending.seenAt[session.email]) || pending.requestedAt || Date.now();
+  var base = seen + ACTION_WINDOW_MS;
+  // typing in the last few seconds keeps the window open a bit longer
+  if(lastTypingAt && (Date.now()-lastTypingAt) < 10000) base = Math.max(base, Date.now()+TYPING_GRACE_MS);
+  return base;
+}
+function playerDeadline(pending, email){
+  var seen = (pending.seenAt && pending.seenAt[email]) || pending.requestedAt || Date.now();
+  return seen + ACTION_WINDOW_MS;
+}
+function renderTimerPill(){
+  if(view!=="game" || gameMode!=="play"){ return; }
+  var pending = currentPending;
+  if(!pending){ el("timer-pill").classList.add("hidden"); return; }
+  var iResponded = pending.respondedEmails && pending.respondedEmails.indexOf(session.email)>=0;
+  var amExpected = pending.expectedEmails && pending.expectedEmails.indexOf(session.email)>=0;
+  if(!amExpected || iResponded){ el("timer-pill").classList.add("hidden"); return; }
+  var remain = myActionDeadline(pending) - Date.now();
+  if(remain>0){
+    el("timer-pill").classList.remove("hidden");
+    el("timer-pill").classList.toggle("calm", remain>60000);
+    el("timer-pill").innerHTML = "⏱ Responda em "+fmtClock(remain)+(remain<=60000?" — o Mestre decidirá por você se o tempo acabar":"");
+  } else {
+    el("timer-pill").classList.remove("hidden"); el("timer-pill").classList.add("calm");
+    el("timer-pill").innerHTML = "⏱ Tempo esgotado — o Mestre decidirá por você";
+  }
+}
+setInterval(function(){ if(view==="game" && gameMode==="play") renderTimerPill(); }, 1000);
+
+el("new-msg-pill").addEventListener("click", function(){
+  var scroll = el("chat-scroll");
+  scroll.scrollTop = scroll.scrollHeight;
+  hideNewMsgPill();
+});
+el("chat-scroll").addEventListener("scroll", function(){
+  var scroll = el("chat-scroll");
+  if((scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight) < 140) hideNewMsgPill();
+});
+
+/* Renders incrementally: already-visible messages are never re-created, so the
+   text the player is reading never jumps or vanishes under them. */
+var renderedMsgIds = {};
+var renderedSceneKey = null;
+function msgKeyOf(m, idx){
+  return m.id || (m.role+"|"+(m.ts||0)+"|"+(m.authorEmail||"")+"|"+idx);
+}
+function buildMsgNode(m){
+  var d = document.createElement("div");
+  if(m.kind==="system"){
+    d.className = "msg system";
+    d.innerHTML = '<div class="bubble">'+esc(m.text)+'</div>';
+    return d;
+  }
+  var mine = m.role==="user" && m.authorEmail===session.email;
+  var cls = m.role==="model" ? "gm" : (mine ? "player" : "other");
+  var who = m.role==="model" ? "Mestre" : (mine ? "Você" : (m.authorName||m.authorEmail||"Jogador"));
+  d.className = "msg "+cls+(m.error?" error":"");
+  d.innerHTML = '<span class="who">'+esc(who)+'</span><div class="bubble">'+esc(m.text)+'</div>';
+  return d;
+}
+function renderPlayChat(msgs, opts){
+  opts = opts || {};
+  var scroll = el("chat-scroll");
+  var sceneKey = currentAdvId+":"+currentSceneId;
+
+  // full reset only when switching scene/adventure — and never blank the screen
+  // just because a read came back empty
+  var hasVisible = (msgs||[]).some(function(m){ return m.display!==false; });
+  if((opts.reset || renderedSceneKey!==sceneKey) && hasVisible){
+    scroll.innerHTML = "";
+    renderedMsgIds = {};
+    renderedSceneKey = sceneKey;
+  } else if(renderedSceneKey===null && hasVisible){
+    renderedSceneKey = sceneKey;
+  }
+
+  var wasNearBottom = (scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight) < 140;
+  var typing = el("typing-indicator");
+  var appended = 0;
+
+  (msgs||[]).forEach(function(m, idx){
+    if(m.display===false) return;
+    var key = msgKeyOf(m, idx);
+    if(renderedMsgIds[key]) return;   // already on screen — leave it alone
+    renderedMsgIds[key] = true;
+    var node = buildMsgNode(m);
+    if(typing && typing.parentNode===scroll) scroll.insertBefore(node, typing);
+    else scroll.appendChild(node);
+    appended++;
+  });
+
+  if(loading) showTyping(true);
+
+  if(appended>0){
+    if(wasNearBottom || opts.reset){
+      requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+      hideNewMsgPill();
+    } else {
+      // player is reading further up — don't yank them down
+      showNewMsgPill();
+    }
+  }
+}
+function showNewMsgPill(){
+  var pill = el("new-msg-pill");
+  if(!pill) return;
+  pill.classList.remove("hidden");
+}
+function hideNewMsgPill(){
+  var pill = el("new-msg-pill");
+  if(pill) pill.classList.add("hidden");
+}
+
+/* The GM re-sends the whole sheet every turn. Never let it rewrite who the
+   character IS, never let progress go backwards, and never blank out fields
+   it simply forgot to repeat. */
+var IDENTITY_FIELDS = ["nome","ancestralidade","linhagem","antecedente","classe","aparencia","personalidade"];
+/* Derived stats only legitimately change when the character levels up (or when
+   the player edits the sheet). Otherwise the GM must repeat them unchanged. */
+var STRUCTURAL_FIELDS = ["ca","cdClasse","percepcao","deslocamento","atributos","resistencia","pericias","talentos"];
+/* The GM re-sends these lists every turn and drops items it forgot. They are
+   owned by the app and only change through explicit gained/lost deltas. */
+var APP_OWNED_LISTS = ["equipamento","magias"];
+function applyListDelta(list, gained, lost){
+  var out = (list||[]).slice();
+  (gained||[]).forEach(function(item){
+    if(!item) return;
+    var exists = out.some(function(x){ return String(x).toLowerCase()===String(item).toLowerCase(); });
+    if(!exists) out.push(item);
+  });
+  (lost||[]).forEach(function(item){
+    if(!item) return;
+    var i = out.findIndex(function(x){ return String(x).toLowerCase()===String(item).toLowerCase(); });
+    if(i>=0) out.splice(i,1);
+  });
+  return out;
+}
+/* Deep-merges the GM's sheet onto the existing one, ignoring nulls at EVERY
+   level — a nested object full of nulls (which is what mergeCharacter produces
+   for fields the GM omitted) must never wipe real values. */
+function deepApply(base, incoming){
+  if(incoming===null || incoming===undefined) return base;
+  if(Array.isArray(incoming)) return incoming;
+  if(typeof incoming!=="object") return incoming;
+  var out = (base && typeof base==="object" && !Array.isArray(base)) ? base : {};
+  Object.keys(incoming).forEach(function(k){
+    var v = incoming[k];
+    if(v===null || v===undefined) return;              // omitted → keep what we had
+    if(typeof v==="object" && !Array.isArray(v)){
+      var merged = deepApply(out[k], v);
+      // if every sub-field was null, the GM said nothing — keep the original
+      if(merged!==undefined) out[k] = merged;
+    } else {
+      out[k] = v;
+    }
+  });
+  return out;
+}
+function applyGmSheetUpdate(existing, incoming){
+  var base = existing ? JSON.parse(JSON.stringify(existing)) : JSON.parse(JSON.stringify(EMPTY_CHARACTER));
+  if(!incoming || typeof incoming!=="object") return base;
+  var updated = mergeCharacter(incoming);
+  var oldLvl = (existing && existing.nivel) || 1;
+  var newLvl = Math.max(oldLvl, updated.nivel || oldLvl);
+  var leveledUp = newLvl > oldLvl;
+
+  Object.keys(updated).forEach(function(k){
+    var v = updated[k];
+    if(v===null || v===undefined) return;
+    if(Array.isArray(v)){
+      // an empty array only counts as a real change for conditions (being cured)
+      if(v.length===0 && Array.isArray(base[k]) && base[k].length>0 && k!=="condicoes") return;
+      base[k] = v;
+      return;
+    }
+    if(typeof v==="object"){ base[k] = deepApply(base[k], v); return; }
+    base[k] = v;
+  });
+
+  // identity is set at character creation and is not the GM's to change
+  IDENTITY_FIELDS.forEach(function(f){
+    if(existing && existing[f]) base[f] = existing[f];
+  });
+
+  // inventory and spells only change through explicit deltas, never wholesale
+  APP_OWNED_LISTS.forEach(function(f){
+    base[f] = (existing && Array.isArray(existing[f])) ? existing[f].slice() : (Array.isArray(base[f]) ? base[f] : []);
+  });
+
+  // structural stats are frozen unless the character actually leveled up
+  if(existing && !leveledUp){
+    STRUCTURAL_FIELDS.forEach(function(f){
+      if(existing[f]!==null && existing[f]!==undefined) base[f] = JSON.parse(JSON.stringify(existing[f]));
+    });
+    // max HP is structural too; current HP is not
+    if(existing.pontosVida && typeof existing.pontosVida.maximo==="number"){
+      base.pontosVida = base.pontosVida || {};
+      base.pontosVida.maximo = existing.pontosVida.maximo;
+    }
+  }
+
+  // progress never goes backwards. XP itself is app-owned (see applyXpDelta):
+  // the GM's absolute value is only accepted when it is higher than ours.
+  var oldXp = (existing && typeof existing.experiencia==="number") ? existing.experiencia : 0;
+  base.experiencia = oldXp;
+  base.nivel = newLvl;
+
+  // HP must stay within the character's own maximum
+  if(base.pontosVida){
+    var max = base.pontosVida.maximo;
+    if(typeof max==="number" && typeof base.pontosVida.atual==="number"){
+      base.pontosVida.atual = Math.max(0, Math.min(base.pontosVida.atual, max));
+    }
+  }
+  return base;
+}
+
+async function acquireLock(key){
+  var existing = await sGet(key, true);
+  var now = Date.now();
+  if(existing && (now-existing.lockedAt)<LOCK_TTL_MS) return false;
+  await sSet(key, {lockedBy:session.email, lockedAt:now}, true);
+  return true;
+}
+
+/* Appends a message without losing concurrent writes from other players.
+   Re-reads, merges by unique id and verifies the write actually landed. */
+function newMsgId(){ return Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9); }
+function mergeMsgLists(a, b){
+  var seen = {}, out = [];
+  (a||[]).concat(b||[]).forEach(function(m){
+    var k = m.id || (m.role+"|"+m.ts+"|"+(m.authorEmail||"")+"|"+(m.text||"").slice(0,80));
+    if(seen[k]) return;
+    seen[k] = true; out.push(m);
+  });
+  out.sort(function(x,y){ return (x.ts||0)-(y.ts||0); });
+  return out;
+}
+var appendQueues = {};   // key -> promise chain, so writes never interleave
+async function appendSceneMessages(advId, sceneId, newMsgs){
+  var key = "scene-msgs:"+advId+":"+sceneId;
+  newMsgs.forEach(function(m){ if(!m.id) m.id = newMsgId(); if(!m.ts) m.ts = Date.now(); });
+
+  var prev = appendQueues[key] || Promise.resolve();
+  var run = prev.then(function(){ return doAppend(key, advId, sceneId, newMsgs); },
+                      function(){ return doAppend(key, advId, sceneId, newMsgs); });
+  appendQueues[key] = run.catch(function(){});
+  return run;
+}
+async function doAppend(key, advId, sceneId, newMsgs){
+  cacheInvalidate(key);                       // always merge onto the freshest copy
+  var current = await sGet(key, true) || [];
+  var merged = mergeMsgLists(current, newMsgs);
+  if(merged.length>200) merged = merged.slice(merged.length-200);
+  await sSet(key, merged, true);              // cached instantly; remote write in background
+  // Reconcile later in case another device wrote at the same moment.
+  setTimeout(function(){
+    cacheInvalidate(key);
+    sGet(key, true).then(function(remote){
+      if(!remote) return;
+      var reconciled = mergeMsgLists(remote, merged);
+      if(reconciled.length!==remote.length) sSet(key, reconciled, true);
+      if(view==="game" && gameMode==="play" && currentAdvId===advId && currentSceneId===sceneId){
+        renderPlayChat(reconciled);
+        lastSeenMsgCount = reconciled.length;
+      }
+    }).catch(function(){});
+  }, 3000);
+  return merged;
+}
+async function releaseLock(key){ await sDel(key, true); }
+
+async function sendSceneMessage(text, opts){
+  opts=opts||{}; var display = opts.display!==false;
+  if(loading) return; text=(text||"").trim(); if(!text) return;
+  var advId=currentAdvId, sceneId=currentSceneId;
+  var msgs = await appendSceneMessages(advId, sceneId, [
+    {role:"user", authorEmail:session.email, authorName:session.name, text:text, ts:Date.now(), display:display}
+  ]);
+
+  // mark responded on pending action if applicable
+  var pendKey = "pending-action:"+advId+":"+sceneId;
+  var pending = await sGet(pendKey, true);
+  if(pending && pending.expectedEmails && pending.expectedEmails.indexOf(session.email)>=0){
+    if(!pending.respondedEmails) pending.respondedEmails=[];
+    if(pending.respondedEmails.indexOf(session.email)===-1) pending.respondedEmails.push(session.email);
+    if(pending.respondedEmails.length>=pending.expectedEmails.length){ await sDel(pendKey, true); }
+    else await sSet(pendKey, pending, true);
+  }
+
+  renderPlayChat(msgs); lastSeenMsgCount=msgs.length;
+  loading=true; updateSendUI(); showTyping(true);
+  try{
+    await runGmTurn(advId, sceneId);
+  }catch(err){
+    console.error(err);
+    var msgs2 = await appendSceneMessages(advId, sceneId, [{role:"model", text:friendlyApiError(err), ts:Date.now(), display:true, error:true}]);
+    renderPlayChat(msgs2); lastSeenMsgCount=msgs2.length;
+  }finally{ loading=false; showTyping(false); updateSendUI(); }
+}
+
+async function runGmTurn(advId, sceneId){
+  var lockKey = "gm-lock:"+advId+":"+sceneId;
+  var got = await acquireLock(lockKey);
+  if(!got) return; // someone else is already generating
+  try{
+    var adv = await sGet("adv:"+advId, true) || currentAdv;
+    if(!adv){ await releaseLock(lockKey); throw new Error("Não encontrei os dados desta aventura. Volte ao início e abra a aventura novamente."); }
+    if(!adv.members) adv.members = [{email:session.email, name:session.name, status:"confirmado"}];
+    var msgs = await sGet("scene-msgs:"+advId+":"+sceneId, true) || [];
+    if(msgs.length && msgs[msgs.length-1].role==="model"){ await releaseLock(lockKey); return; }
+
+    var compacted = await compactMessagesIfNeeded(msgs, "aventura");
+    if(compacted!==msgs){ msgs = compacted; await sSet("scene-msgs:"+advId+":"+sceneId, msgs, true); }
+
+    var rosterText = (adv.members||[]).filter(function(m){ return m.status==="confirmado"; })
+      .map(function(m){ return "- "+m.name+" <"+m.email+">"; }).join("\n");
+    var allowPdf = adv.mode==="solo";
+    var sheetsByEmail = {};
+    var memberList = (adv.members||[]).filter(function(m){ return m.status==="confirmado"; });
+    if(!memberList.length) memberList = [{email:session.email, name:session.name}];
+    var loaded = await Promise.all(memberList.map(function(m){
+      return sGet("character:"+m.email, true).then(function(c){ return {email:m.email, c:c}; });
+    }));
+    loaded.forEach(function(r){ sheetsByEmail[r.email] = r.c; });
+    var sys = buildAdvSystemPrompt(adv.mode, rosterText, allowPdf, buildSheetsBlock(adv, sheetsByEmail));
+
+    var contents=[]; var fileAttached=false;
+    for(var i=0;i<msgs.length;i++){
+      var m = msgs[i]; if(m.kind==="system"&&m.role!=="user") continue;
+      var role = m.role==="model" ? "model" : "user";
+      var text = m.text;
+      if(role==="user" && adv.mode==="grupo" && m.authorName) text = m.authorName+": "+text;
+      var parts=[];
+      if(role==="user" && !fileAttached && allowPdf && session.pdfFile && !isPdfExpired()){ parts.push({fileData:{fileUri:session.pdfFile.uri, mimeType:session.pdfFile.mimeType}}); fileAttached=true; }
+      parts.push({text:text});
+      contents.push({role:role, parts:parts});
+    }
+
+    var raw = await callGeminiRaw(sys, contents);
+    var extracted = extractBlock(raw);
+    var data = extracted.data;
+
+    msgs = await appendSceneMessages(advId, sceneId, [{role:"model", text:extracted.clean||"(o mestre ficou em silêncio…)", ts:Date.now(), display:true}]);
+    lastSeenMsgCount = msgs.length;
+    renderPlayChat(msgs);
+
+    if(data){
+      if(data.xpConcedido && Array.isArray(data.xpConcedido) && data.xpConcedido.length){
+        var mineXp = data.xpConcedido.filter(function(x){ return normEmail(x.email)===session.email; })[0];
+        if(mineXp && mineXp.quantidade) showXpToast(mineXp.quantidade, mineXp.motivo);
+      }
+      if(Object.prototype.hasOwnProperty.call(data, "testeSolicitado")){
+        await sSet("check:"+advId+":"+sceneId, data.testeSolicitado || null, true);
+      }
+      if(data.fichas){
+        var validMembers = (adv.members||[]).filter(function(mm){ return mm.status==="confirmado"; }).map(function(mm){ return normEmail(mm.email); });
+        for(var em in data.fichas){
+          if(Object.prototype.hasOwnProperty.call(data.fichas, em)){
+            var target = normEmail(em);
+            // only ever touch sheets of real, confirmed players in this adventure
+            if(validMembers.indexOf(target)===-1) continue;
+            var existingSheet = await sGet("character:"+target, true);
+            var updatedSheet = applyGmSheetUpdate(existingSheet, data.fichas[em]);
+            // apply explicit inventory/spell changes for this player
+            function deltaFor(listName, key){
+              var entry = (data[key]||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
+              return entry ? (entry[listName]||[]) : [];
+            }
+            updatedSheet.equipamento = applyListDelta(updatedSheet.equipamento,
+              deltaFor("itens","itensGanhos"), deltaFor("itens","itensPerdidos"));
+            updatedSheet.magias = applyListDelta(updatedSheet.magias,
+              deltaFor("magias","magiasAprendidas"), deltaFor("magias","magiasPerdidas"));
+            // XP is accumulated by the app from this turn's award, so repeated
+            // absolute values from the GM can never stall or reset progress
+            var xpEntry = (data.xpConcedido||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
+            var gained = (xpEntry && typeof xpEntry.quantidade==="number" && xpEntry.quantidade>0) ? xpEntry.quantidade : 0;
+            var priorXp = (existingSheet && typeof existingSheet.experiencia==="number") ? existingSheet.experiencia : 0;
+            updatedSheet.experiencia = priorXp + gained;
+            var earnedLevel = Math.floor(updatedSheet.experiencia / XP_PER_LEVEL) + 1;
+            updatedSheet.nivel = Math.max(updatedSheet.nivel || 1, earnedLevel);
+            await sSet("character:"+target, updatedSheet, true);
+          }
+        }
+        character = await sGet("character:"+session.email, true) || character;
+        renderCharacterSheet(character, "sheet-scroll");
+        await loadPartyCache();
+      }
+      var freshAdv = await sGet("adv:"+advId, true) || adv;
+      var advChanged=false;
+      if(adv.mode==="grupo" && data.cenas && Array.isArray(data.cenas) && data.cenas.length){
+        var allConfirmed = (freshAdv.members||[]).filter(function(mm){return mm.status==="confirmado";}).map(function(mm){return mm.email;});
+        var normalized = data.cenas.map(function(sc, idx){
+          return {
+            id: sc.id || ("cena"+(idx+1)),
+            nome: sc.nome || sc.id || ("Cena "+(idx+1)),
+            memberEmails: (sc.membros || sc.memberEmails || []).map(normEmail)
+          };
+        });
+        var covered = [];
+        normalized.forEach(function(sc){ sc.memberEmails.forEach(function(em2){ covered.push(em2); }); });
+        var orphans = allConfirmed.filter(function(em3){ return covered.indexOf(em3)===-1; });
+        if(orphans.length) normalized[0].memberEmails = normalized[0].memberEmails.concat(orphans);
+        freshAdv.scenes = normalized;
+        advChanged = true;
+      }
+      if(adv.mode==="grupo" && data.cenaAtiva){ freshAdv.activeSceneId = data.cenaAtiva; advChanged = true; }
+      if(advChanged){ freshAdv.updatedAt = Date.now(); await sSet("adv:"+advId, freshAdv, true); currentAdv = freshAdv; }
+
+      if(adv.mode==="grupo"){
+        var expectedRaw = (data.jogadoresEsperados||[]).map(normEmail);
+        var sceneNow = (freshAdv.scenes||[]).filter(function(sc){ return sc.id===(freshAdv.activeSceneId||sceneId); })[0];
+        var sceneMemberCount = sceneNow ? sceneNow.memberEmails.length : 1;
+        if(data.aguardandoAcao && expectedRaw.length && sceneMemberCount>1){
+          await sSet("pending-action:"+advId+":"+(freshAdv.activeSceneId||sceneId), {
+            requestedAt:Date.now(), deadline:Date.now()+ACTION_WINDOW_MS, expectedEmails:expectedRaw, respondedEmails:[]
+          }, true);
+        } else {
+          await sDel("pending-action:"+advId+":"+(freshAdv.activeSceneId||sceneId), true);
+        }
+      }
+    }
+  } finally {
+    await releaseLock(lockKey);
+  }
+}
+
+async function maybeResolveTimeout(pending){
+  var advId=currentAdvId, sceneId=currentSceneId;
+  // don't cut anyone off early: only resolve when EVERY pending player's own clock ran out
+  var stillWaiting = (pending.expectedEmails||[]).filter(function(em){
+    return (pending.respondedEmails||[]).indexOf(em)===-1 && Date.now() < playerDeadline(pending, em);
+  });
+  if(stillWaiting.length) return;
+  if(loading) return;
+  var lockKey = "gm-lock:"+advId+":"+sceneId;
+  var got = await acquireLock(lockKey);
+  if(!got) return;
+  try{
+    var fresh = await sGet("pending-action:"+advId+":"+sceneId, true);
+    if(!fresh || fresh.requestedAt!==pending.requestedAt) { await releaseLock(lockKey); return; }
+    var stillWaiting2 = (fresh.expectedEmails||[]).filter(function(em){
+      return (fresh.respondedEmails||[]).indexOf(em)===-1 && Date.now() < playerDeadline(fresh, em);
+    });
+    if(stillWaiting2.length){ await releaseLock(lockKey); return; }
+    var missing = (fresh.expectedEmails||[]).filter(function(em){ return (fresh.respondedEmails||[]).indexOf(em)===-1; });
+    await releaseLock(lockKey);
+    if(!missing.length){ await sDel("pending-action:"+advId+":"+sceneId, true); return; }
+    var names = missing.map(function(em){ return (partyCache[em]&&partyCache[em].nome) || em; }).join(", ");
+    await sDel("pending-action:"+advId+":"+sceneId, true);
+    currentPending = null;
+    loading=true; updateSendUI(); showTyping(true);
+    await appendSceneMessages(advId, sceneId, [{role:"user", text:"[Os seguintes jogadores não responderam a tempo: "+names+". Escolha e narre uma ação razoável para cada um deles com base em sua ficha e na situação atual, e continue a cena.]", ts:Date.now(), display:false, kind:"system"}]);
+    await runGmTurn(advId, sceneId);
+    loading=false; showTyping(false); updateSendUI();
+  }catch(e){ await releaseLock(lockKey); loading=false; showTyping(false); updateSendUI(); }
+}
+
+/* =========================================================
+   SHARED CHAT FORM / TYPING / SEND DISPATCH
+   ========================================================= */
+function showXpToast(amount, motivo){
+  var scroll = el("chat-scroll");
+  if(!scroll) return;
+  var d = document.createElement("div");
+  d.className = "xp-toast";
+  d.innerHTML = "✨ +"+esc(amount)+" XP"+(motivo? " · "+esc(motivo):"");
+  scroll.appendChild(d);
+  requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+  setTimeout(function(){ if(d.parentNode) d.remove(); }, 9000);
+}
+
+function showTyping(on){
+  var existing = el("typing-indicator");
+  if(on){
+    if(existing) return;
+    var d = document.createElement("div"); d.className="typing"; d.id="typing-indicator";
+    d.innerHTML="<span></span><span></span><span></span>";
+    el("chat-scroll").appendChild(d);
+    var scroll = el("chat-scroll");
+    requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+  } else { if(existing) existing.remove(); }
+}
+function updateSendUI(){ el("chat-send").disabled = loading; el("chat-input").disabled = loading; }
+function renderPdfBanner(){
+  var b = el("pdf-banner");
+  var allow = gameMode==="creation" || (currentAdv && currentAdv.mode==="solo");
+  if(!allow){ b.classList.add("hidden"); return; }
+  if(!session.pdfFile){
+    b.classList.remove("hidden");
+    b.innerHTML = "📖 Sem livro de regras anexado — o Mestre usa conhecimento geral de Pathfinder 2E. <a href=\"#\" id=\"banner-open-settings\">Anexar PDF</a>";
+    var lnk=el("banner-open-settings"); if(lnk) lnk.addEventListener("click", function(e){ e.preventDefault(); openSettings(); });
+  } else if(isPdfExpired()){
+    b.classList.remove("hidden");
+    b.innerHTML = "⏳ O livro anexado expirou (validade de 48h). <a href=\"#\" id=\"banner-open-settings\">Reenviar</a>";
+    var lnk2=el("banner-open-settings"); if(lnk2) lnk2.addEventListener("click", function(e){ e.preventDefault(); openSettings(); });
+  } else b.classList.add("hidden");
+}
+
+var chatInput = el("chat-input");
+chatInput.addEventListener("input", function(){ lastTypingAt = Date.now(); chatInput.style.height="auto"; chatInput.style.height=Math.min(130,chatInput.scrollHeight)+"px"; });
+chatInput.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); el("chat-form").dispatchEvent(new Event("submit",{cancelable:true})); } });
+el("chat-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  var text = chatInput.value.trim();
+  if(!text || loading) return;
+  chatInput.value=""; chatInput.style.height="auto";
+  el("skill-check-box").classList.add("hidden"); pendingCheck=null;
+  if(gameMode==="creation") sendCreationMessage(text, {display:true});
+  else sendSceneMessage(text, {display:true});
+});
+
+/* =========================================================
+   SHEET EDITOR
+   ========================================================= */
+el("btn-edit-sheet").addEventListener("click", function(){
+  el("editor-textarea").value = JSON.stringify(character, null, 2);
+  el("editor-error").classList.add("hidden");
+  el("sheet-editor-modal").classList.remove("hidden");
+});
+el("editor-close").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
+el("editor-cancel").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
+el("sheet-editor-modal").addEventListener("click", function(e){ if(e.target===el("sheet-editor-modal")) el("sheet-editor-modal").classList.add("hidden"); });
+el("editor-save").addEventListener("click", async function(){
+  var errBox = el("editor-error"); var parsed;
+  try{ parsed = JSON.parse(el("editor-textarea").value); }catch(e){ errBox.textContent="JSON inválido: "+e.message; errBox.classList.remove("hidden"); return; }
+  character = mergeCharacter(parsed);
+  if(gameMode==="play") await sSet("character:"+session.email, character, true);
+  renderCharacterSheet(character, "sheet-scroll");
+  el("sheet-editor-modal").classList.add("hidden");
+  var note = "[Nota do sistema: o jogador "+(session.name||"")+" ajustou a ficha manualmente. Dados atuais: "+JSON.stringify(character)+". Considere isso correto a partir de agora, sem re-explicar a ficha inteira.]";
+  if(gameMode==="creation") sendCreationMessage(note, {display:false});
+  else sendSceneMessage(note, {display:false});
+});
+
+/* =========================================================
+   SETTINGS MODAL (PDF, solo only)
+   ========================================================= */
+function wireFileZone(zoneId, inputId, removeId, onFile, onRemove){
+  var zone=el(zoneId), input=el(inputId);
+  zone.addEventListener("click", function(){ input.click(); });
+  zone.addEventListener("dragover", function(e){ e.preventDefault(); zone.classList.add("drag"); });
+  zone.addEventListener("dragleave", function(){ zone.classList.remove("drag"); });
+  zone.addEventListener("drop", function(e){ e.preventDefault(); zone.classList.remove("drag"); if(e.dataTransfer.files&&e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]); });
+  input.addEventListener("change", function(){ if(input.files&&input.files[0]) onFile(input.files[0]); });
+  el(removeId).addEventListener("click", onRemove);
+}
+function showFileRow(rowId,zoneId,nameId,statusId,name,status){ el(zoneId).classList.add("hidden"); el(rowId).classList.remove("hidden"); el(nameId).textContent=name; el(statusId).textContent=status; }
+function hideFileRow(rowId,zoneId){ el(rowId).classList.add("hidden"); el(zoneId).classList.remove("hidden"); }
+
+function openSettings(){
+  pendingSettingsFile=null;
+  if(session.pdfFile) showFileRow("s-file-row","s-dropzone","s-fi-name","s-fi-status", session.pdfFile.displayName, isPdfExpired()?"Expirado — envie novamente":"Anexado e ativo");
+  else hideFileRow("s-file-row","s-dropzone");
+  el("settings-error").classList.add("hidden");
+  el("settings-overlay").classList.remove("hidden");
+}
+el("btn-settings").addEventListener("click", openSettings);
+el("settings-close").addEventListener("click", function(){ el("settings-overlay").classList.add("hidden"); });
+el("settings-overlay").addEventListener("click", function(e){ if(e.target===el("settings-overlay")) el("settings-overlay").classList.add("hidden"); });
+wireFileZone("s-dropzone","s-pdf-input","s-fi-remove",
+  function(file){ pendingSettingsFile=file; showFileRow("s-file-row","s-dropzone","s-fi-name","s-fi-status", file.name, fmtBytes(file.size)+" — será enviado ao salvar"); },
+  function(){ pendingSettingsFile=null; session.pdfFile=null; hideFileRow("s-file-row","s-dropzone"); });
+el("settings-save").addEventListener("click", async function(){
+  var errBox=el("settings-error"); errBox.classList.add("hidden");
+  if(pendingSettingsFile){
+    var btn=el("settings-save"); btn.disabled=true; btn.textContent="Enviando…";
+    el("s-fi-progress-track").classList.remove("hidden");
+    try{
+      var info = await uploadPdfToGemini(session.apiKey, pendingSettingsFile, function(frac){
+        el("s-fi-progress-fill").style.width=Math.round(frac*100)+"%";
+        el("s-fi-status").textContent="Enviando… "+Math.round(frac*100)+"%";
+      });
+      session.pdfFile=info; pendingSettingsFile=null;
+    }catch(err){ errBox.textContent="Não foi possível enviar o PDF: "+err.message; errBox.classList.remove("hidden"); }
+    btn.disabled=false; btn.textContent="Salvar";
+  }
+  renderPdfBanner();
+  el("settings-overlay").classList.add("hidden");
+});
+
+/* =========================================================
+   TABS (mobile) / DICE (mostly unchanged)
+   ========================================================= */
+function setActiveTab(tab){
+  document.querySelectorAll("#tabbar button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab")===tab); });
+  document.querySelectorAll("#layout .panel").forEach(function(p){ p.classList.remove("tab-active"); });
+  var map={sheet:"sheet-panel",chat:"chat-panel",dice:"dice-panel"};
+  el(map[tab]).classList.add("tab-active");
+}
+document.querySelectorAll("#tabbar button").forEach(function(b){ b.addEventListener("click", function(){ setActiveTab(b.getAttribute("data-tab")); }); });
+
+function rollOne(sides){ var arr=new Uint32Array(1); crypto.getRandomValues(arr); return (arr[0]%sides)+1; }
+var localDiceHistory=[];
+function renderRollLog(){
+  var box=el("roll-log");
+  if(!localDiceHistory.length){ box.innerHTML='<div class="empty-log">Nenhuma rolagem ainda. Elas aparecem aqui quando o Mestre pedir um teste.</div>'; return; }
+  box.innerHTML = localDiceHistory.map(function(entry){
+    var modStr = entry.modifier===0?"":(entry.modifier>0?" +"+entry.modifier:" "+entry.modifier);
+    var formula = entry.qty+"d"+entry.sides+modStr;
+    return '<div class="roll-entry"><span class="re-formula">'+formula+'</span><span class="re-label">'+(entry.label?esc(entry.label):"")+'</span><span class="re-total">'+entry.total+'</span></div>';
+  }).join("");
+}
+
+/* =========================================================
+   POLLING
+   ========================================================= */
+function startPolling(){
+  if(pollTimer) return;
+  pollTimer = setInterval(pollTick, POLL_MS);
+}
+async function pollTick(){
+  try{
+    if(view==="hub") await refreshHubAdventures();
+    else if(view==="lobby") await refreshLobby();
+    else if(view==="game" && gameMode==="play") await refreshPlay(false);
+  }catch(e){ console.warn("poll error", e); }
+}
+
+/* =========================================================
+   ADSENSE
+   Ads are only pushed once per slot, never inside the chat or
+   the character sheet, and never block the app if blocked/offline.
+   ========================================================= */
+var adsPushed = {};
+function initAdSlot(slotId){
+  try{
+    if(adsPushed[slotId]) return;
+    var box = el(slotId);
+    if(!box) return;
+    var ins = box.querySelector("ins.adsbygoogle");
+    if(!ins) return;
+    if(!ins.getAttribute("data-ad-slot")){
+      // No slot ID configured yet — keep the placeholder hidden instead of
+      // showing an empty "Publicidade" label to the player.
+      box.classList.add("empty");
+      return;
+    }
+    if(box.offsetWidth < 200) return; // AdSense needs a measurable width
+    adsPushed[slotId] = true;
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  }catch(e){ console.warn("AdSense indisponível:", e); }
+}
+
+/* =========================================================
+   INFO MODAL
+   ========================================================= */
+function openInfo(){ el("info-overlay").classList.remove("hidden"); }
+el("open-info-auth").addEventListener("click", openInfo);
+el("hub-info").addEventListener("click", openInfo);
+el("info-close").addEventListener("click", function(){ el("info-overlay").classList.add("hidden"); });
+el("info-overlay").addEventListener("click", function(e){ if(e.target===el("info-overlay")) el("info-overlay").classList.add("hidden"); });
+
+/* =========================================================
+   ADMIN DASHBOARD + GOOGLE SHEETS EVENT LOG
+   ========================================================= */
+async function loadAdminConfig(){
+  adminConfig = await sGet("admin-config", true) || {};
+  return adminConfig;
+}
+function logAdminEvent(type, data){
+  if(!adminConfig || !adminConfig.sheetsWebhookUrl) return;
+  try{
+    fetch(adminConfig.sheetsWebhookUrl, {
+      method:"POST", mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify({type:type, data:Object.assign({ts:new Date().toISOString()}, data)})
+    }).catch(function(){});
+  }catch(e){ /* best-effort, never block the app on this */ }
+}
+
+async function openAdmin(){
+  el("admin-overlay").classList.remove("hidden");
+  el("admin-body").innerHTML = '<p class="modal-note">Carregando dados…</p>';
+  await loadAdminConfig();
+  try{
+    var userKeys = await sList("pub:", true);
+    var advKeys = await sList("adv:", true);
+    var users = (await Promise.all(userKeys.map(function(k){ return sGet(k, true); }))).filter(Boolean);
+    var advs = (await Promise.all(advKeys.map(function(k){ return sGet(k, true); }))).filter(Boolean);
+    users.sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+    advs.sort(function(a,b){ return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0); });
+
+    var solo = advs.filter(function(a){ return a.mode==="solo"; }).length;
+    var grupo = advs.filter(function(a){ return a.mode==="grupo"; }).length;
+    var ativa = advs.filter(function(a){ return a.status==="ativa"; }).length;
+    var lobby = advs.filter(function(a){ return a.status==="lobby"; }).length;
+    var encerrada = advs.filter(function(a){ return a.status==="encerrada"; }).length;
+
+    var html = "";
+    html += '<div class="stat-strip" style="grid-template-columns:repeat(4,1fr);margin-top:0;">'+
+      '<div class="stat-box" style="background:var(--void-3);border-color:var(--line);"><div class="v" style="color:var(--text-hi)">'+users.length+'</div><div class="l" style="color:var(--text-faint)">Usuários</div></div>'+
+      '<div class="stat-box" style="background:var(--void-3);border-color:var(--line);"><div class="v" style="color:var(--text-hi)">'+advs.length+'</div><div class="l" style="color:var(--text-faint)">Aventuras</div></div>'+
+      '<div class="stat-box" style="background:var(--void-3);border-color:var(--line);"><div class="v" style="color:var(--text-hi)">'+ativa+'</div><div class="l" style="color:var(--text-faint)">Em andamento</div></div>'+
+      '<div class="stat-box" style="background:var(--void-3);border-color:var(--line);"><div class="v" style="color:var(--text-hi)">'+lobby+'</div><div class="l" style="color:var(--text-faint)">Em lobby</div></div>'+
+      '</div>';
+    html += '<p class="modal-note" style="margin-top:10px;">'+solo+' solo · '+grupo+' em grupo · '+encerrada+' encerradas</p>';
+
+    html += '<div class="info-section" style="margin-top:18px;"><h4>Usuários ('+users.length+')</h4>';
+    if(!users.length) html += '<p class="modal-note">Nenhum usuário cadastrado ainda.</p>';
+    else{
+      html += '<div style="max-height:220px;overflow-y:auto;">';
+      users.forEach(function(u){
+        html += '<div class="party-row" style="border-color:var(--line-soft);"><span class="pv" style="background:var(--arcane);"></span><span class="pn"><b style="color:var(--text-hi)">'+esc(u.name||u.email)+'</b><span style="color:var(--text-faint)">'+esc(u.email)+'</span></span><span class="php" style="color:var(--text-faint)">'+(u.createdAt? new Date(u.createdAt).toLocaleDateString("pt-BR"):"—")+'</span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="info-section"><h4>Aventuras ('+advs.length+')</h4>';
+    if(!advs.length) html += '<p class="modal-note">Nenhuma aventura criada ainda.</p>';
+    else{
+      html += '<div style="max-height:260px;overflow-y:auto;">';
+      advs.forEach(function(a){
+        var confirmed = (a.members||[]).filter(function(m){return m.status==="confirmado";}).length;
+        html += '<div class="party-row" style="border-color:var(--line-soft);"><span class="pv" style="background:'+(a.mode==="grupo"?"var(--brass)":"var(--arcane)")+';"></span><span class="pn"><b style="color:var(--text-hi)">'+esc(a.name)+'</b><span style="color:var(--text-faint)">'+(a.mode==="grupo"?"Grupo":"Solo")+' · '+esc(a.hostName||a.hostEmail)+' · '+confirmed+' membro(s)</span></span><span class="php status-badge '+esc(a.status)+'" style="position:static;">'+esc(a.status)+'</span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="info-section"><h4>📊 Exportar eventos para Google Sheets</h4>'+
+      '<p class="note" style="margin-bottom:10px;">Opcional: cole aqui a URL do seu Web App do Google Apps Script para registrar cadastros, personagens e aventuras criadas numa planilha. O painel acima já funciona sem isso — a planilha é só um registro externo complementar.</p>'+
+      '<div class="input-with-btn"><input id="admin-sheets-url" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(adminConfig.sheetsWebhookUrl||"")+'"><button type="button" class="ghost-btn" id="admin-sheets-save">Salvar</button></div>'+
+      '<p class="hint" id="admin-sheets-status">'+(adminConfig.sheetsWebhookUrl? "Configurado." : "Ainda não configurado.")+'</p>'+
+      '</div>';
+
+    el("admin-body").innerHTML = html;
+    var saveBtn = el("admin-sheets-save");
+    if(saveBtn) saveBtn.addEventListener("click", async function(){
+      var url = el("admin-sheets-url").value.trim();
+      adminConfig = adminConfig || {}; adminConfig.sheetsWebhookUrl = url;
+      await sSet("admin-config", adminConfig, true);
+      el("admin-sheets-status").textContent = url ? "Salvo." : "Removido.";
+    });
+  }catch(err){
+    el("admin-body").innerHTML = '<p class="card-error">Erro ao carregar: '+esc(err.message)+'</p>';
+  }
+}
+el("hub-admin").addEventListener("click", openAdmin);
+el("admin-close").addEventListener("click", function(){ el("admin-overlay").classList.add("hidden"); });
+el("admin-overlay").addEventListener("click", function(e){ if(e.target===el("admin-overlay")) el("admin-overlay").classList.add("hidden"); });
+
+/* =========================================================
+   PAUSE / FINISH / EXPORT SCREENPLAY
+   ========================================================= */
+function updatePlayControls(adv){
+  var isPlay = gameMode==="play" && adv;
+  el("btn-pause").classList.toggle("hidden", !(isPlay && adv.status==="ativa"));
+  el("btn-finish").classList.toggle("hidden", !(isPlay && adv.status==="ativa"));
+  el("btn-export").classList.toggle("hidden", !(isPlay && adv.status==="encerrada"));
+  if(isPlay && adv.status!=="ativa"){
+    el("chat-form").classList.add("hidden");
+  }
+}
+el("btn-pause").addEventListener("click", async function(){
+  if(!currentAdv) return;
+  var fresh = await sGet("adv:"+currentAdvId, true) || currentAdv;
+  fresh.status = "pausada"; fresh.updatedAt = Date.now();
+  await sSet("adv:"+currentAdvId, fresh, true);
+  logAdminEvent("adventure_paused", {id:currentAdvId, name:fresh.name, byEmail:session.email});
+  currentAdv = fresh;
+  gameMode=null; currentAdvId=null; currentAdv=null;
+  enterHub();
+});
+el("btn-finish").addEventListener("click", async function(){
+  if(!currentAdv) return;
+  if(!confirm("Concluir esta aventura? Ela deixa de aceitar novas ações, mas continua disponível para leitura e exportação do roteiro.")) return;
+  var fresh = await sGet("adv:"+currentAdvId, true) || currentAdv;
+  fresh.status = "encerrada"; fresh.finishedAt = Date.now(); fresh.updatedAt = Date.now();
+  await sSet("adv:"+currentAdvId, fresh, true);
+  logAdminEvent("adventure_finished", {id:currentAdvId, name:fresh.name, byEmail:session.email});
+  currentAdv = fresh;
+  updatePlayControls(fresh);
+  el("chat-form").classList.add("hidden");
+  alert("Aventura concluída! Use o botão de exportar (↓) para gerar o roteiro.");
+});
+
+async function gatherAdventureTranscript(advId, adv){
+  var lines = [];
+  var scenes = (adv.scenes && adv.scenes.length) ? adv.scenes : [{id:"principal", nome:"Principal"}];
+  for(var i=0;i<scenes.length;i++){
+    var msgs = await sGet("scene-msgs:"+advId+":"+scenes[i].id, true) || [];
+    if(!msgs.length) continue;
+    if(scenes.length>1) lines.push("=== CENA: "+(scenes[i].nome||scenes[i].id)+" ===");
+    msgs.forEach(function(m){
+      if(m.display===false) return;
+      var who = m.role==="model" ? "MESTRE" : (m.authorName||"JOGADOR").toUpperCase();
+      lines.push(who+": "+m.text);
+    });
+  }
+  return lines.join("\n\n");
+}
+
+el("btn-export").addEventListener("click", async function(){
+  if(!currentAdv) return;
+  var btn = el("btn-export");
+  btn.disabled = true;
+  var original = btn.innerHTML;
+  btn.innerHTML = "…";
+  try{
+    var transcript = await gatherAdventureTranscript(currentAdvId, currentAdv);
+    if(!transcript.trim()){ alert("Esta aventura não tem registro suficiente para virar roteiro."); return; }
+    if(transcript.length > 900000) transcript = transcript.slice(0, 900000);
+    var cast = (currentAdv.members||[]).filter(function(m){return m.status==="confirmado";}).map(function(m){return m.name;}).join(", ");
+    var prompt = "Transforme a transcrição de sessão de RPG abaixo em um ROTEIRO DE VÍDEO em português do Brasil, pronto para ser entregue a uma IA de geração de vídeo.\n\n"+
+      "Formato de saída:\n"+
+      "1) TÍTULO da história.\n"+
+      "2) LOGLINE (1 a 2 frases).\n"+
+      "3) PERSONAGENS: nome + descrição visual curta de cada um (para consistência visual entre cenas).\n"+
+      "4) ROTEIRO dividido em CENAS numeradas. Para cada cena: CENA N — LOCAL — DIA/NOITE; DESCRIÇÃO VISUAL (o que a câmera vê, em linguagem concreta e descritiva, ideal para prompt de vídeo); AÇÃO; DIÁLOGO (personagem: fala); e SUGESTÃO DE TRILHA/ATMOSFERA.\n"+
+      "5) NARRAÇÃO EM OFF sugerida, quando fizer sentido.\n\n"+
+      "Regras: mantenha-se fiel aos acontecimentos da transcrição, sem inventar reviravoltas que não aconteceram. Converta as rolagens de dados e a mecânica de jogo em ação dramática (não mencione dados, XP, fichas ou regras). Escreva de forma cinematográfica e visualmente concreta.\n\n"+
+      "Elenco: "+cast+"\nTítulo da aventura: "+currentAdv.name+"\n\n--- TRANSCRIÇÃO ---\n\n"+transcript;
+    var raw = await callGeminiRaw("Você é um roteirista profissional que adapta sessões de RPG em roteiros de vídeo cinematográficos, em português do Brasil.", [{role:"user", parts:[{text:prompt}]}]);
+    downloadText("roteiro-"+slugify(currentAdv.name)+".txt", raw);
+    logAdminEvent("adventure_exported", {id:currentAdvId, name:currentAdv.name, byEmail:session.email});
+  }catch(err){
+    alert(friendlyApiError(err));
+  }finally{
+    btn.disabled = false; btn.innerHTML = original;
+  }
+});
+
+function slugify(s){
+  return (s||"aventura").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60) || "aventura";
+}
+function downloadText(filename, text){
+  var blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+
+/* =========================================================
+   SKILL CHECK PICKER
+   The GM proposes valid options; the app looks the modifier up
+   on the sheet so the player never has to compute anything.
+   ========================================================= */
+var pendingCheck = null;
+function modifierFor(name){
+  if(!character || !name) return null;
+  var n = String(name).toLowerCase().trim();
+  if(/percep/.test(n)) return character.percepcao;
+  if(character.resistencia){
+    if(/fortitude|fort/.test(n)) return character.resistencia.fortitude;
+    if(/reflex/.test(n)) return character.resistencia.reflexos;
+    if(/vontade|will/.test(n)) return character.resistencia.vontade;
+  }
+  var found = (character.pericias||[]).filter(function(p){
+    return String(p.nome||"").toLowerCase().trim()===n;
+  })[0];
+  if(found && typeof found.mod==="number") return found.mod;
+  // partial match, e.g. "Furtividade (esconder-se)"
+  var loose = (character.pericias||[]).filter(function(p){
+    var pn = String(p.nome||"").toLowerCase().trim();
+    return pn && (n.indexOf(pn)>=0 || pn.indexOf(n)>=0);
+  })[0];
+  return (loose && typeof loose.mod==="number") ? loose.mod : null;
+}
+function parseFormula(f){
+  var m = String(f||"").replace(/\s+/g,"").match(/^(\d*)d(\d+)([+-]\d+)?$/i);
+  if(!m) return null;
+  var qty = m[1] ? parseInt(m[1],10) : 1;
+  var sides = parseInt(m[2],10);
+  var mod = m[3] ? parseInt(m[3],10) : 0;
+  if(!sides || sides<2 || qty<1 || qty>50) return null;
+  return {qty:qty, sides:sides, mod:mod};
+}
+function renderSkillCheck(check){
+  var box = el("skill-check-box");
+  pendingCheck = check;
+  var hasSkills = check && check.pericias && check.pericias.length;
+  var formula = check && check.formula ? parseFormula(check.formula) : null;
+  if(!check || (!hasSkills && !formula)){
+    box.classList.add("hidden");
+    return;
+  }
+  var sel = el("sc-select");
+  if(hasSkills){
+    el("sc-title").textContent = check.cd ? ("Teste solicitado · CD "+check.cd) : "Teste solicitado";
+    sel.classList.remove("hidden");
+    el("sc-mod").classList.remove("hidden");
+    sel.innerHTML = check.pericias.map(function(p){
+      var mod = modifierFor(p);
+      return '<option value="'+esc(p)+'">'+esc(p)+(mod===null?"":" ("+fmtMod(mod)+")")+'</option>';
+    }).join("");
+    updateScMod();
+    el("sc-roll").textContent = "🎲 Rolar";
+  } else {
+    el("sc-title").textContent = "Rolagem solicitada";
+    sel.classList.add("hidden");
+    el("sc-mod").classList.add("hidden");
+    el("sc-roll").textContent = "🎲 Rolar "+check.formula;
+  }
+  el("sc-hint").textContent = check.descricao || "";
+  box.classList.remove("hidden");
+}
+function updateScMod(){
+  var name = el("sc-select").value;
+  var mod = modifierFor(name);
+  el("sc-mod").textContent = (mod===null) ? "—" : fmtMod(mod);
+}
+el("sc-select").addEventListener("change", updateScMod);
+el("sc-roll").addEventListener("click", function(){
+  if(!pendingCheck || loading) return;
+  var hasSkills = pendingCheck.pericias && pendingCheck.pericias.length;
+  var txt, entry;
+  if(hasSkills){
+    var name = el("sc-select").value;
+    var mod = modifierFor(name);
+    var usedMod = (mod===null) ? 0 : mod;
+    var die = rollOne(20);
+    var total = die + usedMod;
+    var cdPart = pendingCheck.cd ? (" contra CD "+pendingCheck.cd) : "";
+    txt = "🎲 "+name+cdPart+": 1d20 ("+die+") "+(usedMod>=0?"+":"")+usedMod+" = "+total;
+    entry = {qty:1, sides:20, modifier:usedMod, rolls:[die], total:total, label:name};
+  } else {
+    var f = parseFormula(pendingCheck.formula);
+    if(!f) return;
+    var rolls = [];
+    for(var i=0;i<f.qty;i++) rolls.push(rollOne(f.sides));
+    var sum = rolls.reduce(function(a,b){return a+b;},0);
+    var tot = sum + f.mod;
+    var label = pendingCheck.descricao || pendingCheck.formula;
+    txt = "🎲 "+label+": "+pendingCheck.formula+" → ["+rolls.join(" + ")+"]"+(f.mod?(f.mod>0?" +"+f.mod:" "+f.mod):"")+" = "+tot;
+    entry = {qty:f.qty, sides:f.sides, modifier:f.mod, rolls:rolls, total:tot, label:label};
+  }
+  el("skill-check-box").classList.add("hidden");
+  pendingCheck = null;
+  entry.id = Date.now()+"_"+Math.random().toString(36).slice(2);
+  entry.ts = Date.now();
+  localDiceHistory.unshift(entry);
+  if(localDiceHistory.length>50) localDiceHistory.length=50;
+  renderRollLog();
+  if(gameMode==="creation") sendCreationMessage(txt, {display:true});
+  else sendSceneMessage(txt, {display:true});
+});
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+async function boot2AfterAuth(){
+  character = await sGet("character:"+session.email, true);
+  if(character && character.nome) enterHub();
+  else { character = character || JSON.parse(JSON.stringify(EMPTY_CHARACTER)); enterCreation(); }
+}
+async function boot(){
+  loadAdminConfig();
+  var profile = await sGet("profile", false);
+  if(profile && profile.email && profile.apiKey){
+    session.email = normEmail(profile.email); session.name = profile.name; session.apiKey = profile.apiKey;
+    session.model = profile.model || DEFAULT_MODEL_FALLBACK;
+    session.modelChain = (profile.modelChain && profile.modelChain.length) ? profile.modelChain : [session.model];
+    detectModelChain(session.apiKey).then(function(chain){
+      session.modelChain = chain;
+      if(chain[0]){ session.model = chain[0]; }
+      sSet("profile", {email:session.email,name:session.name,apiKey:session.apiKey,model:session.model,modelChain:chain,updatedAt:Date.now()}, false);
+    });
+    await boot2AfterAuth();
+  } else {
+    showView("auth");
+  }
+}
+boot();
+
+})();
+</script>
+</body>
+</html>
