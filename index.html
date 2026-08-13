@@ -4,49 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mestre Solo — RPG de fantasia com IA</title>
-<script type="module">
-/* ============================================================
-   FIREBASE — cole aqui a configuração do SEU projeto.
-   Passo a passo completo no arquivo COMO-USAR-FIREBASE.md
-   Enquanto estiver em branco, o app continua funcionando com o
-   backend antigo (planilha), sem quebrar nada.
-   ============================================================ */
+<!-- 1) Script CLÁSSICO: roda imediatamente, antes de qualquer outro.
+     É aqui que a configuração vive e que sinalizamos ao app para aguardar.
+     Se isto estivesse dentro do módulo abaixo, o app iniciaria antes. -->
+<script>
 window.FIREBASE_CONFIG = {
-apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
-    authDomain: "mestre-solo-b2354.firebaseapp.com",
-    projectId: "mestre-solo-b2354",
-    storageBucket: "mestre-solo-b2354.firebasestorage.app",
-    messagingSenderId: "136935632644",
-    appId: "1:136935632644:web:f5603d002aeb80d77d2a51"
+  apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
+  authDomain: "mestre-solo-b2354.firebaseapp.com",
+  projectId: "mestre-solo-b2354",
+  storageBucket: "mestre-solo-b2354.firebasestorage.app",
+  messagingSenderId: "136935632644",
+  appId: "1:136935632644:web:f5603d002aeb80d77d2a51"
 };
-
 window.__fbPending = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId);
+</script>
 
+<!-- 2) Módulo: carrega o SDK do Firebase e avisa quando estiver pronto. -->
+<script type="module">
 if (window.__fbPending) {
- try {
-  const [{ initializeApp }, auth, fs] = await Promise.all([
-    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
-    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
-    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
-  ]);
-  const app = initializeApp(window.FIREBASE_CONFIG);
-  window.__fb = {
-    auth: auth.getAuth(app),
-    db: fs.getFirestore(app),
-    GoogleAuthProvider: auth.GoogleAuthProvider,
-    signInWithPopup: auth.signInWithPopup,
-    signOut: auth.signOut,
-    onAuthStateChanged: auth.onAuthStateChanged,
-    doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, deleteDoc: fs.deleteDoc,
-    collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where
-  };
+  try {
+    const [{ initializeApp }, auth, fs] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
+    ]);
+    const app = initializeApp(window.FIREBASE_CONFIG);
+    window.__fb = {
+      auth: auth.getAuth(app),
+      db: fs.getFirestore(app),
+      GoogleAuthProvider: auth.GoogleAuthProvider,
+      signInWithPopup: auth.signInWithPopup,
+      signOut: auth.signOut,
+      onAuthStateChanged: auth.onAuthStateChanged,
+      doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, deleteDoc: fs.deleteDoc,
+      collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where
+    };
+    console.info("Firebase pronto:", window.FIREBASE_CONFIG.projectId);
+  } catch (e) {
+    console.error("Firebase não carregou — seguindo com o backend anterior:", e);
+  }
   window.__fbPending = false;
   window.dispatchEvent(new Event("firebase-ready"));
- } catch (e) {
-  console.error("Firebase não carregou — o app seguirá com o backend anterior:", e);
-  window.__fbPending = false;
-  window.dispatchEvent(new Event("firebase-ready"));
- }
 }
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483062241581736" crossorigin="anonymous"></script>
@@ -3585,7 +3583,7 @@ async function resetIfBackendChanged(){
  return true;
 }
 
-/* O bloco do Firebase é um <script type="module">, que o navegador executa
+/* O bloco do Firebase e um modulo ES, que o navegador executa
    DEPOIS deste script. Sem esperar, o app iniciava decidindo usar a planilha
    antes de o Firebase existir — era exatamente isso que estava acontecendo. */
 function waitForFirebase(){
