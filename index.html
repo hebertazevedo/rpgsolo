@@ -17,17 +17,21 @@ window.FIREBASE_CONFIG = {
   appId: "1:136935632644:web:f5603d002aeb80d77d2a51"
 };
 window.__fbPending = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId);
+window.__fbStage = window.__fbPending ? "1-config-ok" : "0-sem-config";
+window.__fbError = null;
 </script>
 
 <!-- 2) Módulo: carrega o SDK do Firebase e avisa quando estiver pronto. -->
 <script type="module">
 if (window.__fbPending) {
+  window.__fbStage = "2-modulo-iniciou";
   try {
     const [{ initializeApp }, auth, fs] = await Promise.all([
       import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
       import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
       import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
     ]);
+    window.__fbStage = "3-sdk-baixado";
     const app = initializeApp(window.FIREBASE_CONFIG);
     window.__fb = {
       auth: auth.getAuth(app),
@@ -39,8 +43,11 @@ if (window.__fbPending) {
       doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, deleteDoc: fs.deleteDoc,
       collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where
     };
+    window.__fbStage = "4-pronto";
     console.info("Firebase pronto:", window.FIREBASE_CONFIG.projectId);
   } catch (e) {
+    window.__fbStage = "ERRO";
+    window.__fbError = (e && (e.message || e.code)) ? (e.code ? e.code+" — "+e.message : e.message) : String(e);
     console.error("Firebase não carregou — seguindo com o backend anterior:", e);
   }
   window.__fbPending = false;
@@ -984,6 +991,7 @@ function cacheGet(key){
 function cachePut(key, value){ readCache[key] = {value:value, at:Date.now()}; }
 function cacheInvalidate(key){ delete readCache[key]; }
 async function sheetsGet(kind, key){
+ if(useFirestore()) return await fsGet(key);
  try{
  var r = await sheetsCall("get", {kind:kind, key:key});
  sheetsOnline = true;
@@ -1001,6 +1009,7 @@ async function sheetsGet(kind, key){
  }catch(e){ sheetsOnline=false; console.warn("sheetsGet falhou ("+kind+"/"+key+"):", e.message); return null; }
 }
 async function sheetsPut(kind, key, value){
+ if(useFirestore()) return await fsPut(key, value);
  try{
  if(value===null || value===undefined){
  await sheetsCall("put", {kind:kind, key:key, value:null});
@@ -1022,6 +1031,7 @@ async function sheetsPut(kind, key, value){
  }catch(e){ sheetsOnline=false; console.warn("sheetsPut falhou ("+kind+"/"+key+"):", e.message); return false; }
 }
 async function sheetsList(kind){
+ if(useFirestore()) return await fsList("");
  try{
  var r = await sheetsCall("list", {kind:kind});
  sheetsOnline = true; return r.items || [];
@@ -2982,6 +2992,13 @@ async function loadAdminConfig(){
  return adminConfig;
 }
 function logAdminEvent(type, data){
+ var payload = Object.assign({tipo:type, ts:new Date().toISOString()}, data||{});
+ if(useFirestore()){
+   // com o Firebase ativo, os eventos ficam no Firestore — nada mais vai para a planilha
+   var id = "event:"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+   fsPut(id, payload).catch(function(){});
+   return;
+ }
  if(!adminConfig || !adminConfig.sheetsWebhookUrl) return;
  try{
  fetch(adminConfig.sheetsWebhookUrl, {
@@ -3493,16 +3510,29 @@ function renderBackendBadge(){
   var b = el("backend-badge");
   if(!b) return;
   var cfg = window.FIREBASE_CONFIG || {};
+  var stage = window.__fbStage || "(script do head não rodou)";
+  var proto = location.protocol;
+
   if(fbReady()){
     b.className = "backend-badge on";
-    b.innerHTML = "\uD83D\uDD12 Conectado ao Firebase <b>"+esc(cfg.projectId||"")+"</b> — dados protegidos por regras de seguran\u00e7a.";
-  } else if(cfg.projectId){
-    b.className = "backend-badge off";
-    b.innerHTML = "\u26A0\uFE0F Firebase configurado (<b>"+esc(cfg.projectId)+"</b>) mas n\u00e3o carregou. Abra o console (F12) para ver o erro. Usando o backend antigo por enquanto.";
-  } else {
-    b.className = "backend-badge off";
-    b.innerHTML = "\uD83D\uDCC4 Usando a planilha como backend. Configure o Firebase para dados protegidos e login com Google.";
+    b.innerHTML = "\uD83D\uDD12 Conectado ao Firebase <b>"+esc(cfg.projectId||"")+"</b> — dados protegidos por regras.";
+    return;
   }
+  b.className = "backend-badge off";
+  var diag = "";
+  if(proto === "file:"){
+    diag = "<b>O arquivo foi aberto direto do computador (file://).</b> O Firebase não funciona assim — é preciso abrir por um endereço http(s), ou seja, o app publicado.";
+  } else if(!cfg.projectId){
+    diag = "Configuração do Firebase não encontrada. O arquivo publicado pode ser uma versão antiga — confirme que subiu o index.html novo e limpe o cache (Ctrl+Shift+R).";
+  } else if(stage === "1-config-ok"){
+    diag = "A configuração foi lida, mas o módulo do Firebase não executou. Quase sempre é cache do navegador: recarregue com <b>Ctrl+Shift+R</b>. Se persistir, algum bloqueador pode estar impedindo o download do SDK.";
+  } else if(stage === "ERRO"){
+    diag = "Erro ao iniciar o Firebase: <b>"+esc(window.__fbError||"desconhecido")+"</b>";
+  } else {
+    diag = "Parou na etapa <b>"+esc(stage)+"</b>.";
+  }
+  b.innerHTML = "\u26A0\uFE0F Usando o backend antigo. "+diag+
+    "<br><span style=\"opacity:.7\">diagnóstico: etapa="+esc(stage)+" · protocolo="+esc(proto)+" · projeto="+esc(cfg.projectId||"nenhum")+"</span>";
 }
 
 function showGoogleAuth(){
