@@ -12,7 +12,7 @@
    backend antigo (planilha), sem quebrar nada.
    ============================================================ */
 window.FIREBASE_CONFIG = {
-  apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
+ apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
     authDomain: "mestre-solo-b2354.firebaseapp.com",
     projectId: "mestre-solo-b2354",
     storageBucket: "mestre-solo-b2354.firebasestorage.app",
@@ -886,7 +886,11 @@ function sheetsUrl(){ return (adminConfig && adminConfig.sheetsWebhookUrl) || SH
    fila serializada. Cai de volta na planilha se não houver
    configuração, para não quebrar instalações existentes.
    --------------------------------------------------------- */
+var FS_ERROR = {__fsError:true};   // distingue falha de rede de "documento não existe"
 function fbReady(){ return !!(window.__fb && window.__fb.db); }
+function backendId(){
+  return fbReady() ? ("firestore:"+((window.FIREBASE_CONFIG&&window.FIREBASE_CONFIG.projectId)||"?")) : "sheets";
+}
 function useFirestore(){ return fbReady(); }
 /* Firestore doc ids can't contain "/" — our keys use ":" already,
    but e-mails and ids are encoded to stay safe. */
@@ -903,7 +907,7 @@ async function fsGet(key){
       try{ return JSON.parse(d.json); }catch(e){ return null; }
     }
     return (d && d.value!==undefined) ? d.value : null;
-  }catch(e){ console.warn("Firestore get falhou ("+key+"):", e.message); return null; }
+  }catch(e){ console.warn("Firestore get falhou ("+key+"):", e.message); return FS_ERROR; }
 }
 async function fsPut(key, value){
   var fb = window.__fb;
@@ -1065,6 +1069,21 @@ async function sGet(key, shared){
  }catch(e){ localRaw = null; }
  var remoteRaw = await sheetsGet("kv", key);
  var chosen = localRaw;
+ if(remoteRaw===FS_ERROR){
+ cachePut(key, localRaw);
+ return localRaw;
+ }
+ if(useFirestore()){
+ chosen = remoteRaw;
+ try{
+ if(window.storage){
+ if(remoteRaw===null) await window.storage.delete(key, true);
+ else await window.storage.set(key, JSON.stringify(remoteRaw), true);
+ }
+ }catch(e){}
+ cachePut(key, chosen);
+ return chosen;
+ }
  if(remoteRaw!==null && remoteRaw!==undefined){
  var takeRemote = (revOf(remoteRaw) > revOf(localRaw)) ||
  (revOf(remoteRaw)===revOf(localRaw) && tsOf(remoteRaw) >= tsOf(localRaw));
@@ -3515,7 +3534,31 @@ async function signInWithGoogle(){
 }
 el("google-signin").addEventListener("click", signInWithGoogle);
 
+async function resetIfBackendChanged(){
+ var atual = backendId();
+ var anterior = null;
+ try{ anterior = localStorage.getItem("mestre-solo-backend"); }catch(e){}
+ if(anterior === atual) return false;
+ console.info("Backend mudou de "+(anterior||"nenhum")+" para "+atual+" — limpando cache local.");
+ try{
+ if(window.storage){
+ var res = await window.storage.list("", true);
+ var keys = (res && res.keys) ? res.keys : [];
+ for(var i=0;i<keys.length;i++){
+ if(isSyncedKey(keys[i])){ try{ await window.storage.delete(keys[i], true); }catch(e){} }
+ }
+ }
+ }catch(e){}
+ try{ if(window.storage) await window.storage.delete("profile", false); }catch(e){}
+ try{ if(window.storage) await window.storage.delete("char-creation-chat", false); }catch(e){}
+ readCache = {};
+ try{ localStorage.setItem("mestre-solo-backend", atual); }catch(e){}
+ return true;
+}
+
 async function boot(){
+ showGoogleAuth();
+ await resetIfBackendChanged();
  try{
  var savedMode = localStorage.getItem("mestre-solo-roll-mode");
  if(savedMode) setRollMode(savedMode);
