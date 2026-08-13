@@ -304,6 +304,11 @@ a{color:var(--arcane-bright);}
 .google-btn{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:#1f1f1f;font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;}
 .google-btn:hover{background:#f1f1f1;}
 .g-logo{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#4285F4,#34A853 40%,#FBBC05 70%,#EA4335);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.key-step{margin-top:4px;}
+.ks-user{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;background:var(--void-3);border:1px solid var(--arcane);margin-bottom:6px;}
+.ks-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(145deg,var(--arcane-bright),var(--arcane));color:var(--void);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ks-info b{display:block;font-size:13.5px;color:var(--text-hi);}
+.ks-info span{display:block;font-size:11.5px;color:var(--text-faint);}
 .backend-badge{margin-top:12px;padding:7px 11px;border-radius:8px;font-size:11px;line-height:1.5;}
 .backend-badge.on{background:rgba(79,143,124,.14);border:1px solid var(--arcane);color:var(--arcane-bright);}
 .backend-badge.off{background:rgba(193,154,91,.12);border:1px solid var(--brass-dim);color:var(--brass-bright);}
@@ -485,7 +490,7 @@ a{color:var(--arcane-bright);}
  </div>
  <p class="card-lede" id="auth-lede">Informe seu e-mail para continuar.</p>
 
- <div class="field"><label for="auth-email">E-mail</label>
+ <div class="field" id="auth-email-field"><label for="auth-email">E-mail</label>
  <input id="auth-email" class="text-input" type="email" placeholder="voce@gmail.com" autocomplete="email">
  </div>
 
@@ -511,7 +516,23 @@ a{color:var(--arcane-bright);}
  <div class="backend-badge" id="backend-badge"></div>
  <div class="security-note">🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.</div>
 
-      <div class="google-auth hidden" id="google-auth">
+     <!-- Passo da chave: aparece DEPOIS do login Google, sem pedir nova autenticação -->
+      <div class="key-step hidden" id="key-step">
+        <div class="ks-user"><span class="ks-avatar" id="ks-avatar">?</span>
+          <div class="ks-info"><b id="ks-name">—</b><span id="ks-email">—</span></div>
+        </div>
+        <div class="field"><label for="ks-key">Chave de API do Gemini</label>
+          <div class="input-with-btn">
+            <input id="ks-key" class="text-input" type="password" placeholder="AIzaSy…" autocomplete="off">
+            <button type="button" class="ghost-btn" id="ks-key-toggle">Mostrar</button>
+          </div>
+          <p class="hint">Só nesta primeira vez neste dispositivo. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Criar chave gratuita ↗</a></p>
+        </div>
+        <div class="card-actions"><button class="primary-btn" id="ks-start">Começar a jogar</button></div>
+        <p class="card-switch"><a id="ks-cancel">Entrar com outra conta</a></p>
+      </div>
+
+ <div class="google-auth hidden" id="google-auth">
         <button type="button" class="google-btn" id="google-signin">
           <span class="g-logo">G</span> Entrar com a conta Google
         </button>
@@ -990,6 +1011,53 @@ function cacheGet(key){
 }
 function cachePut(key, value){ readCache[key] = {value:value, at:Date.now()}; }
 function cacheInvalidate(key){ delete readCache[key]; }
+/* Leitura CRUA da planilha, ignorando o roteamento — usada apenas pela
+   ferramenta de migração, para trazer o histórico antigo para o Firestore. */
+async function sheetsRawGet(key){
+  try{
+    var r = await sheetsCall("get", {kind:"kv", key:key});
+    var v = r.value;
+    if(v && typeof v==="object" && v.__chunked){
+      var parts = [];
+      for(var i=0;i<v.count;i++){
+        var pr = await sheetsCall("get", {kind:"kv", key:key+"::part"+i});
+        if(!pr || pr.value===null || pr.value===undefined) return null;
+        parts.push(pr.value);
+      }
+      try{ return JSON.parse(parts.join("")); }catch(e){ return null; }
+    }
+    return (v===undefined) ? null : v;
+  }catch(e){ console.warn("sheetsRawGet falhou ("+key+"):", e.message); return null; }
+}
+async function sheetsRawList(){
+  try{
+    var r = await sheetsCall("list", {kind:"kv"});
+    return (r.items||[]).filter(function(k){ return k.indexOf("::part")===-1; });
+  }catch(e){ console.warn("sheetsRawList falhou:", e.message); return []; }
+}
+
+async function migrarPlanilhaParaFirestore(onProgress){
+  if(!useFirestore()) throw new Error("O Firebase precisa estar ativo para migrar.");
+  var chaves = await sheetsRawList();
+  var relevantes = chaves.filter(isSyncedKey);
+  var res = {total:relevantes.length, copiadas:0, puladas:0, falhas:0, detalhes:[]};
+  for(var i=0;i<relevantes.length;i++){
+    var k = relevantes[i];
+    if(onProgress) onProgress(i+1, relevantes.length, k);
+    try{
+      var jaExiste = await fsGet(k);
+      if(jaExiste!==null && jaExiste!==FS_ERROR){ res.puladas++; res.detalhes.push("já existia: "+k); continue; }
+      var valor = await sheetsRawGet(k);
+      if(valor===null || valor===undefined){ res.puladas++; continue; }
+      var ok = await fsPut(k, valor);
+      if(ok){ res.copiadas++; res.detalhes.push("copiado: "+k); }
+      else { res.falhas++; res.detalhes.push("falhou: "+k); }
+    }catch(e){ res.falhas++; res.detalhes.push("erro em "+k+": "+e.message); }
+  }
+  readCache = {};
+  return res;
+}
+
 async function sheetsGet(kind, key){
  if(useFirestore()) return await fsGet(key);
  try{
@@ -3218,6 +3286,15 @@ async function openAdmin(){
     html += '</div>';
 
     /* ===== planilha ===== */
+    if(useFirestore()){
+      html += '<div class="adm-section"><h4>Importar histórico da planilha</h4>'+
+        '<p class="adm-note">Traz personagens, aventuras e conversas que ficaram na planilha para o Firestore. '+
+        'Registros que já existirem aqui são preservados — nada é sobrescrito, e a planilha não é alterada. '+
+        'Pode ser executado mais de uma vez com segurança.</p>'+
+        '<div class="input-with-btn" style="margin-top:8px;"><button type="button" class="ghost-btn" id="admin-migrar" style="flex:1;padding:11px;">Importar da planilha</button></div>'+
+        '<p class="hint" id="admin-migrar-status"></p></div>';
+    }
+
     html += '<div class="adm-section"><h4>Registro externo (Google Sheets)</h4>'+
       '<p class="adm-note">Opcional. O painel acima já funciona sem isso — a planilha só guarda um histórico de eventos (cadastros, aventuras criadas, cliques de apoio e afiliado).</p>'+
       '<div class="input-with-btn"><input id="admin-sheets-url" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(adminConfig.sheetsWebhookUrl||"")+'"><button type="button" class="ghost-btn" id="admin-sheets-save">Salvar</button></div>'+
@@ -3226,6 +3303,25 @@ async function openAdmin(){
     html += '<p class="adm-note" style="margin-top:16px;opacity:.75;">⚠️ Este painel mostra dados de todos os jogadores. Trate essas informações com cuidado — e lembre-se de que os dados da planilha são acessíveis a quem tiver a URL do Web App.</p>';
 
     el("admin-body").innerHTML = html;
+    var migBtn = el("admin-migrar");
+    if(migBtn) migBtn.addEventListener("click", async function(){
+      if(!confirm("Importar os dados da planilha para o Firebase?\n\nNada é apagado: registros que já existem no Firebase são mantidos como estão.")) return;
+      migBtn.disabled = true;
+      var st = el("admin-migrar-status");
+      try{
+        var r = await migrarPlanilhaParaFirestore(function(feito, total, chave){
+          st.textContent = "Importando "+feito+" de "+total+"… ("+chave.slice(0,40)+")";
+        });
+        st.innerHTML = "<b>Concluído.</b> "+r.copiadas+" registro(s) importado(s), "+
+                       r.puladas+" já existiam ou estavam vazios"+
+                       (r.falhas? ", "+r.falhas+" falharam" : "")+
+                       ". Recarregue a página para ver o histórico.";
+        console.info("Migração:", r.detalhes);
+      }catch(err){
+        st.textContent = "Erro na importação: "+err.message;
+      }finally{ migBtn.disabled = false; }
+    });
+
     var saveBtn = el("admin-sheets-save");
     if(saveBtn) saveBtn.addEventListener("click", async function(){
       var url = el("admin-sheets-url").value.trim();
@@ -3536,9 +3632,65 @@ function renderBackendBadge(){
 }
 
 function showGoogleAuth(){
-  if(fbReady()) el("google-auth").classList.remove("hidden");
+  if(!fbReady()) return;
+  // Com o Firebase ativo o login e so pelo Google: e-mail, nome e senha
+  // deixam de existir para o jogador.
+  el("google-auth").classList.remove("hidden");
+  el("auth-email-field").classList.add("hidden");
+  el("auth-extra").classList.add("hidden");
+  var sw = el("auth-switch"); if(sw) sw.innerHTML = "";
+  var ga = el("google-auth");
+  var dv = ga && ga.querySelector ? ga.querySelector(".divider") : null;
+  if(dv) dv.classList.add("hidden");
+  el("auth-continue").classList.add("hidden");
+  el("auth-title").textContent = "Entrar";
+  el("auth-lede").textContent = "Entre com sua conta Google para comecar.";
+  var note = document.querySelector(".security-note");
+  if(note) note.innerHTML = "\uD83D\uDD12 Login pelo Google \u2014 o app nunca ve sua senha. Sua chave do Gemini fica apenas neste dispositivo.";
 }
 window.addEventListener("firebase-ready", showGoogleAuth);
+
+var pendingGoogleUser = null;
+
+function showKeyStep(u){
+  pendingGoogleUser = u;
+  el("ks-avatar").textContent = (u.name||u.email||"?").charAt(0).toUpperCase();
+  el("ks-name").textContent = u.name || u.email;
+  el("ks-email").textContent = u.email;
+  el("ks-key").value = "";
+  el("google-auth").classList.add("hidden");
+  el("auth-extra").classList.add("hidden");
+  el("auth-email-field").classList.add("hidden");
+  el("key-step").classList.remove("hidden");
+  el("auth-lede").textContent = "Só falta a chave do Gemini para começar.";
+  setTimeout(function(){ el("ks-key").focus(); }, 100);
+}
+
+async function finishGoogleLogin(apiKey){
+  var u = pendingGoogleUser;
+  if(!u) return;
+  var errBox = el("auth-error"); errBox.classList.add("hidden");
+  var btn = el("ks-start");
+  btn.disabled = true; btn.textContent = "Verificando chave…";
+  try{
+    session.email = u.email; session.name = u.name; session.apiKey = apiKey;
+    session.modelChain = await detectModelChain(apiKey);
+    session.model = session.modelChain[0];
+    var existing = await sGet("pub:"+u.email, true);
+    if(!existing){
+      await sSet("pub:"+u.email, {email:u.email, name:u.name, provider:"google", createdAt:Date.now()}, true);
+      logAdminEvent("signup", {email:u.email, name:u.name, provider:"google"});
+    }
+    await sSet("profile", {email:u.email, name:u.name, apiKey:apiKey, model:session.model, modelChain:session.modelChain, provider:"google", updatedAt:Date.now()}, false);
+    pendingGoogleUser = null;
+    await boot2AfterAuth();
+  }catch(err){
+    console.error(err);
+    errBox.textContent = "Não consegui validar a chave: "+(err.message||err);
+    errBox.classList.remove("hidden");
+    btn.disabled=false; btn.textContent="Começar a jogar";
+  }
+}
 
 async function signInWithGoogle(){
   var fb = window.__fb;
@@ -3555,30 +3707,24 @@ async function signInWithGoogle(){
 
     var localProfile = await sGet("profile", false);
     var apiKey = (localProfile && normEmail(localProfile.email)===email) ? localProfile.apiKey : null;
-    if(!apiKey){
-      apiKey = (el("auth-key").value||"").trim();
-      if(!apiKey){
-        el("auth-extra").classList.remove("hidden");
-        el("auth-key-field").classList.remove("hidden");
-        el("auth-name-field").classList.add("hidden");
-        errBox.textContent = "Falta só a chave do Gemini neste dispositivo — cole acima e clique de novo em Entrar com Google.";
-        errBox.classList.remove("hidden");
-        btn.disabled=false; btn.innerHTML = '<span class="g-logo">G</span> Entrar com a conta Google';
-        return;
-      }
-    }
-    session.email = email; session.name = nome; session.apiKey = apiKey;
-    btn.textContent = "Verificando modelo…";
-    session.modelChain = await detectModelChain(apiKey);
-    session.model = session.modelChain[0];
 
-    var existing = await sGet("pub:"+email, true);
-    if(!existing){
-      await sSet("pub:"+email, {email:email, name:nome, provider:"google", createdAt:Date.now()}, true);
-      logAdminEvent("signup", {email:email, name:nome, provider:"google"});
+    if(apiKey){
+      // já temos a chave neste dispositivo: entra direto, sem segundo passo
+      session.email = email; session.name = nome; session.apiKey = apiKey;
+      btn.textContent = "Entrando…";
+      session.modelChain = await detectModelChain(apiKey);
+      session.model = session.modelChain[0];
+      var ex = await sGet("pub:"+email, true);
+      if(!ex){
+        await sSet("pub:"+email, {email:email, name:nome, provider:"google", createdAt:Date.now()}, true);
+        logAdminEvent("signup", {email:email, name:nome, provider:"google"});
+      }
+      await sSet("profile", {email:email, name:nome, apiKey:apiKey, model:session.model, modelChain:session.modelChain, provider:"google", updatedAt:Date.now()}, false);
+      await boot2AfterAuth();
+      return;
     }
-    await sSet("profile", {email:email, name:nome, apiKey:apiKey, model:session.model, modelChain:session.modelChain, provider:"google", updatedAt:Date.now()}, false);
-    await boot2AfterAuth();
+    // sem chave: pede só a chave, SEM autenticar de novo
+    showKeyStep({email:email, name:nome});
   }catch(err){
     console.error(err);
     var msg = /popup-closed|cancelled/i.test(err.code||err.message||"")
@@ -3589,6 +3735,28 @@ async function signInWithGoogle(){
     btn.disabled=false; btn.innerHTML = '<span class="g-logo">G</span> Entrar com a conta Google';
   }
 }
+el("ks-start").addEventListener("click", function(){
+  var k = el("ks-key").value.trim();
+  if(!k){
+    var e = el("auth-error"); e.textContent="Cole sua chave do Gemini para continuar."; e.classList.remove("hidden");
+    return;
+  }
+  finishGoogleLogin(k);
+});
+el("ks-key").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); el("ks-start").click(); } });
+el("ks-key-toggle").addEventListener("click", function(){
+  var inp=el("ks-key"); var vis=inp.type==="text";
+  inp.type=vis?"password":"text"; el("ks-key-toggle").textContent=vis?"Mostrar":"Ocultar";
+});
+el("ks-cancel").addEventListener("click", async function(){
+  try{ if(fbReady()) await window.__fb.signOut(window.__fb.auth); }catch(e){}
+  pendingGoogleUser=null;
+  el("key-step").classList.add("hidden");
+  el("google-auth").classList.remove("hidden");
+  el("auth-email-field").classList.remove("hidden");
+  el("auth-lede").textContent = "Entre com sua conta Google para começar.";
+});
+
 el("google-signin").addEventListener("click", signInWithGoogle);
 
 async function resetIfBackendChanged(){
