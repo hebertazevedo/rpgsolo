@@ -12,7 +12,7 @@
    backend antigo (planilha), sem quebrar nada.
    ============================================================ */
 window.FIREBASE_CONFIG = {
- apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
+apiKey: "AIzaSyB7Rr8WNYxoX0LSHYIrLpVN6IvTLKksOrY",
     authDomain: "mestre-solo-b2354.firebaseapp.com",
     projectId: "mestre-solo-b2354",
     storageBucket: "mestre-solo-b2354.firebasestorage.app",
@@ -20,7 +20,10 @@ window.FIREBASE_CONFIG = {
     appId: "1:136935632644:web:f5603d002aeb80d77d2a51"
 };
 
-if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId) {
+window.__fbPending = !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId);
+
+if (window.__fbPending) {
+ try {
   const [{ initializeApp }, auth, fs] = await Promise.all([
     import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
     import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
@@ -37,7 +40,13 @@ if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId) {
     doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, deleteDoc: fs.deleteDoc,
     collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where
   };
+  window.__fbPending = false;
   window.dispatchEvent(new Event("firebase-ready"));
+ } catch (e) {
+  console.error("Firebase não carregou — o app seguirá com o backend anterior:", e);
+  window.__fbPending = false;
+  window.dispatchEvent(new Event("firebase-ready"));
+ }
 }
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483062241581736" crossorigin="anonymous"></script>
@@ -290,6 +299,9 @@ a{color:var(--arcane-bright);}
 .google-btn{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#fff;color:#1f1f1f;font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;}
 .google-btn:hover{background:#f1f1f1;}
 .g-logo{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#4285F4,#34A853 40%,#FBBC05 70%,#EA4335);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.backend-badge{margin-top:12px;padding:7px 11px;border-radius:8px;font-size:11px;line-height:1.5;}
+.backend-badge.on{background:rgba(79,143,124,.14);border:1px solid var(--arcane);color:var(--arcane-bright);}
+.backend-badge.off{background:rgba(193,154,91,.12);border:1px solid var(--brass-dim);color:var(--brass-bright);}
 .security-note{margin-top:14px;padding:10px 12px;border-radius:9px;background:var(--void-3);border:1px solid var(--line-soft);font-size:11px;color:var(--text-faint);line-height:1.6;}
 .info-link{display:block;margin:16px auto 0;text-align:center;font-size:12px;color:var(--arcane-bright);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 .info-link:hover{color:var(--arcane);}
@@ -491,6 +503,7 @@ a{color:var(--arcane-bright);}
  </div>
  </div>
 
+ <div class="backend-badge" id="backend-badge"></div>
  <div class="security-note">🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.</div>
 
       <div class="google-auth hidden" id="google-auth">
@@ -3478,6 +3491,22 @@ async function boot2AfterAuth(){
    Gemini continua apenas neste dispositivo — o Firebase nunca
    a recebe.
    ========================================================= */
+function renderBackendBadge(){
+  var b = el("backend-badge");
+  if(!b) return;
+  var cfg = window.FIREBASE_CONFIG || {};
+  if(fbReady()){
+    b.className = "backend-badge on";
+    b.innerHTML = "\uD83D\uDD12 Conectado ao Firebase <b>"+esc(cfg.projectId||"")+"</b> — dados protegidos por regras de seguran\u00e7a.";
+  } else if(cfg.projectId){
+    b.className = "backend-badge off";
+    b.innerHTML = "\u26A0\uFE0F Firebase configurado (<b>"+esc(cfg.projectId)+"</b>) mas n\u00e3o carregou. Abra o console (F12) para ver o erro. Usando o backend antigo por enquanto.";
+  } else {
+    b.className = "backend-badge off";
+    b.innerHTML = "\uD83D\uDCC4 Usando a planilha como backend. Configure o Firebase para dados protegidos e login com Google.";
+  }
+}
+
 function showGoogleAuth(){
   if(fbReady()) el("google-auth").classList.remove("hidden");
 }
@@ -3556,8 +3585,26 @@ async function resetIfBackendChanged(){
  return true;
 }
 
+/* O bloco do Firebase é um <script type="module">, que o navegador executa
+   DEPOIS deste script. Sem esperar, o app iniciava decidindo usar a planilha
+   antes de o Firebase existir — era exatamente isso que estava acontecendo. */
+function waitForFirebase(){
+  return new Promise(function(resolve){
+    if(!window.__fbPending) return resolve();
+    var done = false;
+    function finish(){ if(done) return; done = true; resolve(); }
+    window.addEventListener("firebase-ready", finish, {once:true});
+    setTimeout(finish, 8000);   // nunca deixa o app preso se a rede falhar
+  });
+}
+
 async function boot(){
+ await waitForFirebase();
+ if(window.__fbPending===false && !fbReady() && (window.FIREBASE_CONFIG||{}).projectId){
+   console.warn("Firebase configurado mas indisponível — usando o backend anterior nesta sessão.");
+ }
  showGoogleAuth();
+ renderBackendBadge();
  await resetIfBackendChanged();
  try{
  var savedMode = localStorage.getItem("mestre-solo-roll-mode");
