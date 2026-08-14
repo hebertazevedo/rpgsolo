@@ -152,6 +152,7 @@ a{color:var(--arcane-bright);}
 .xp-block{margin-top:8px;}
 .hp-bar-fill.xp-fill{background:linear-gradient(90deg,var(--brass-dim),var(--brass-bright));}
 .xp-note{margin:6px 0 0;font-size:10.5px;color:var(--ink-soft);letter-spacing:.01em;}
+.craft-toast{background:rgba(79,143,124,.16)!important;border-color:var(--arcane)!important;color:var(--arcane-bright)!important;}
 .mastery-toast{background:rgba(138,92,196,.16)!important;border-color:var(--violet)!important;color:var(--violet-bright)!important;}
 .quota-wait{margin:8px 16px 0;padding:9px 12px;border-radius:9px;background:rgba(193,154,91,.14);border:1px solid var(--brass-dim);font-size:12px;color:var(--brass-bright);line-height:1.5;}
 .xp-toast{margin:8px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(193,154,91,.16);border:1px solid var(--brass);font-size:12px;color:var(--brass-bright);font-weight:600;display:flex;align-items:center;gap:8px;animation:msgin .3s ease;}
@@ -356,6 +357,40 @@ a{color:var(--arcane-bright);}
 .status-badge.encerrada{background:var(--void-3);color:var(--text-faint);}
 .status-badge.pausada{background:rgba(138,92,196,.2);color:var(--violet-bright);}
 .status-badge.convite{background:rgba(176,71,58,.2);color:var(--ember-bright);}
+.events-box{margin-bottom:20px;}
+.ev-row{display:flex;gap:10px;}
+@media (max-width:520px){.ev-row{flex-direction:column;gap:0;}}
+.ev-card{background:linear-gradient(160deg,rgba(138,92,196,.12),var(--void-2));border:1px solid var(--violet);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.ev-head{display:flex;align-items:flex-start;gap:10px;}
+.ev-head .ev-icon{font-size:19px;flex-shrink:0;}
+.ev-head .ev-t{flex:1;min-width:0;}
+.ev-head .ev-t b{display:block;font-family:var(--font-display);font-size:15px;color:var(--text-hi);}
+.ev-head .ev-t span{display:block;font-size:11.5px;color:var(--text-lo);margin-top:2px;line-height:1.5;}
+.ev-req{font-size:11px;color:var(--violet-bright);margin-top:7px;}
+.ev-when{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);margin-top:5px;}
+.ev-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
+.ev-btn{flex:1;min-width:130px;padding:10px;border-radius:9px;border:none;background:linear-gradient(160deg,var(--violet-bright),var(--violet));color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;}
+.ev-btn:hover{filter:brightness(1.08);}
+.ev-btn:disabled{opacity:.45;cursor:not-allowed;}
+.ev-btn.sec{background:transparent;border:1px solid var(--line);color:var(--text-lo);}
+.ev-motivo{font-size:11.5px;color:var(--brass-bright);margin-top:8px;}
+.ev-count{font-size:11px;color:var(--text-faint);margin-top:6px;}
+.mk-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;background:var(--void-2);border:1px solid var(--line);margin-bottom:8px;}
+.mk-item .mk-i{font-size:18px;flex-shrink:0;}
+.mk-item .mk-info{flex:1;min-width:0;}
+.mk-item .mk-info b{display:block;font-size:13.5px;color:var(--text-hi);}
+.mk-item .mk-info span{display:block;font-size:11px;color:var(--text-faint);margin-top:2px;}
+.mk-preco{font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--brass-bright);white-space:nowrap;}
+.mk-btn{padding:8px 13px;border-radius:8px;border:none;background:var(--brass);color:var(--void);font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+.mk-btn:hover{background:var(--brass-bright);}
+.mk-btn:disabled{opacity:.45;cursor:not-allowed;}
+.mk-btn.sec{background:transparent;border:1px solid var(--line);color:var(--text-lo);}
+.rar{font-size:10px;padding:2px 7px;border-radius:999px;margin-left:6px;}
+.rar.comum{background:var(--void-3);color:var(--text-faint);}
+.rar.incomum{background:rgba(79,143,124,.2);color:var(--arcane-bright);}
+.rar.raro{background:rgba(193,154,91,.2);color:var(--brass-bright);}
+.rar.lendario{background:rgba(138,92,196,.22);color:var(--violet-bright);}
+.mk-saldo{font-family:var(--font-mono);font-size:12.5px;color:var(--brass-bright);}
 .empty-hint{font-size:12.5px;color:var(--text-faint);padding:16px 2px;}
 .support-box{margin:24px 0 6px;padding:16px 18px;border-radius:14px;background:linear-gradient(160deg,rgba(193,154,91,.12),var(--void-2));border:1px solid var(--brass-dim);}
 .support-main{display:flex;gap:13px;align-items:flex-start;}
@@ -558,6 +593,12 @@ a{color:var(--arcane-bright);}
  <button class="icon-btn hidden" id="hub-info" title="Guia rápido" aria-label="Guia rápido">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
  </button>
+ <button class="icon-btn" id="hub-market" title="Mercado de artesãos" aria-label="Mercado de artesãos">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M3 9l2-5h14l2 5"/><path d="M9 13a3 3 0 0 0 6 0"/></svg>
+ </button>
+ <button class="icon-btn hidden" id="hub-event" title="Criar evento global" aria-label="Criar evento global">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V5a2 2 0 0 1 2-2h7l-1 3 1 3H6"/><path d="M4 21h6"/><path d="M17 3v18"/><path d="M14 21h6"/></svg>
+ </button>
  <button class="icon-btn hidden" id="hub-admin" title="Painel Admin" aria-label="Painel Admin">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
  </button>
@@ -579,6 +620,11 @@ a{color:var(--arcane-bright);}
  <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b>Nova aventura solo</b><span>Só você e o Mestre. Pode anexar o livro de regras.</span></div>
  <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b>Nova aventura em grupo</b><span>Convide outros jogadores cadastrados pelo e-mail.</span></div>
  </div>
+<div class="events-box hidden" id="events-box">
+        <p class="adv-list-title">Eventos abertos</p>
+        <div id="events-list"></div>
+      </div>
+
  <p class="adv-list-title">Suas aventuras</p>
  <div id="hub-adv-list"></div>
 
@@ -814,6 +860,59 @@ a{color:var(--arcane-bright);}
  </div>
 </div>
 
+<!-- MERCADO -->
+<div class="modal-overlay hidden" id="market-overlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head"><h3>Mercado de artesãos</h3><button class="icon-btn" id="market-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" id="market-body"><p class="modal-note">Carregando…</p></div>
+  </div>
+</div>
+
+<!-- EVENT MODAL (admin) -->
+<div class="modal-overlay hidden" id="event-overlay">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-head"><h3>Novo evento global</h3><button class="icon-btn" id="event-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p class="modal-note">O Mestre monta a aventura a partir da ambientação e do objetivo que você descrever. Requisitos em branco significam que qualquer personagem pode participar.</p>
+
+      <div class="field"><label for="ev-nome">Nome da aventura</label>
+        <input id="ev-nome" class="text-input" placeholder="Ex: O Cerco à Torre de Vidro"></div>
+
+      <div class="field"><label for="ev-amb">Ambientação inicial</label>
+        <textarea id="ev-amb" class="text-input" rows="3" placeholder="Onde a história começa, que mundo é esse, que clima tem a cena de abertura."></textarea></div>
+
+      <div class="field"><label for="ev-obj">Objetivo final</label>
+        <textarea id="ev-obj" class="text-input" rows="2" placeholder="O que os grupos precisam alcançar para vencer o evento."></textarea></div>
+
+      <div class="divider dark"><span>requisitos (opcionais)</span></div>
+
+      <div class="ev-row">
+        <div class="field" style="flex:1"><label for="ev-nmin">Nível mínimo</label>
+          <input id="ev-nmin" class="text-input" type="number" min="1" max="20" placeholder="qualquer"></div>
+        <div class="field" style="flex:1"><label for="ev-nmax">Nível máximo</label>
+          <input id="ev-nmax" class="text-input" type="number" min="1" max="20" placeholder="qualquer"></div>
+      </div>
+      <div class="field"><label for="ev-anc">Ancestralidades aceitas</label>
+        <input id="ev-anc" class="text-input" placeholder="Elfo, Anão, Humano (vazio = todas)">
+        <p class="hint">Separe por vírgula.</p></div>
+      <div class="field"><label for="ev-cls">Classes aceitas</label>
+        <input id="ev-cls" class="text-input" placeholder="Mago, Guerreiro (vazio = todas)">
+        <p class="hint">Separe por vírgula.</p></div>
+
+      <div class="divider dark"><span>datas</span></div>
+      <div class="ev-row">
+        <div class="field" style="flex:1"><label for="ev-inicio">Início da aventura</label>
+          <input id="ev-inicio" class="text-input" type="datetime-local"></div>
+        <div class="field" style="flex:1"><label for="ev-ate">Inscrições até</label>
+          <input id="ev-ate" class="text-input" type="datetime-local"></div>
+      </div>
+      <p class="hint">Após o horário de início, os inscritos têm 5 minutos para ingressar. Os participantes são divididos em cenas de até 4 personagens.</p>
+      <p id="event-error" class="card-error hidden"></p>
+    </div>
+    <div class="modal-actions"><button class="secondary-btn" id="event-cancel">Cancelar</button><button class="primary-btn" id="event-save">Publicar evento</button></div>
+  </div>
+</div>
+
 <!-- ADMIN MODAL -->
 <div class="modal-overlay hidden" id="admin-overlay">
  <div class="modal-box" style="max-width:760px;">
@@ -927,10 +1026,9 @@ function sheetsUrl(){ return (adminConfig && adminConfig.sheetsWebhookUrl) || SH
 
 /* ---------------------------------------------------------
    FIRESTORE — backend preferencial quando configurado.
-   Vantagens sobre a planilha: dados protegidos por regras de
+   Backend principal. Dados protegidos por regras de
    segurança, login real do Google, sem limite de célula e sem
-   fila serializada. Cai de volta na planilha se não houver
-   configuração, para não quebrar instalações existentes.
+   segurança do Firebase e sem limite de tamanho por registro.
    --------------------------------------------------------- */
 var FS_ERROR = {__fsError:true};   // distingue falha de rede de "documento não existe"
 function fbReady(){ return !!(window.__fb && window.__fb.db); }
@@ -1382,6 +1480,12 @@ function classifyQuotaError(err){
   if(/per day|daily|requests per day|rpd/.test(m)) return "daily";
   return "minute";
 }
+/* Sobrecarga do modelo (503 / "high demand") não é culpa nem do jogador nem da
+   cota: é passageira. Em vez de mostrar erro, tentamos de novo em silêncio. */
+function isOverloadedError(err){
+  var m = ((err && err.message) || "") + " " + ((err && err.httpStatus) || "");
+  return /high demand|overloaded|unavailable|try again later|503|500|internal error/i.test(m);
+}
 var quotaWaitCb = null;   // avisa a interface durante a espera
 
 async function callGeminiRaw(systemText, contents){
@@ -1390,6 +1494,7 @@ async function callGeminiRaw(systemText, contents){
   if(startIdx===-1) startIdx = 0;
   var ordered = chain.slice(startIdx).concat(chain.slice(0, startIdx));
   var esperas = [20, 40, 70];   // segundos; a janela por minuto reseta em ~60s
+  var sobrecargas = 0;
   var lastErr = null;
 
   for(var tentativa=0; tentativa<=esperas.length; tentativa++){
@@ -1407,6 +1512,18 @@ async function callGeminiRaw(systemText, contents){
         return text;
       }catch(err){
         lastErr = err;
+        if(isOverloadedError(err)){
+          // modelo congestionado: espera curta e tenta o mesmo modelo de novo
+          for(var w=5; w>0; w--){
+            if(quotaWaitCb) quotaWaitCb(w, "sobrecarga");
+            await new Promise(function(r){ setTimeout(r, 1000); });
+          }
+          if(quotaWaitCb) quotaWaitCb(null);
+          i--;                                    // repete este modelo
+          sobrecargas++;
+          if(sobrecargas > 6) throw err;          // insistiu demais: desiste
+          continue;
+        }
         if(!err.isQuotaError) throw err;         // erro real: não insistir
         var tipo = classifyQuotaError(err);
         if(tipo==="billing") throw err;          // exige ação do usuário
@@ -1580,6 +1697,7 @@ function advBody(isGroup){
 "- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
+"FABRICACAO DE ITENS: quando o personagem realmente FABRICAR um item em jogo (usando Manufatura, com tempo, materiais e um teste bem-sucedido narrado na cena), registre-o em \"itensFabricados\" com nome, raridade e nivel do item, alem de adiciona-lo ao inventario por \"itensGanhos\". Somente itens assim fabricados podem ser vendidos no mercado entre jogadores; itens encontrados, comprados ou recebidos NAO entram nesse campo. Seja criterioso: use \"raro\" ou \"lendario\" apenas para feitos excepcionais, e nunca defina nivel de item acima do nivel do personagem. O aplicativo calcula o preco sozinho; nao invente valores.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
@@ -2345,7 +2463,7 @@ async function refreshPlayInner(force){
  character = (await charP) || character;
  renderCharacterSheet(character, "sheet-scroll");
 
- var onActiveScene = adv.mode!=="grupo" || (adv.activeSceneId===currentSceneId) || !adv.activeSceneId;
+ var onActiveScene = adv.mode!=="grupo" || adv.cenasIndependentes || (adv.activeSceneId===currentSceneId) || !adv.activeSceneId;
  if(!onActiveScene){
  el("chat-scroll").classList.add("hidden");
  el("chat-form").classList.add("hidden");
@@ -2828,7 +2946,14 @@ async function runGmTurn(advId, sceneId){
  return sGet("character:"+m.email, true).then(function(c){ return {email:m.email, c:c}; });
  }));
  loaded.forEach(function(r){ sheetsByEmail[r.email] = r.c; });
- var sys = buildAdvSystemPrompt(adv.mode, rosterText, buildSheetsBlock(adv, sheetsByEmail));
+    var ctxEvento = "";
+    if(adv.eventoContexto){
+      ctxEvento = "EVENTO: " + adv.eventoContexto.nome + ".\n" +
+        "Ambientacao inicial definida pelo organizador: " + adv.eventoContexto.ambientacao + "\n" +
+        "Objetivo final do evento: " + adv.eventoContexto.objetivo + "\n" +
+        "Construa a aventura a partir disso. Voce narra APENAS para o grupo listado abaixo; outros grupos vivem a mesma historia em paralelo, entao nao mencione nem controle personagens fora deste grupo, e nao divida nem remaneje cenas.\n\n";
+    }
+    var sys = buildAdvSystemPrompt(adv.mode, rosterText, ctxEvento + buildSheetsBlock(adv, sheetsByEmail));
 
  var contents=[];
  for(var i=0;i<msgs.length;i++){
@@ -2886,6 +3011,14 @@ async function runGmTurn(advId, sceneId){
  var earnedLevel = Math.floor(updatedSheet.experiencia / XP_PER_LEVEL) + 1;
  updatedSheet.nivel = Math.max(updatedSheet.nivel || 1, earnedLevel);
  // skills the GM legitimately trained this turn
+ var craftEntry = (data.itensFabricados||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
+ if(craftEntry && craftEntry.itens && craftEntry.itens.length){
+ var limpos = craftEntry.itens.filter(function(it){
+ return it && it.nome && (parseInt(it.nivelItem,10)||1) <= (updatedSheet.nivel||1);
+ });
+ var criados = await registrarItensFabricados(target, limpos);
+ if(target===session.email && criados.length) criados.forEach(function(it){ showCraftToast(it); });
+ }
  var skillEntry = (data.periciasTreinadas||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
  if(skillEntry) applySkillRankDeltas(updatedSheet, skillEntry.pericias);
  // mastery earned through actual use
@@ -2903,7 +3036,7 @@ async function runGmTurn(advId, sceneId){
  }
  var freshAdv = await sGet("adv:"+advId, true) || adv;
  var advChanged=false;
- if(adv.mode==="grupo" && data.cenas && Array.isArray(data.cenas) && data.cenas.length){
+ if(adv.mode==="grupo" && !adv.cenasIndependentes && data.cenas && Array.isArray(data.cenas) && data.cenas.length){
  var allConfirmed = (freshAdv.members||[]).filter(function(mm){return mm.status==="confirmado";}).map(function(mm){return mm.email;});
  var normalized = data.cenas.map(function(sc, idx){
  var seen = {};
@@ -2932,7 +3065,7 @@ async function runGmTurn(advId, sceneId){
  freshAdv.scenes = normalized;
  advChanged = true;
  }
- if(adv.mode==="grupo" && data.cenaAtiva){ freshAdv.activeSceneId = data.cenaAtiva; advChanged = true; }
+ if(adv.mode==="grupo" && !adv.cenasIndependentes && data.cenaAtiva){ freshAdv.activeSceneId = data.cenaAtiva; advChanged = true; }
  if(advChanged){ freshAdv.updatedAt = Date.now(); await sSet("adv:"+advId, freshAdv, true); currentAdv = freshAdv; }
 
  if(adv.mode==="grupo"){
@@ -2987,6 +3120,18 @@ async function maybeResolveTimeout(pending){
 /* =========================================================
  SHARED CHAT FORM / TYPING / SEND DISPATCH
  ========================================================= */
+function showCraftToast(it){
+  var scroll = el("chat-scroll");
+  if(!scroll) return;
+  var d = document.createElement("div");
+  d.className = "xp-toast craft-toast";
+  d.innerHTML = "\uD83D\uDD28 Fabricado: <b>"+esc(it.nome)+"</b> \u00b7 "+esc(LABEL_RARIDADE[it.raridade]||it.raridade)+
+                " nv."+it.nivelItem+" \u00b7 vale <b>"+fmtMoeda(it.preco)+"</b> no mercado";
+  scroll.appendChild(d);
+  requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+  setTimeout(function(){ if(d.parentNode) d.remove(); }, 12000);
+}
+
 function showXpToast(amount, motivo){
  var scroll = el("chat-scroll");
  if(!scroll) return;
@@ -3010,7 +3155,7 @@ function showMasteryToast(pr){
 }
 
 /* Enquanto a cota se recupera, o jogador vê um aviso em vez de achar que travou */
-quotaWaitCb = function(segundos){
+quotaWaitCb = function(segundos, motivo){
   var el0 = document.getElementById("quota-wait");
   if(segundos===null || segundos===undefined){
     if(el0) el0.remove();
@@ -3024,7 +3169,9 @@ quotaWaitCb = function(segundos){
     el0.id = "quota-wait";
     scroll.appendChild(el0);
   }
-  el0.innerHTML = "⏳ Limite de uso do Gemini atingido neste minuto. Retomando em <b>"+segundos+"s</b>… (a cota por minuto se renova sozinha)";
+  el0.innerHTML = (motivo==="sobrecarga")
+    ? "⏳ O modelo está congestionado no momento. Tentando de novo em <b>"+segundos+"s</b>…"
+    : "⏳ Limite de uso do Gemini atingido neste minuto. Retomando em <b>"+segundos+"s</b>… (a cota se renova sozinha)";
   scroll.scrollTop = scroll.scrollHeight;
 };
 
@@ -3116,6 +3263,561 @@ async function pollTick(){
  else if(view==="lobby") await refreshLobby();
  else if(view==="game" && gameMode==="play") await refreshPlay(false);
  }catch(e){ console.warn("poll error", e); }
+}
+
+/* =========================================================
+   MERCADO DE ITENS (moeda do jogo)
+   Só entram itens FABRICADOS pelo personagem. O preço é fixado
+   pelo sistema a partir de raridade e nível do item — jogador
+   não define valor, o que impede inflar preço combinando com
+   outro jogador ou pedindo item caro ao Mestre.
+   ========================================================= */
+var TAXA_MERCADO = 0.05;          // 5% recolhidos ao administrador
+var RARIDADES = ["comum","incomum","raro","lendario"];
+var MULT_RARIDADE = {comum:1, incomum:2.5, raro:6, lendario:15};
+var LABEL_RARIDADE = {comum:"Comum", incomum:"Incomum", raro:"Raro", lendario:"Lendário"};
+
+/* Curva de preço: cresce com o nível do item e com a raridade.
+   Ancorada na economia do sistema d20 (item de nível N vale muito
+   mais que o de N-1), para uma compra não atropelar o equilíbrio. */
+function precoDoItem(nivelItem, raridade){
+  var n = Math.max(1, Math.min(20, parseInt(nivelItem,10) || 1));
+  var r = String(raridade||"comum").toLowerCase();
+  if(RARIDADES.indexOf(r)===-1) r = "comum";
+  var base = 3*n*n + 7*n;
+  return Math.round(base * (MULT_RARIDADE[r]||1));
+}
+/* Trava anti-desequilíbrio: ninguém compra item muito acima do próprio nível */
+function nivelMaximoCompravel(c){ return (c && c.nivel ? c.nivel : 1) + 1; }
+
+function parseMoeda(txt){
+  if(typeof txt==="number") return txt;
+  var m = String(txt||"").replace(/\./g,"").replace(",",".").match(/-?\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : 0;
+}
+function fmtMoeda(v){
+  var n = Math.round((v||0)*100)/100;
+  return String(n).replace(".", ",")+" po";
+}
+
+function idDeItem(){ return "it_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7); }
+
+/* Registro do que o personagem fabricou — só isso pode ser vendido */
+async function registrarItensFabricados(email, lista){
+  if(!lista || !lista.length) return [];
+  var chave = "crafted:"+normEmail(email);
+  var atual = await sGet(chave, true) || [];
+  var novos = [];
+  lista.forEach(function(it){
+    if(!it || !it.nome) return;
+    var raridade = String(it.raridade||"comum").toLowerCase();
+    if(RARIDADES.indexOf(raridade)===-1) raridade = "comum";
+    var reg = {
+      id: idDeItem(), nome: it.nome, raridade: raridade,
+      nivelItem: Math.max(1, Math.min(20, parseInt(it.nivelItem,10)||1)),
+      descricao: it.descricao || "",
+      fabricadoPor: normEmail(email), fabricadoEm: Date.now()
+    };
+    reg.preco = precoDoItem(reg.nivelItem, reg.raridade);
+    atual.push(reg); novos.push(reg);
+  });
+  if(novos.length) await sSet(chave, atual, true);
+  return novos;
+}
+async function itensFabricadosDe(email){ return await sGet("crafted:"+normEmail(email), true) || []; }
+
+async function listarAnuncios(){
+  var ids = await sGet("market-index", true) || [];
+  var itens = await Promise.all(ids.map(function(id){ return sGet("market:"+id, true); }));
+  return itens.filter(function(a){ return a && a.status==="aberto"; })
+              .sort(function(a,b){ return (b.anunciadoEm||0)-(a.anunciadoEm||0); });
+}
+
+async function anunciarItem(itemId){
+  var meus = await itensFabricadosDe(session.email);
+  var it = meus.filter(function(x){ return x.id===itemId; })[0];
+  if(!it) throw new Error("Só é possível vender itens que o seu personagem fabricou.");
+  if(!(character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); })){
+    throw new Error("Você não tem mais este item no inventário.");
+  }
+  var jaAnunciado = (await listarAnuncios()).some(function(a){ return a.itemId===itemId; });
+  if(jaAnunciado) throw new Error("Este item já está anunciado.");
+
+  var anuncio = {
+    id: itemId, itemId: itemId, nome: it.nome, raridade: it.raridade,
+    nivelItem: it.nivelItem, descricao: it.descricao,
+    preco: precoDoItem(it.nivelItem, it.raridade),   // recalculado, nunca vem do jogador
+    vendedor: session.email, vendedorNome: session.name,
+    vendedorPersonagem: character.nome,
+    anunciadoEm: Date.now(), status:"aberto"
+  };
+  await sSet("market:"+itemId, anuncio, true);
+  var idx = await sGet("market-index", true) || [];
+  if(idx.indexOf(itemId)===-1){ idx.push(itemId); await sSet("market-index", idx, true); }
+  logAdminEvent("market_listing", {item:it.nome, raridade:it.raridade, preco:anuncio.preco, vendedor:session.email});
+  return anuncio;
+}
+
+async function retirarAnuncio(itemId){
+  var a = await sGet("market:"+itemId, true);
+  if(!a || a.vendedor!==session.email) throw new Error("Anúncio não encontrado.");
+  a.status = "retirado";
+  await sSet("market:"+itemId, a, true);
+  return a;
+}
+
+async function comprarItem(itemId){
+  var a = await sGet("market:"+itemId, true);
+  if(!a || a.status!=="aberto") throw new Error("Este item não está mais à venda.");
+  if(a.vendedor===session.email) throw new Error("Você não pode comprar o próprio anúncio.");
+  if(a.nivelItem > nivelMaximoCompravel(character)){
+    throw new Error("Item de nível "+a.nivelItem+" — seu personagem só pode adquirir até o nível "+nivelMaximoCompravel(character)+".");
+  }
+  var meuOuro = parseMoeda(character.dinheiro);
+  if(meuOuro < a.preco) throw new Error("Ouro insuficiente: o item custa "+fmtMoeda(a.preco)+" e você tem "+fmtMoeda(meuOuro)+".");
+
+  var vendedorFicha = await sGet("character:"+a.vendedor, true);
+  if(!vendedorFicha) throw new Error("Não encontrei o vendedor.");
+  if(!(vendedorFicha.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(a.nome); })){
+    a.status="cancelado"; await sSet("market:"+itemId, a, true);
+    throw new Error("O vendedor não tem mais este item. Anúncio cancelado.");
+  }
+
+  var taxa = Math.round(a.preco * TAXA_MERCADO * 100)/100;
+  var liquido = Math.round((a.preco - taxa)*100)/100;
+
+  // comprador: paga e recebe o item
+  character.dinheiro = fmtMoeda(meuOuro - a.preco);
+  character.equipamento = applyListDelta(character.equipamento, [a.nome], []);
+  await sSet("character:"+session.email, character, true);
+
+  // vendedor: entrega o item e recebe o líquido
+  vendedorFicha.dinheiro = fmtMoeda(parseMoeda(vendedorFicha.dinheiro) + liquido);
+  vendedorFicha.equipamento = applyListDelta(vendedorFicha.equipamento, [], [a.nome]);
+  await sSet("character:"+a.vendedor, vendedorFicha, true);
+
+  // o item deixa de ser "fabricado por" para efeito de revenda: quem compra não pode revender
+  var craftedVendedor = await itensFabricadosDe(a.vendedor);
+  await sSet("crafted:"+a.vendedor, craftedVendedor.filter(function(x){ return x.id!==itemId; }), true);
+
+  a.status = "vendido"; a.compradoPor = session.email; a.compradoEm = Date.now(); a.taxa = taxa;
+  await sSet("market:"+itemId, a, true);
+
+  var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0};
+  cofre.total = Math.round((cofre.total + taxa)*100)/100;
+  cofre.transacoes = (cofre.transacoes||0) + 1;
+  await sSet("market-treasury", cofre, true);
+
+  logAdminEvent("market_sale", {item:a.nome, preco:a.preco, taxa:taxa, vendedor:a.vendedor, comprador:session.email});
+  return {anuncio:a, taxa:taxa, liquido:liquido};
+}
+
+/* ---- Interface do mercado ---- */
+function abrirMercado(){
+  el("market-overlay").classList.remove("hidden");
+  renderMercado();
+}
+el("market-close").addEventListener("click", function(){ el("market-overlay").classList.add("hidden"); });
+el("market-overlay").addEventListener("click", function(e){ if(e.target===el("market-overlay")) el("market-overlay").classList.add("hidden"); });
+
+async function renderMercado(){
+  var body = el("market-body");
+  body.innerHTML = '<p class="modal-note">Carregando…</p>';
+  try{
+    var anuncios = await listarAnuncios();
+    var meus = await itensFabricadosDe(session.email);
+    var anunciadosIds = anuncios.map(function(a){ return a.itemId; });
+    var ouro = parseMoeda(character && character.dinheiro);
+    var nivelMax = nivelMaximoCompravel(character);
+
+    var h = '<p class="modal-note">Só itens <b>fabricados</b> pelo próprio personagem podem ser vendidos. '+
+            'O preço é fixado pelo sistema conforme raridade e nível — ninguém define o próprio valor. '+
+            'Uma taxa de '+Math.round(TAXA_MERCADO*100)+'% é recolhida em cada venda.</p>'+
+            '<p class="mk-saldo">Seu ouro: '+fmtMoeda(ouro)+' · você pode comprar itens até o nível '+nivelMax+'</p>';
+
+    h += '<div class="adm-section" style="margin-top:16px;"><h4>À venda ('+anuncios.length+')</h4>';
+    if(!anuncios.length) h += '<p class="modal-note">Nada anunciado no momento.</p>';
+    else anuncios.forEach(function(a){
+      var meu = a.vendedor===session.email;
+      var caro = a.preco > ouro;
+      var altoNivel = a.nivelItem > nivelMax;
+      var btn = meu
+        ? '<button class="mk-btn sec" data-retirar="'+esc(a.itemId)+'">Retirar</button>'
+        : '<button class="mk-btn" data-comprar="'+esc(a.itemId)+'"'+((caro||altoNivel)?" disabled":"")+'>'+
+          (altoNivel ? "Nível alto" : caro ? "Sem ouro" : "Comprar")+'</button>';
+      h += '<div class="mk-item"><span class="mk-i">⚒</span><span class="mk-info">'+
+        '<b>'+esc(a.nome)+'<span class="rar '+esc(a.raridade)+'">'+esc(LABEL_RARIDADE[a.raridade]||a.raridade)+'</span></b>'+
+        '<span>nível '+a.nivelItem+' · feito por '+esc(a.vendedorPersonagem||a.vendedorNome)+(meu?" (você)":"")+'</span></span>'+
+        '<span class="mk-preco">'+fmtMoeda(a.preco)+'</span>'+btn+'</div>';
+    });
+    h += '</div>';
+
+    var vendaveis = meus.filter(function(it){
+      return anunciadosIds.indexOf(it.id)===-1 &&
+             (character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); });
+    });
+    h += '<div class="adm-section"><h4>Seus itens fabricados ('+vendaveis.length+')</h4>';
+    if(!meus.length) h += '<p class="modal-note">Você ainda não fabricou nada. Use a perícia de Manufatura durante a aventura para criar itens vendáveis.</p>';
+    else if(!vendaveis.length) h += '<p class="modal-note">Todos os seus itens fabricados já estão anunciados ou saíram do inventário.</p>';
+    else vendaveis.forEach(function(it){
+      h += '<div class="mk-item"><span class="mk-i">🔨</span><span class="mk-info">'+
+        '<b>'+esc(it.nome)+'<span class="rar '+esc(it.raridade)+'">'+esc(LABEL_RARIDADE[it.raridade]||it.raridade)+'</span></b>'+
+        '<span>nível '+it.nivelItem+' · você recebe '+fmtMoeda(Math.round(it.preco*(1-TAXA_MERCADO)*100)/100)+' após a taxa</span></span>'+
+        '<span class="mk-preco">'+fmtMoeda(it.preco)+'</span>'+
+        '<button class="mk-btn" data-anunciar="'+esc(it.id)+'">Anunciar</button></div>';
+    });
+    h += '</div>';
+
+    if(session.email===ADMIN_EMAIL){
+      var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0};
+      h += '<div class="adm-section"><h4>Taxas recolhidas</h4><p class="mk-saldo">'+fmtMoeda(cofre.total)+
+           ' em '+(cofre.transacoes||0)+' venda(s)</p></div>';
+    }
+
+    body.innerHTML = h;
+    body.querySelectorAll("[data-anunciar]").forEach(function(b){
+      b.addEventListener("click", async function(){
+        b.disabled=true;
+        try{ await anunciarItem(b.getAttribute("data-anunciar")); await renderMercado(); }
+        catch(e){ alert(e.message); b.disabled=false; }
+      });
+    });
+    body.querySelectorAll("[data-retirar]").forEach(function(b){
+      b.addEventListener("click", async function(){
+        b.disabled=true;
+        try{ await retirarAnuncio(b.getAttribute("data-retirar")); await renderMercado(); }
+        catch(e){ alert(e.message); b.disabled=false; }
+      });
+    });
+    body.querySelectorAll("[data-comprar]").forEach(function(b){
+      b.addEventListener("click", async function(){
+        b.disabled=true;
+        try{
+          var r = await comprarItem(b.getAttribute("data-comprar"));
+          renderCharacterSheet(character, "sheet-scroll");
+          alert("Compra concluída: "+r.anuncio.nome+" por "+fmtMoeda(r.anuncio.preco)+".");
+          await renderMercado();
+        }catch(e){ alert(e.message); b.disabled=false; }
+      });
+    });
+  }catch(err){
+    body.innerHTML = '<p class="card-error">Erro ao abrir o mercado: '+esc(err.message)+'</p>';
+  }
+}
+
+/* =========================================================
+   EVENTOS GLOBAIS
+   O admin publica uma aventura aberta; qualquer jogador que
+   atenda aos requisitos pode se inscrever. Na hora marcada há
+   uma janela de 5 minutos para ingressar, e os participantes
+   são distribuídos em cenas de até 4 personagens.
+   ========================================================= */
+var EVENT_JOIN_WINDOW_MS = 5*60*1000;
+var EVENT_SCENE_SIZE = 4;
+
+function eventoRequisitosTexto(ev){
+  var r = (ev && ev.requisitos) || {};
+  var p = [];
+  if(r.nivelMin || r.nivelMax){
+    if(r.nivelMin && r.nivelMax) p.push("níveis "+r.nivelMin+" a "+r.nivelMax);
+    else if(r.nivelMin) p.push("nível "+r.nivelMin+" ou acima");
+    else p.push("até o nível "+r.nivelMax);
+  }
+  if(r.ancestralidades && r.ancestralidades.length) p.push("ancestralidades: "+r.ancestralidades.join(", "));
+  if(r.classes && r.classes.length) p.push("classes: "+r.classes.join(", "));
+  return p.length ? p.join(" · ") : "Aberto a qualquer personagem";
+}
+function normaliza(t){ return String(t||"").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+
+/* Sem requisito definido = todo mundo pode entrar (regra pedida). */
+function personagemElegivel(ev, c){
+  if(!c || !c.nome) return {ok:false, motivo:"Você precisa ter um personagem criado."};
+  var r = (ev && ev.requisitos) || {};
+  var nivel = c.nivel || 1;
+  if(r.nivelMin && nivel < r.nivelMin) return {ok:false, motivo:"Requer nível "+r.nivelMin+" ou acima (você está no "+nivel+")."};
+  if(r.nivelMax && nivel > r.nivelMax) return {ok:false, motivo:"Requer no máximo o nível "+r.nivelMax+" (você está no "+nivel+")."};
+  if(r.ancestralidades && r.ancestralidades.length){
+    var an = normaliza(c.ancestralidade);
+    var okA = r.ancestralidades.some(function(x){ return normaliza(x)===an; });
+    if(!okA) return {ok:false, motivo:"Ancestralidade não aceita neste evento."};
+  }
+  if(r.classes && r.classes.length){
+    var cl = normaliza(c.classe);
+    var okC = r.classes.some(function(x){ return normaliza(x)===cl; });
+    if(!okC) return {ok:false, motivo:"Classe não aceita neste evento."};
+  }
+  return {ok:true};
+}
+
+function faseDoEvento(ev){
+  var agora = Date.now();
+  if(ev.status==="encerrado") return "encerrado";
+  if(ev.status==="emJogo") return "emJogo";
+  if(ev.inscricoesAte && agora > ev.inscricoesAte && agora < ev.inicioAt) return "inscricoesEncerradas";
+  if(agora < ev.inicioAt) return "inscricoes";
+  if(agora <= ev.inicioAt + EVENT_JOIN_WINDOW_MS) return "ingresso";
+  return "expirado";
+}
+
+async function listarEventos(){
+  var ids = await sGet("events-index", true) || [];
+  var evs = await Promise.all(ids.map(function(id){ return sGet("event:"+id, true); }));
+  return evs.filter(Boolean).sort(function(a,b){ return (a.inicioAt||0)-(b.inicioAt||0); });
+}
+
+async function criarEvento(dados){
+  var id = "ev_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,6);
+  var ev = {
+    id:id, nome:dados.nome, ambientacao:dados.ambientacao, objetivo:dados.objetivo,
+    requisitos:{
+      nivelMin: dados.nivelMin || null, nivelMax: dados.nivelMax || null,
+      ancestralidades: dados.ancestralidades || [], classes: dados.classes || []
+    },
+    inicioAt: dados.inicioAt, inscricoesAte: dados.inscricoesAte,
+    criadoPor: session.email, criadoEm: Date.now(),
+    status:"aberto", inscritos:[], ingressaram:[], advId:null
+  };
+  await sSet("event:"+id, ev, true);
+  var idx = await sGet("events-index", true) || [];
+  idx.push(id);
+  await sSet("events-index", idx, true);
+  logAdminEvent("event_created", {id:id, nome:ev.nome, inicioAt:new Date(ev.inicioAt).toISOString()});
+  return ev;
+}
+
+async function inscreverNoEvento(evId){
+  var ev = await sGet("event:"+evId, true);
+  if(!ev) throw new Error("Evento não encontrado.");
+  if(faseDoEvento(ev)!=="inscricoes") throw new Error("As inscrições para este evento não estão abertas.");
+  var eleg = personagemElegivel(ev, character);
+  if(!eleg.ok) throw new Error(eleg.motivo);
+  ev.inscritos = ev.inscritos || [];
+  if(ev.inscritos.some(function(i){ return i.email===session.email; })) return ev;
+  ev.inscritos.push({
+    email: session.email, name: session.name,
+    personagem: character.nome, classe: character.classe,
+    ancestralidade: character.ancestralidade, nivel: character.nivel||1,
+    inscritoEm: Date.now()
+  });
+  await sSet("event:"+evId, ev, true);
+  logAdminEvent("event_signup", {evento:ev.nome, email:session.email});
+  return ev;
+}
+
+async function cancelarInscricao(evId){
+  var ev = await sGet("event:"+evId, true);
+  if(!ev) return;
+  ev.inscritos = (ev.inscritos||[]).filter(function(i){ return i.email!==session.email; });
+  await sSet("event:"+evId, ev, true);
+  return ev;
+}
+
+/* Distribui os que ingressaram em cenas de no máximo 4 personagens */
+function montarCenas(emails){
+  var cenas = [];
+  for(var i=0;i<emails.length;i+=EVENT_SCENE_SIZE){
+    var grupo = emails.slice(i, i+EVENT_SCENE_SIZE);
+    cenas.push({
+      id: "grupo"+(cenas.length+1),
+      nome: "Grupo "+(cenas.length+1),
+      memberEmails: grupo
+    });
+  }
+  if(!cenas.length) cenas.push({id:"grupo1", nome:"Grupo 1", memberEmails:[]});
+  return cenas;
+}
+
+async function ingressarNoEvento(evId){
+  var ev = await sGet("event:"+evId, true);
+  if(!ev) throw new Error("Evento não encontrado.");
+  var fase = faseDoEvento(ev);
+  if(fase!=="ingresso" && fase!=="emJogo") throw new Error("Fora da janela de ingresso deste evento.");
+  var inscrito = (ev.inscritos||[]).some(function(i){ return i.email===session.email; });
+  if(!inscrito) throw new Error("Você não está inscrito neste evento.");
+
+  ev.ingressaram = ev.ingressaram || [];
+  if(ev.ingressaram.indexOf(session.email)===-1) ev.ingressaram.push(session.email);
+
+  if(!ev.advId){
+    var advId = "adv_ev_"+ev.id;
+    var membros = ev.ingressaram.map(function(em){
+      var i = (ev.inscritos||[]).filter(function(x){ return x.email===em; })[0] || {};
+      return {email:em, name:i.name||em, status:"confirmado", invitedAt:ev.criadoEm, respondedAt:Date.now()};
+    });
+    var adv = {
+      id:advId, name:ev.nome, mode:"grupo",
+      hostEmail:ev.criadoPor, hostName:"Evento", createdAt:Date.now(), updatedAt:Date.now(),
+      status:"ativa", joinDeadline:null, members:membros,
+      scenes: montarCenas(ev.ingressaram), activeSceneId:null,
+      cenasIndependentes:true,
+      eventoId: ev.id,
+      eventoContexto: {nome:ev.nome, ambientacao:ev.ambientacao, objetivo:ev.objetivo}
+    };
+    await sSet("adv:"+advId, adv, true);
+    ev.advId = advId; ev.status = "emJogo";
+  } else {
+    // aventura já existe: encaixa o retardatário numa cena com vaga
+    var adv2 = await sGet("adv:"+ev.advId, true);
+    if(adv2){
+      if(!(adv2.members||[]).some(function(m){ return m.email===session.email; })){
+        adv2.members.push({email:session.email, name:session.name, status:"confirmado", respondedAt:Date.now()});
+      }
+      var jaTemCena = (adv2.scenes||[]).some(function(sc){ return sc.memberEmails.indexOf(session.email)>=0; });
+      if(!jaTemCena){
+        var comVaga = (adv2.scenes||[]).filter(function(sc){ return sc.memberEmails.length < EVENT_SCENE_SIZE; })[0];
+        if(comVaga) comVaga.memberEmails.push(session.email);
+        else adv2.scenes.push({id:"grupo"+(adv2.scenes.length+1), nome:"Grupo "+(adv2.scenes.length+1), memberEmails:[session.email]});
+      }
+      adv2.updatedAt = Date.now();
+      await sSet("adv:"+ev.advId, adv2, true);
+    }
+  }
+  await sSet("event:"+evId, ev, true);
+
+  var idx = await sGet("member-adv:"+session.email, true) || [];
+  if(idx.indexOf(ev.advId)===-1){ idx.push(ev.advId); await sSet("member-adv:"+session.email, idx, true); }
+  logAdminEvent("event_join", {evento:ev.nome, email:session.email});
+  return ev.advId;
+}
+
+/* ---- Interface dos eventos ---- */
+function fmtQuando(ts){
+  if(!ts) return "—";
+  var d = new Date(ts);
+  return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" às "+
+         d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+}
+function abrirModalEvento(){
+  ["ev-nome","ev-amb","ev-obj","ev-nmin","ev-nmax","ev-anc","ev-cls","ev-inicio","ev-ate"].forEach(function(id){ el(id).value=""; });
+  el("event-error").classList.add("hidden");
+  el("event-overlay").classList.remove("hidden");
+}
+el("event-close").addEventListener("click", function(){ el("event-overlay").classList.add("hidden"); });
+el("event-cancel").addEventListener("click", function(){ el("event-overlay").classList.add("hidden"); });
+el("event-overlay").addEventListener("click", function(e){ if(e.target===el("event-overlay")) el("event-overlay").classList.add("hidden"); });
+
+el("event-save").addEventListener("click", async function(){
+  var err = el("event-error"); err.classList.add("hidden");
+  var nome = el("ev-nome").value.trim();
+  var amb = el("ev-amb").value.trim();
+  var obj = el("ev-obj").value.trim();
+  var inicio = el("ev-inicio").value ? new Date(el("ev-inicio").value).getTime() : null;
+  var ate = el("ev-ate").value ? new Date(el("ev-ate").value).getTime() : null;
+  function falha(m){ err.textContent=m; err.classList.remove("hidden"); }
+  if(!nome) return falha("Dê um nome ao evento.");
+  if(!amb) return falha("Descreva a ambientação inicial — é dela que o Mestre parte.");
+  if(!obj) return falha("Descreva o objetivo final da aventura.");
+  if(!inicio) return falha("Informe a data e hora de início.");
+  if(!ate) return falha("Informe até quando as inscrições ficam abertas.");
+  if(ate > inicio) return falha("As inscrições precisam encerrar antes do início da aventura.");
+  if(inicio < Date.now()) return falha("O início precisa ser no futuro.");
+
+  var lista = function(v){ return v.split(",").map(function(x){ return x.trim(); }).filter(Boolean); };
+  var btn = el("event-save"); btn.disabled=true; btn.textContent="Publicando…";
+  try{
+    await criarEvento({
+      nome:nome, ambientacao:amb, objetivo:obj,
+      nivelMin: parseInt(el("ev-nmin").value,10) || null,
+      nivelMax: parseInt(el("ev-nmax").value,10) || null,
+      ancestralidades: lista(el("ev-anc").value),
+      classes: lista(el("ev-cls").value),
+      inicioAt: inicio, inscricoesAte: ate
+    });
+    el("event-overlay").classList.add("hidden");
+    await renderEventos();
+    alert("Evento publicado. Ele já aparece para todos os jogadores.");
+  }catch(e){ falha("Erro ao publicar: "+e.message); }
+  finally{ btn.disabled=false; btn.textContent="Publicar evento"; }
+});
+
+async function renderEventos(){
+  var box = el("events-box");
+  var evs = await listarEventos();
+  var agora = Date.now();
+  var visiveis = evs.filter(function(ev){
+    var f = faseDoEvento(ev);
+    if(f==="expirado" || f==="encerrado") return false;
+    if(f==="emJogo") return (ev.ingressaram||[]).indexOf(session.email)>=0 ||
+                             (ev.inscritos||[]).some(function(i){ return i.email===session.email; });
+    return true;
+  });
+  if(!visiveis.length){ box.classList.add("hidden"); return; }
+  box.classList.remove("hidden");
+
+  el("events-list").innerHTML = visiveis.map(function(ev){
+    var fase = faseDoEvento(ev);
+    var inscrito = (ev.inscritos||[]).some(function(i){ return i.email===session.email; });
+    var eleg = personagemElegivel(ev, character);
+    var n = (ev.inscritos||[]).length;
+    var acoes = "";
+    var motivo = "";
+
+    if(fase==="inscricoes"){
+      if(inscrito){
+        acoes = '<button class="ev-btn sec" data-cancel="'+ev.id+'">Cancelar inscrição</button>'+
+                '<button class="ev-btn" disabled>Inscrito ✓</button>';
+      } else if(eleg.ok){
+        acoes = '<button class="ev-btn" data-signup="'+ev.id+'">Inscrever-se</button>';
+      } else {
+        acoes = '<button class="ev-btn" disabled>Requisitos não atendidos</button>';
+        motivo = eleg.motivo;
+      }
+    } else if(fase==="inscricoesEncerradas"){
+      acoes = inscrito
+        ? '<button class="ev-btn" disabled>Inscrito · aguarde o início</button>'
+        : '<button class="ev-btn" disabled>Inscrições encerradas</button>';
+    } else if(fase==="ingresso" || fase==="emJogo"){
+      var jaEntrou = (ev.ingressaram||[]).indexOf(session.email)>=0;
+      var restante = (ev.inicioAt + EVENT_JOIN_WINDOW_MS) - agora;
+      if(jaEntrou){
+        acoes = '<button class="ev-btn" data-open="'+ev.id+'">Voltar à aventura</button>';
+      } else if(inscrito && restante>0){
+        acoes = '<button class="ev-btn" data-join="'+ev.id+'">Ingressar agora ('+fmtClock(restante)+')</button>';
+      } else if(inscrito){
+        acoes = '<button class="ev-btn" disabled>Janela de ingresso encerrada</button>';
+      }
+    }
+
+    return '<div class="ev-card"><div class="ev-head"><span class="ev-icon">🏰</span>'+
+      '<span class="ev-t"><b>'+esc(ev.nome)+'</b><span>'+esc((ev.ambientacao||"").slice(0,140))+((ev.ambientacao||"").length>140?"…":"")+'</span></span></div>'+
+      '<div class="ev-req">⚔ '+esc(eventoRequisitosTexto(ev))+'</div>'+
+      '<div class="ev-when">Início: '+fmtQuando(ev.inicioAt)+' · Inscrições até '+fmtQuando(ev.inscricoesAte)+'</div>'+
+      '<div class="ev-count">'+n+' inscrito(s)'+(fase==="emJogo"?" · em jogo":"")+'</div>'+
+      (motivo? '<div class="ev-motivo">⚠ '+esc(motivo)+'</div>' : '')+
+      (acoes? '<div class="ev-actions">'+acoes+'</div>' : '')+
+      '</div>';
+  }).join("");
+
+  el("events-list").querySelectorAll("[data-signup]").forEach(function(b){
+    b.addEventListener("click", async function(){
+      b.disabled=true;
+      try{ await inscreverNoEvento(b.getAttribute("data-signup")); await renderEventos(); }
+      catch(e){ alert(e.message); b.disabled=false; }
+    });
+  });
+  el("events-list").querySelectorAll("[data-cancel]").forEach(function(b){
+    b.addEventListener("click", async function(){
+      if(!confirm("Cancelar sua inscrição neste evento?")) return;
+      await cancelarInscricao(b.getAttribute("data-cancel"));
+      await renderEventos();
+    });
+  });
+  el("events-list").querySelectorAll("[data-join]").forEach(function(b){
+    b.addEventListener("click", async function(){
+      b.disabled=true; b.textContent="Ingressando…";
+      try{
+        var advId = await ingressarNoEvento(b.getAttribute("data-join"));
+        var adv = await sGet("adv:"+advId, true);
+        await enterPlay(advId, adv);
+      }catch(e){ alert(e.message); b.disabled=false; await renderEventos(); }
+    });
+  });
+  el("events-list").querySelectorAll("[data-open]").forEach(function(b){
+    b.addEventListener("click", async function(){
+      var ev = await sGet("event:"+b.getAttribute("data-open"), true);
+      if(ev && ev.advId){ var adv = await sGet("adv:"+ev.advId, true); await enterPlay(ev.advId, adv); }
+    });
+  });
 }
 
 /* =========================================================
@@ -3211,7 +3913,7 @@ async function loadAdminConfig(){
 function logAdminEvent(type, data){
  var payload = Object.assign({tipo:type, ts:new Date().toISOString()}, data||{});
  if(useFirestore()){
-   // com o Firebase ativo, os eventos ficam no Firestore — nada mais vai para a planilha
+   // com o Firebase ativo, os eventos ficam no Firestore
    var id = "event:"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
    fsPut(id, payload).catch(function(){});
    return;
@@ -3434,27 +4136,22 @@ async function openAdmin(){
     }
     html += '</div>';
 
-    /* ===== planilha ===== */
+    /* ===== importação de histórico antigo ===== */
     if(useFirestore()){
-      html += '<div class="adm-section"><h4>Importar histórico da planilha</h4>'+
-        '<p class="adm-note">Traz personagens, aventuras e conversas que ficaram na planilha para o Firestore. '+
-        'Registros que já existirem aqui são preservados — nada é sobrescrito, e a planilha não é alterada. '+
+      html += '<div class="adm-section"><h4>Importar histórico antigo</h4>'+
+        '<p class="adm-note">Só é necessário uma vez, para trazer personagens e aventuras criados antes da migração para o Firebase. '+
+        'Registros que já existirem no Firebase são preservados — nada é sobrescrito. '+
         'Pode ser executado mais de uma vez com segurança.</p>'+
-        '<div class="input-with-btn" style="margin-top:8px;"><button type="button" class="ghost-btn" id="admin-migrar" style="flex:1;padding:11px;">Importar da planilha</button></div>'+
+        '<div class="input-with-btn" style="margin-top:8px;"><button type="button" class="ghost-btn" id="admin-migrar" style="flex:1;padding:11px;">Importar histórico antigo</button></div>'+
         '<p class="hint" id="admin-migrar-status"></p></div>';
     }
 
-    html += '<div class="adm-section"><h4>Registro externo (Google Sheets)</h4>'+
-      '<p class="adm-note">Opcional. O painel acima já funciona sem isso — a planilha só guarda um histórico de eventos (cadastros, aventuras criadas, cliques de apoio e afiliado).</p>'+
-      '<div class="input-with-btn"><input id="admin-sheets-url" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" value="'+esc(adminConfig.sheetsWebhookUrl||"")+'"><button type="button" class="ghost-btn" id="admin-sheets-save">Salvar</button></div>'+
-      '<p class="hint" id="admin-sheets-status">'+(adminConfig.sheetsWebhookUrl? "Configurado." : "Usando o endereço padrão do código.")+'</p></div>';
-
-    html += '<p class="adm-note" style="margin-top:16px;opacity:.75;">⚠️ Este painel mostra dados de todos os jogadores. Trate essas informações com cuidado — e lembre-se de que os dados da planilha são acessíveis a quem tiver a URL do Web App.</p>';
+    html += '<p class="adm-note" style="margin-top:16px;opacity:.75;">⚠️ Este painel mostra dados de todos os jogadores. Trate essas informações com cuidado.</p>';
 
     el("admin-body").innerHTML = html;
     var migBtn = el("admin-migrar");
     if(migBtn) migBtn.addEventListener("click", async function(){
-      if(!confirm("Importar os dados da planilha para o Firebase?\n\nNada é apagado: registros que já existem no Firebase são mantidos como estão.")) return;
+      if(!confirm("Importar o histórico antigo para o Firebase?\n\nNada é apagado: registros que já existem no Firebase são mantidos como estão.")) return;
       migBtn.disabled = true;
       var st = el("admin-migrar-status");
       try{
@@ -3471,18 +4168,13 @@ async function openAdmin(){
       }finally{ migBtn.disabled = false; }
     });
 
-    var saveBtn = el("admin-sheets-save");
-    if(saveBtn) saveBtn.addEventListener("click", async function(){
-      var url = el("admin-sheets-url").value.trim();
-      adminConfig = adminConfig || {}; adminConfig.sheetsWebhookUrl = url;
-      await sSet("admin-config", adminConfig, true);
-      el("admin-sheets-status").textContent = url ? "Salvo." : "Removido.";
-    });
   }catch(err){
     el("admin-body").innerHTML = '<p class="card-error">Erro ao carregar: '+esc(err.message)+'</p>';
   }
 }
 el("hub-admin").addEventListener("click", openAdmin);
+el("hub-event").addEventListener("click", abrirModalEvento);
+el("hub-market").addEventListener("click", abrirMercado);
 el("admin-close").addEventListener("click", function(){ el("admin-overlay").classList.add("hidden"); });
 el("admin-overlay").addEventListener("click", function(e){ if(e.target===el("admin-overlay")) el("admin-overlay").classList.add("hidden"); });
 
@@ -3585,9 +4277,10 @@ function downloadText(filename, text){
  on the sheet so the player never has to compute anything.
  ========================================================= */
 var pendingCheck = null;
+var MANUAL_HABILITADO = false;   // dado manual desativado; troque para true para reativar
 var rollMode = "auto"; // "auto" = app rolls | "manual" = player types the dice results
 function setRollMode(mode){
- rollMode = (mode==="manual") ? "manual" : "auto";
+ rollMode = (MANUAL_HABILITADO && mode==="manual") ? "manual" : "auto";
  document.querySelectorAll("#sc-mode button").forEach(function(b){
  b.classList.toggle("active", b.getAttribute("data-mode")===rollMode);
  });
