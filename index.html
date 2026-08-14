@@ -1483,8 +1483,14 @@ function classifyQuotaError(err){
 /* Sobrecarga do modelo (503 / "high demand") não é culpa nem do jogador nem da
    cota: é passageira. Em vez de mostrar erro, tentamos de novo em silêncio. */
 function isOverloadedError(err){
+  // Cota NUNCA é sobrecarga: mensagens de 429 costumam trazer "try again later",
+  // e tratá-las como congestionamento fazia o app repetir o mesmo modelo em vez
+  // de passar para o próximo da fila.
+  if(err && (err.isQuotaError || err.httpStatus===429)) return false;
   var m = ((err && err.message) || "") + " " + ((err && err.httpStatus) || "");
-  return /high demand|overloaded|unavailable|try again later|503|500|internal error/i.test(m);
+  if(/high demand|overloaded|model is busy/i.test(m)) return true;
+  return (err && (err.httpStatus===500 || err.httpStatus===502 || err.httpStatus===503)) ||
+         /unavailable|internal error/i.test(m);
 }
 var quotaWaitCb = null;   // avisa a interface durante a espera
 
@@ -1512,7 +1518,8 @@ async function callGeminiRaw(systemText, contents){
         return text;
       }catch(err){
         lastErr = err;
-        if(isOverloadedError(err)){
+        // cota tem prioridade: troca de modelo em vez de insistir no mesmo
+        if(!err.isQuotaError && isOverloadedError(err)){
           // modelo congestionado: espera curta e tenta o mesmo modelo de novo
           for(var w=5; w>0; w--){
             if(quotaWaitCb) quotaWaitCb(w, "sobrecarga");
