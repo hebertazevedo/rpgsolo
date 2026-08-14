@@ -560,6 +560,12 @@ a{color:var(--arcane-bright);}
  <button class="icon-btn hidden" id="hub-admin" title="Painel Admin" aria-label="Painel Admin">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
  </button>
+ <button class="icon-btn" id="hub-key" title="Trocar chave do Gemini" aria-label="Trocar chave do Gemini">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 19 4"/><path d="m16 7 3 3"/><path d="m19 4 2 2"/></svg>
+ </button>
+ <button class="icon-btn" id="hub-delete-char" title="Excluir personagem" aria-label="Excluir personagem">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+ </button>
  <button class="icon-btn" id="hub-logout" title="Sair" aria-label="Sair">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
  </button>
@@ -1242,6 +1248,21 @@ async function sList(prefix, shared){
  return keys;
 }
 
+/* A chave do Gemini fica guardada neste navegador, por conta, e sobrevive ao
+   logout — assim não é preciso digitá-la a cada entrada. Não dá para guardar
+   como hash: hash é irreversível e o app precisa da chave real para chamar a
+   API. Ela nunca é enviada ao servidor nem ao Firestore. */
+function keyStoreId(email){ return "gemini-key:"+normEmail(email); }
+function savedKeyFor(email){
+  try{ return localStorage.getItem(keyStoreId(email)) || null; }catch(e){ return null; }
+}
+function saveKeyFor(email, key){
+  try{ localStorage.setItem(keyStoreId(email), key); }catch(e){}
+}
+function forgetKeyFor(email){
+  try{ localStorage.removeItem(keyStoreId(email)); }catch(e){}
+}
+
 function normEmail(e){ return (e||"").trim().toLowerCase(); }
 async function sha256Hex(str){
  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -1706,6 +1727,79 @@ async function logout(){
  showView("auth");
 }
 el("hub-logout").addEventListener("click", logout);
+
+/* Trocar a chave do Gemini sem sair da conta */
+el("hub-key").addEventListener("click", async function(){
+  var atual = savedKeyFor(session.email) || "";
+  var mascara = atual ? (atual.slice(0,6)+"…"+atual.slice(-4)) : "(nenhuma salva)";
+  var nova = prompt("Chave do Gemini para "+session.email+"\n\nAtual: "+mascara+
+    "\n\nCole a nova chave abaixo, ou deixe em branco e confirme para remover a chave deste dispositivo.", "");
+  if(nova===null) return;
+  nova = nova.trim();
+  if(!nova){
+    forgetKeyFor(session.email);
+    alert("Chave removida deste dispositivo. Você precisará informá-la no próximo login.");
+    return;
+  }
+  var btnAntigo = session.apiKey;
+  session.apiKey = nova;
+  try{
+    var chain = await detectModelChain(nova);
+    session.modelChain = chain; session.model = chain[0];
+    saveKeyFor(session.email, nova);
+    await sSet("profile", {email:session.email, name:session.name, apiKey:nova, model:session.model, modelChain:chain, provider:"google", updatedAt:Date.now()}, false);
+    alert("Chave atualizada e validada. Modelo em uso: "+session.model);
+  }catch(err){
+    session.apiKey = btnAntigo;
+    alert("Não consegui validar a chave: "+(err.message||err)+"\n\nA chave anterior foi mantida.");
+  }
+});
+
+/* Excluir personagem e recomeçar do zero */
+el("hub-delete-char").addEventListener("click", async function(){
+  var nome = (character && character.nome) || "seu personagem";
+  var advIds = await sGet("member-adv:"+session.email, true) || [];
+  var aviso = "EXCLUIR PERSONAGEM\n\n" +
+    "Isto apaga definitivamente:\n" +
+    "  • " + nome + " (ficha, nível, XP, inventário e perícias)\n" +
+    "  • " + advIds.length + " aventura(s) e TODO o histórico de conversa com o Mestre\n" +
+    "  • os roteiros que ainda não foram exportados\n\n" +
+    "Esta ação NÃO pode ser desfeita. Sua conta continua, e você poderá criar um personagem novo.\n\n" +
+    "Para confirmar, digite: EXCLUIR";
+  var resposta = prompt(aviso, "");
+  if(resposta===null) return;
+  if(resposta.trim().toUpperCase()!=="EXCLUIR"){
+    alert("Cancelado — nada foi apagado.");
+    return;
+  }
+  try{
+    for(var i=0;i<advIds.length;i++){
+      var adv = await sGet("adv:"+advIds[i], true);
+      if(adv){
+        var cenas = (adv.scenes && adv.scenes.length) ? adv.scenes : [{id:"principal"}];
+        for(var j=0;j<cenas.length;j++){
+          await sDel("scene-msgs:"+advIds[i]+":"+cenas[j].id, true);
+          await sDel("check:"+advIds[i]+":"+cenas[j].id, true);
+          await sDel("pending-action:"+advIds[i]+":"+cenas[j].id, true);
+        }
+        // só remove a aventura se ela for exclusivamente sua
+        var outros = (adv.members||[]).filter(function(m){ return m.email!==session.email && m.status==="confirmado"; });
+        if(!outros.length) await sDel("adv:"+advIds[i], true);
+      }
+    }
+    await sDel("member-adv:"+session.email, true);
+    await sDel("character:"+session.email, true);
+    await sDel("char-creation-chat", false);
+    logAdminEvent("character_deleted", {email:session.email, nome:nome, aventuras:advIds.length});
+    character = null;
+    creationMessages = [];
+    readCache = {};
+    alert("Personagem excluído. Vamos criar um novo.");
+    await enterCreation();
+  }catch(err){
+    alert("Erro ao excluir: "+(err.message||err));
+  }
+});
 
 /* =========================================================
  VIEW ROUTER
@@ -2726,9 +2820,11 @@ async function runGmTurn(advId, sceneId){
  var mineXp = data.xpConcedido.filter(function(x){ return normEmail(x.email)===session.email; })[0];
  if(mineXp && mineXp.quantidade) showXpToast(mineXp.quantidade, mineXp.motivo);
  }
- if(Object.prototype.hasOwnProperty.call(data, "testeSolicitado")){
- await sSet("check:"+advId+":"+sceneId, data.testeSolicitado || null, true);
+ var checkPedido = data.testeSolicitado || null;
+ if(!checkPedido || !((checkPedido.pericias||[]).length || checkPedido.formula)){
+   checkPedido = inferCheckFromText(extracted.clean, character) || null;
  }
+ await sSet("check:"+advId+":"+sceneId, checkPedido, true);
  if(data.fichas){
  var validMembers = (adv.members||[]).filter(function(mm){ return mm.status==="confirmado"; }).map(function(mm){ return normEmail(mm.email); });
  for(var em in data.fichas){
@@ -3466,6 +3562,41 @@ function modifierFor(name){
  })[0];
  return loose ? computeSkillMod(character, loose) : null;
 }
+/* Rede de seguranca: as vezes o Mestre pede a rolagem no texto mas esquece de
+   preencher "testeSolicitado" (acontece mais em grupo, onde o prompt e maior).
+   Nesses casos deduzimos o pedido a partir da propria narrativa, para o jogador
+   nunca ficar sem como rolar. */
+function inferCheckFromText(text, c){
+  if(!text) return null;
+  var limpo = String(text).replace(/\*\*/g,"");
+  var nomes = [];
+  ((c && c.pericias) || []).forEach(function(p){ if(p && p.nome) nomes.push(p.nome); });
+  ["Percepcao","Percepção","Fortitude","Reflexos","Vontade"].forEach(function(n){
+    if(nomes.indexOf(n)===-1) nomes.push(n);
+  });
+  var achadas = [];
+  nomes.forEach(function(n){
+    var base = n.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    var re = new RegExp("(rol[ae]r?|test[ae]r?|teste de|salvaguarda de|jogue|fa[cç]a)[^.!?\\n]{0,45}\\b"+base+"\\b","i");
+    if(re.test(limpo)){
+      var canon = (n==="Percepcao") ? "Percepção" : n;
+      if(achadas.indexOf(canon)===-1) achadas.push(canon);
+    }
+  });
+  var cd = null;
+  var mcd = limpo.match(/\b(?:CD|DC)\s*:?\s*(\d{1,2})\b/i);
+  if(mcd) cd = parseInt(mcd[1],10);
+  if(achadas.length){
+    return {pericias:achadas, formula:null, cd:cd, descricao:"Rolagem pedida pelo Mestre", inferido:true};
+  }
+  var mf = limpo.match(/\b(\d{0,2}d\d{1,3}\s*(?:[+-]\s*\d+)?)\b/i);
+  if(mf && /(rol|dano|inicia|cur|jogue|test)/i.test(limpo)){
+    var f = mf[1].replace(/\s+/g,"");
+    if(parseFormula(f)) return {pericias:[], formula:f, cd:cd, descricao:"Rolagem pedida pelo Mestre", inferido:true};
+  }
+  return null;
+}
+
 function parseFormula(f){
  var m = String(f||"").replace(/\s+/g,"").match(/^(\d*)d(\d+)([+-]\d+)?$/i);
  if(!m) return null;
@@ -3681,6 +3812,7 @@ async function finishGoogleLogin(apiKey){
       await sSet("pub:"+u.email, {email:u.email, name:u.name, provider:"google", createdAt:Date.now()}, true);
       logAdminEvent("signup", {email:u.email, name:u.name, provider:"google"});
     }
+    saveKeyFor(u.email, apiKey);
     await sSet("profile", {email:u.email, name:u.name, apiKey:apiKey, model:session.model, modelChain:session.modelChain, provider:"google", updatedAt:Date.now()}, false);
     pendingGoogleUser = null;
     await boot2AfterAuth();
@@ -3706,7 +3838,8 @@ async function signInWithGoogle(){
     var nome = u.displayName || email.split("@")[0];
 
     var localProfile = await sGet("profile", false);
-    var apiKey = (localProfile && normEmail(localProfile.email)===email) ? localProfile.apiKey : null;
+    var apiKey = savedKeyFor(email) ||
+                 ((localProfile && normEmail(localProfile.email)===email) ? localProfile.apiKey : null);
 
     if(apiKey){
       // já temos a chave neste dispositivo: entra direto, sem segundo passo
@@ -3719,6 +3852,7 @@ async function signInWithGoogle(){
         await sSet("pub:"+email, {email:email, name:nome, provider:"google", createdAt:Date.now()}, true);
         logAdminEvent("signup", {email:email, name:nome, provider:"google"});
       }
+      saveKeyFor(email, apiKey);
       await sSet("profile", {email:email, name:nome, apiKey:apiKey, model:session.model, modelChain:session.modelChain, provider:"google", updatedAt:Date.now()}, false);
       await boot2AfterAuth();
       return;
