@@ -153,6 +153,7 @@ a{color:var(--arcane-bright);}
 .hp-bar-fill.xp-fill{background:linear-gradient(90deg,var(--brass-dim),var(--brass-bright));}
 .xp-note{margin:6px 0 0;font-size:10.5px;color:var(--ink-soft);letter-spacing:.01em;}
 .mastery-toast{background:rgba(138,92,196,.16)!important;border-color:var(--violet)!important;color:var(--violet-bright)!important;}
+.quota-wait{margin:8px 16px 0;padding:9px 12px;border-radius:9px;background:rgba(193,154,91,.14);border:1px solid var(--brass-dim);font-size:12px;color:var(--brass-bright);line-height:1.5;}
 .xp-toast{margin:8px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(193,154,91,.16);border:1px solid var(--brass);font-size:12px;color:var(--brass-bright);font-weight:600;display:flex;align-items:center;gap:8px;animation:msgin .3s ease;}
 .new-msg-pill{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;z-index:5;padding:8px 16px;border-radius:999px;border:1px solid var(--brass);background:var(--void-3);color:var(--brass-bright);font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);animation:msgin .2s ease;}
 .skill-check{margin:10px 16px 0;padding:11px 13px;border-radius:11px;background:linear-gradient(160deg,rgba(79,143,124,.16),var(--void-3));border:1px solid var(--arcane);animation:msgin .25s ease;}
@@ -1368,28 +1369,61 @@ async function callGeminiOnce(systemText, contents, model){
  return text;
 }
 
+/* Recuperação de cota.
+   Os 429 do Gemini têm três causas com tratamentos diferentes:
+   - por minuto (RPM/TPM): a janela reseta em ~60s, então esperar resolve;
+   - por dia (RPD): nada adianta até a virada do dia;
+   - crédito/faturamento: exige ação do usuário.
+   Antes o app desistia no primeiro 429; agora ele alterna de modelo (cada um
+   tem cota própria) e, se todos estiverem saturados, aguarda e tenta de novo. */
+function classifyQuotaError(err){
+  var m = ((err && err.message) || "").toLowerCase();
+  if(/prepay|credit|billing/.test(m)) return "billing";
+  if(/per day|daily|requests per day|rpd/.test(m)) return "daily";
+  return "minute";
+}
+var quotaWaitCb = null;   // avisa a interface durante a espera
+
 async function callGeminiRaw(systemText, contents){
- var chain = (session.modelChain && session.modelChain.length) ? session.modelChain : [session.model];
- var startIdx = chain.indexOf(session.model);
- if(startIdx===-1) startIdx = 0;
- var lastErr = null;
- for(var i=startIdx; i<chain.length; i++){
- var model = chain[i];
- try{
- var text = await callGeminiOnce(systemText, contents, model);
- if(model!==session.model){
- console.warn("Quota excedida em modelo anterior — usando "+model+" a partir de agora.");
- session.model = model;
- sSet("profile", {email:session.email, name:session.name, apiKey:session.apiKey, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
- }
- return text;
- }catch(err){
- lastErr = err;
- if(err.isQuotaError && i<chain.length-1) continue; // try the next model, most recent to oldest
- throw err;
- }
- }
- throw lastErr || new Error("Não foi possível completar a chamada.");
+  var chain = (session.modelChain && session.modelChain.length) ? session.modelChain : [session.model];
+  var startIdx = chain.indexOf(session.model);
+  if(startIdx===-1) startIdx = 0;
+  var ordered = chain.slice(startIdx).concat(chain.slice(0, startIdx));
+  var esperas = [20, 40, 70];   // segundos; a janela por minuto reseta em ~60s
+  var lastErr = null;
+
+  for(var tentativa=0; tentativa<=esperas.length; tentativa++){
+    var todosPorMinuto = true;
+    for(var i=0; i<ordered.length; i++){
+      var model = ordered[i];
+      try{
+        var text = await callGeminiOnce(systemText, contents, model);
+        if(model!==session.model){
+          console.info("Alternando para o modelo "+model+" (cota do anterior esgotada).");
+          session.model = model;
+          sSet("profile", {email:session.email, name:session.name, apiKey:session.apiKey, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
+        }
+        if(quotaWaitCb) quotaWaitCb(null);
+        return text;
+      }catch(err){
+        lastErr = err;
+        if(!err.isQuotaError) throw err;         // erro real: não insistir
+        var tipo = classifyQuotaError(err);
+        if(tipo==="billing") throw err;          // exige ação do usuário
+        if(tipo!=="minute") todosPorMinuto = false;
+      }
+    }
+    // todos os modelos recusaram
+    if(!todosPorMinuto) break;                   // limite diário: esperar não ajuda
+    if(tentativa===esperas.length) break;
+    var seg = esperas[tentativa];
+    for(var s=seg; s>0; s--){
+      if(quotaWaitCb) quotaWaitCb(s);
+      await new Promise(function(r){ setTimeout(r, 1000); });
+    }
+  }
+  if(quotaWaitCb) quotaWaitCb(null);
+  throw lastErr || new Error("Não foi possível completar a chamada.");
 }
 /* The GM occasionally mistypes a marker (a missing § is enough) — when that
  happened the whole JSON block leaked into the chat. Extraction is therefore
@@ -2975,6 +3009,25 @@ function showMasteryToast(pr){
  setTimeout(function(){ if(d.parentNode) d.remove(); }, 12000);
 }
 
+/* Enquanto a cota se recupera, o jogador vê um aviso em vez de achar que travou */
+quotaWaitCb = function(segundos){
+  var el0 = document.getElementById("quota-wait");
+  if(segundos===null || segundos===undefined){
+    if(el0) el0.remove();
+    return;
+  }
+  var scroll = document.getElementById("chat-scroll");
+  if(!scroll) return;
+  if(!el0){
+    el0 = document.createElement("div");
+    el0.className = "quota-wait";
+    el0.id = "quota-wait";
+    scroll.appendChild(el0);
+  }
+  el0.innerHTML = "⏳ Limite de uso do Gemini atingido neste minuto. Retomando em <b>"+segundos+"s</b>… (a cota por minuto se renova sozinha)";
+  scroll.scrollTop = scroll.scrollHeight;
+};
+
 function showTyping(on){
  var existing = el("typing-indicator");
  if(on){
@@ -2996,7 +3049,7 @@ el("chat-form").addEventListener("submit", function(e){
  var text = chatInput.value.trim();
  if(!text || loading) return;
  chatInput.value=""; chatInput.style.height="auto";
- el("skill-check-box").classList.add("hidden"); pendingCheck=null;
+ if(pendingCheck) consumirCheckAtual();
  if(gameMode==="creation") sendCreationMessage(text, {display:true});
  else sendSceneMessage(text, {display:true});
 });
@@ -3606,7 +3659,30 @@ function parseFormula(f){
  if(!sides || sides<2 || qty<1 || qty>50) return null;
  return {qty:qty, sides:sides, mod:mod};
 }
+/* Assinatura do pedido já respondido: impede que o polling reabra a caixa
+   antes de a remoção propagar pelo backend. */
+var checkConsumido = null;
+function assinaturaCheck(c){
+  if(!c) return null;
+  return JSON.stringify([c.pericias||[], c.formula||null, c.cd||null, c.descricao||""]);
+}
+function consumirCheckAtual(){
+  checkConsumido = assinaturaCheck(pendingCheck);
+  pendingCheck = null;
+  el("skill-check-box").classList.add("hidden");
+  if(gameMode==="play" && currentAdvId && currentSceneId){
+    sSet("check:"+currentAdvId+":"+currentSceneId, null, true).catch(function(){});
+  }
+}
+
 function renderSkillCheck(check){
+  // já rolamos este pedido: não reabrir
+  if(check && checkConsumido && assinaturaCheck(check)===checkConsumido){
+    el("skill-check-box").classList.add("hidden");
+    pendingCheck = null;
+    return;
+  }
+  if(check) checkConsumido = null;   // pedido novo: volta a valer
  var box = el("skill-check-box");
  pendingCheck = check;
  var hasSkills = check && check.pericias && check.pericias.length;
@@ -3705,8 +3781,9 @@ el("sc-roll").addEventListener("click", function(){
  entry = {qty:f.qty, sides:f.sides, modifier:f.mod, rolls:rolls, total:tot, label:label, manual:isManual};
  }
 
- el("skill-check-box").classList.add("hidden");
- pendingCheck = null;
+ // O pedido precisa ser apagado do armazenamento, senão a atualização
+ // automática o relê e a caixa reaparece logo depois de rolar.
+ consumirCheckAtual();
  entry.id = Date.now()+"_"+Math.random().toString(36).slice(2);
  entry.ts = Date.now();
  localDiceHistory.unshift(entry);
