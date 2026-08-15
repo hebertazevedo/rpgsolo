@@ -200,6 +200,9 @@ a{color:var(--arcane-bright);}
 .list-plain li{padding:5px 2px;font-size:12.5px;color:var(--ink);border-bottom:1px solid rgba(43,34,19,.08);}
 .list-plain li:last-child{border-bottom:none;}
 .sheet-note{font-size:12px;line-height:1.6;color:var(--ink-soft);white-space:pre-wrap;}
+.tag-item{font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:999px;margin-left:7px;vertical-align:middle;font-weight:700;}
+.tag-item.vend{background:rgba(79,143,124,.25);color:#2c6152;border:1px solid var(--arcane);}
+.tag-item.comp{background:rgba(43,34,19,.1);color:var(--ink-soft);border:1px solid var(--parchment-line);}
 .gold-line{font-family:var(--font-mono);font-weight:700;color:var(--ink);font-size:13px;}
 .party-row{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid rgba(43,34,19,.08);}
 .party-row:last-child{border-bottom:none;}
@@ -1672,7 +1675,7 @@ function advBody(isGroup){
 "- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
-"FABRICACAO DE ITENS: quando o personagem realmente FABRICAR um item em jogo (usando Manufatura, com tempo, materiais e um teste bem-sucedido narrado na cena), registre-o em \"itensFabricados\" com nome, raridade e nivel do item, alem de adiciona-lo ao inventario por \"itensGanhos\". Somente itens assim fabricados podem ser vendidos no mercado entre jogadores; itens encontrados, comprados ou recebidos NAO entram nesse campo. Seja criterioso: use \"raro\" ou \"lendario\" apenas para feitos excepcionais, e nunca defina nivel de item acima do nivel do personagem. O aplicativo calcula o preco sozinho; nao invente valores.\n\n" +
+"ITENS PRODUZIDOS PELO PERSONAGEM: sempre que o personagem PRODUZIR um item em jogo — por Manufatura, alquimia, magia de criacao, encantamento, culinaria, escrita de pergaminhos, entalhe ou qualquer outro oficio narrado na cena — registre-o em \"itensFabricados\" com nome, raridade e nivel, alem de adiciona-lo ao inventario por \"itensGanhos\". O que importa e que o personagem tenha CRIADO o item com esforco proprio, nao a pericia usada. Somente itens produzidos assim podem ser vendidos no mercado; itens encontrados, saqueados, comprados ou recebidos de presente NAO entram nesse campo. Seja criterioso: use \"raro\" ou \"lendario\" apenas para feitos excepcionais, e nunca defina nivel de item acima do nivel do personagem. O aplicativo calcula o preco sozinho; nao invente valores.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
@@ -1999,7 +2002,13 @@ function renderCharacterSheet(c, rootId){
  if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>');
  if((c.equipamento&&c.equipamento.length)||c.dinheiro){
  var eqBody=""; if(c.dinheiro) eqBody+='<p class="gold-line">'+esc(c.dinheiro)+'</p>';
- if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>';
+ if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){
+ var vendavel = (c.itensVendaveis||[]).some(function(n){ return normaliza(n)===normaliza(x); });
+ var comprado = (c.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(x); });
+ var tag = vendavel ? '<span class="tag-item vend" title="Produzido pelo personagem — pode ser vendido no mercado">vendável</span>'
+ : comprado ? '<span class="tag-item comp" title="Comprado de outro jogador — não pode ser revendido">comprado</span>' : '';
+ return '<li>'+esc(x)+tag+'</li>';
+ }).join("")+'</ul>';
  html += sectionHtml("equip","Equipamento", eqBody);
  }
  if(c.aparencia||c.personalidade||c.notas){
@@ -2788,6 +2797,9 @@ function applyGmSheetUpdate(existing, incoming){
  APP_OWNED_LISTS.forEach(function(f){
  base[f] = (existing && Array.isArray(existing[f])) ? existing[f].slice() : (Array.isArray(base[f]) ? base[f] : []);
  });
+ ["itensVendaveis","itensComprados"].forEach(function(f){
+ base[f] = (existing && Array.isArray(existing[f])) ? existing[f].slice() : [];
+ });
  base.pericias = normalizeSkillList(base.pericias) || [];
 
  // structural stats are frozen unless the character actually leveled up
@@ -3338,7 +3350,25 @@ async function registrarItensFabricados(email, lista){
     reg.preco = precoDoItem(reg.nivelItem, reg.raridade);
     atual.push(reg); novos.push(reg);
   });
-  if(novos.length) await sSet(chave, atual, true);
+  if(novos.length){
+    await sSet(chave, atual, true);
+    // marca na própria ficha, para o jogador ver o que pode vender
+    var ficha = await sGet("character:"+normEmail(email), true);
+    if(ficha){
+      ficha.itensVendaveis = (ficha.itensVendaveis||[]).slice();
+      novos.forEach(function(it){
+        if(!ficha.itensVendaveis.some(function(n){ return normaliza(n)===normaliza(it.nome); })){
+          ficha.itensVendaveis.push(it.nome);
+        }
+      });
+      // um item produzido deixa de ser "comprado"
+      ficha.itensComprados = (ficha.itensComprados||[]).filter(function(n){
+        return !novos.some(function(it){ return normaliza(it.nome)===normaliza(n); });
+      });
+      await sSet("character:"+normEmail(email), ficha, true);
+      if(normEmail(email)===session.email){ character = ficha; }
+    }
+  }
   return novos;
 }
 async function itensFabricadosDe(email){ return await sGet("crafted:"+normEmail(email), true) || []; }
@@ -3356,6 +3386,9 @@ async function anunciarItem(itemId){
   if(!it) throw new Error("Só é possível vender itens que o seu personagem fabricou.");
   if(!(character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); })){
     throw new Error("Você não tem mais este item no inventário.");
+  }
+  if((character.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(it.nome); })){
+    throw new Error("Este item foi comprado de outro jogador e não pode ser revendido.");
   }
   var jaAnunciado = (await listarAnuncios()).some(function(a){ return a.itemId===itemId; });
   if(jaAnunciado) throw new Error("Este item já está anunciado.");
@@ -3406,11 +3439,14 @@ async function comprarItem(itemId){
   // comprador: paga e recebe o item
   character.dinheiro = fmtMoeda(meuOuro - a.preco);
   character.equipamento = applyListDelta(character.equipamento, [a.nome], []);
+  character.itensComprados = (character.itensComprados||[]).concat([a.nome]);
+  character.itensVendaveis = (character.itensVendaveis||[]).filter(function(n){ return normaliza(n)!==normaliza(a.nome); });
   await sSet("character:"+session.email, character, true);
 
   // vendedor: entrega o item e recebe o líquido
   vendedorFicha.dinheiro = fmtMoeda(parseMoeda(vendedorFicha.dinheiro) + liquido);
   vendedorFicha.equipamento = applyListDelta(vendedorFicha.equipamento, [], [a.nome]);
+  vendedorFicha.itensVendaveis = (vendedorFicha.itensVendaveis||[]).filter(function(n){ return normaliza(n)!==normaliza(a.nome); });
   await sSet("character:"+a.vendedor, vendedorFicha, true);
 
   // o item deixa de ser "fabricado por" para efeito de revenda: quem compra não pode revender
@@ -3447,7 +3483,7 @@ async function renderMercado(){
     var ouro = parseMoeda(character && character.dinheiro);
     var nivelMax = nivelMaximoCompravel(character);
 
-    var h = '<p class="modal-note">Só itens <b>fabricados</b> pelo próprio personagem podem ser vendidos. '+
+    var h = '<p class="modal-note">Só itens <b>produzidos</b> pelo próprio personagem podem ser vendidos — marcados como <b>vendável</b> na ficha. '+
             'O preço é fixado pelo sistema conforme raridade e nível — ninguém define o próprio valor. '+
             'Uma taxa de '+Math.round(TAXA_MERCADO*100)+'% de cada venda vai para o cofre de prêmios dos eventos globais.</p>'+
             '<p class="mk-saldo">Seu ouro: '+fmtMoeda(ouro)+' · você pode comprar itens até o nível '+nivelMax+'</p>';
@@ -3469,12 +3505,14 @@ async function renderMercado(){
     });
     h += '</div>';
 
+    var comprados = (character.itensComprados||[]);
     var vendaveis = meus.filter(function(it){
-      return anunciadosIds.indexOf(it.id)===-1 &&
-             (character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); });
+      if(anunciadosIds.indexOf(it.id)>=0) return false;
+      if(comprados.some(function(n){ return normaliza(n)===normaliza(it.nome); })) return false;
+      return (character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); });
     });
     h += '<div class="adm-section"><h4>Seus itens fabricados ('+vendaveis.length+')</h4>';
-    if(!meus.length) h += '<p class="modal-note">Você ainda não fabricou nada. Use a perícia de Manufatura durante a aventura para criar itens vendáveis.</p>';
+    if(!meus.length) h += '<p class="modal-note">Você ainda não produziu nada. Fabrique, forje, prepare ou encante um item durante a aventura para ter o que vender.</p>';
     else if(!vendaveis.length) h += '<p class="modal-note">Todos os seus itens fabricados já estão anunciados ou saíram do inventário.</p>';
     else vendaveis.forEach(function(it){
       h += '<div class="mk-item"><span class="mk-i">🔨</span><span class="mk-info">'+
@@ -4044,7 +4082,7 @@ var CAPITULOS = [
 
 {id:"mercado", titulo:"Mercado de artesãos", html:
  '<div class="cap"><h4>Mercado de artesãos</h4>'+
- '<p>Só itens <b>fabricados pelo próprio personagem</b> podem ser vendidos. Para fabricar, use a perícia de <b>Manufatura</b> durante a aventura, com materiais e tempo — o Mestre conduz o processo.</p>'+
+ '<p>Só itens <b>produzidos pelo próprio personagem</b> podem ser vendidos: por Manufatura, alquimia, magia de criação, encantamento, culinária, entalhe ou qualquer ofício narrado na cena.</p>'+'<p>No inventário, itens produzidos aparecem marcados como <b>vendável</b>; os adquiridos de outro jogador, como <b>comprado</b> — e estes não podem ser revendidos.</p>'+
  '<h5>Preço fixado pelo sistema</h5><p>Ninguém define o próprio preço. Ele vem da raridade e do nível do item:</p>'+
  '<table><tr><th>Nível</th><th>Comum</th><th>Incomum</th><th>Raro</th><th>Lendário</th></tr>'+
  '<tr><td>1</td><td>10 po</td><td>25 po</td><td>60 po</td><td>150 po</td></tr>'+
