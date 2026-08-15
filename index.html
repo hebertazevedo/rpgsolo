@@ -41,7 +41,8 @@ if (window.__fbPending) {
       signOut: auth.signOut,
       onAuthStateChanged: auth.onAuthStateChanged,
       doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, deleteDoc: fs.deleteDoc,
-      collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where
+      collection: fs.collection, getDocs: fs.getDocs, query: fs.query, where: fs.where,
+      onSnapshot: fs.onSnapshot
     };
     window.__fbStage = "4-pronto";
     console.info("Firebase pronto:", window.FIREBASE_CONFIG.projectId);
@@ -393,6 +394,12 @@ a{color:var(--arcane-bright);}
 .ev-btn.sec{background:transparent;border:1px solid var(--line);color:var(--text-lo);}
 .ev-motivo{font-size:11.5px;color:var(--brass-bright);margin-top:8px;}
 .ev-count{font-size:11px;color:var(--text-faint);margin-top:6px;}
+.forge-chat{flex:1;min-height:0;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+.forge-form{display:flex;gap:9px;padding:10px 16px;border-top:1px solid var(--line);align-items:flex-end;}
+.forge-form textarea{flex:1;resize:none;max-height:110px;min-height:42px;background:var(--void-3);border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:var(--text-hi);font-size:14px;}
+.forge-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px 14px;}
+.fg-cap{font-size:10.5px;color:var(--text-faint);margin-left:auto;margin-right:10px;text-align:right;line-height:1.4;}
+.fg-item{margin:2px 0;padding:11px 13px;border-radius:10px;background:rgba(79,143,124,.14);border:1px solid var(--arcane);font-size:12.5px;color:var(--arcane-bright);line-height:1.6;}
 .mk-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;background:var(--void-2);border:1px solid var(--line);margin-bottom:8px;}
 .mk-item .mk-i{font-size:18px;flex-shrink:0;}
 .mk-item .mk-info{flex:1;min-width:0;}
@@ -834,29 +841,20 @@ a{color:var(--arcane-bright);}
 
 <!-- OFICINA (produção de itens) -->
 <div class="modal-overlay hidden" id="forge-overlay">
-  <div class="modal-box" style="max-width:520px;">
-    <div class="modal-head"><h3>Oficina de itens</h3><button class="icon-btn" id="forge-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
-    <div class="modal-body">
-      <p class="modal-note">Itens produzidos aqui entram no seu inventário marcados como <b>vendável</b> e podem ser anunciados no mercado. O preço é calculado automaticamente pela raridade e pelo nível.</p>
-      <div class="field"><label for="fg-nome">Nome do item</label>
-        <input id="fg-nome" class="text-input" placeholder="Ex: Amuleto Rúnico"></div>
-      <div class="ev-row">
-        <div class="field" style="flex:1"><label for="fg-rar">Raridade</label>
-          <select id="fg-rar" class="text-input">
-            <option value="comum">Comum</option>
-            <option value="incomum">Incomum</option>
-            <option value="raro">Raro</option>
-            <option value="lendario">Lendário</option>
-          </select></div>
-        <div class="field" style="flex:1"><label for="fg-niv">Nível do item</label>
-          <input id="fg-niv" class="text-input" type="number" min="1" max="20" value="1"></div>
-      </div>
-      <div class="field"><label for="fg-desc">Descrição (opcional)</label>
-        <input id="fg-desc" class="text-input" placeholder="O que o item faz"></div>
-      <p class="mk-saldo" id="fg-preco">Preço de mercado: —</p>
-      <p id="forge-error" class="card-error hidden"></p>
+  <div class="modal-box" style="max-width:620px;height:82vh;">
+    <div class="modal-head"><h3>Oficina</h3>
+      <span class="fg-cap" id="fg-cap"></span>
+      <button class="icon-btn" id="forge-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
     </div>
-    <div class="modal-actions"><button class="secondary-btn" id="forge-cancel">Cancelar</button><button class="primary-btn" id="forge-save">Produzir item</button></div>
+    <div id="forge-chat" class="forge-chat"></div>
+    <form id="forge-form" class="forge-form">
+      <textarea id="forge-input" rows="1" placeholder="O que você quer produzir?"></textarea>
+      <button type="submit" class="send-btn" id="forge-send">Enviar</button>
+    </form>
+    <div class="forge-foot">
+      <button type="button" class="mk-btn sec" id="forge-reset">Recomeçar</button>
+      <span class="mk-saldo" id="fg-ouro"></span>
+    </div>
   </div>
 </div>
 
@@ -1063,6 +1061,54 @@ async function fsPut(key, value){
     return true;
   }catch(e){ console.warn("Firestore put falhou ("+key+"):", e.message); return false; }
 }
+/* ---------------------------------------------------------
+   LISTENERS EM TEMPO REAL
+   O polling perguntava ao servidor a cada 4s, gastando ~3.600
+   leituras por hora de jogo. Com onSnapshot o Firestore avisa
+   quando o documento muda: cobra por alteração, não por
+   pergunta. Reduz o consumo em ~40x e ainda chega mais rápido.
+   --------------------------------------------------------- */
+var listeners = {};        // chave -> função de cancelamento
+var listenersAtivos = false;
+
+function fsListen(key, onChange){
+  if(!fbReady()) return null;
+  if(listeners[key]) return listeners[key];
+  var fb = window.__fb;
+  try{
+    var ref = fb.doc(fb.db, "kv", docIdFor(key));
+    var unsub = fb.onSnapshot(ref, function(snap){
+      var valor = null;
+      if(snap.exists()){
+        var d = snap.data();
+        if(d && typeof d.json==="string"){
+          try{ valor = JSON.parse(d.json); }catch(e){ valor = null; }
+        } else if(d && d.value!==undefined){ valor = d.value; }
+      }
+      cachePut(key, valor);                       // cache já fica fresco
+      try{
+        if(window.storage){
+          if(valor===null) window.storage.delete(key, true);
+          else window.storage.set(key, JSON.stringify(valor), true);
+        }
+      }catch(e){}
+      if(onChange) onChange(unwrap(valor), key);
+    }, function(err){
+      console.warn("Listener falhou ("+key+"):", err && err.message);
+      pararListener(key);                          // cai de volta no polling
+    });
+    listeners[key] = unsub;
+    return unsub;
+  }catch(e){ console.warn("Nao consegui ouvir "+key+":", e.message); return null; }
+}
+function pararListener(key){
+  if(listeners[key]){ try{ listeners[key](); }catch(e){} delete listeners[key]; }
+}
+function pararTodosListeners(){
+  Object.keys(listeners).forEach(pararListener);
+  listenersAtivos = false;
+}
+
 async function fsList(prefix){
   var fb = window.__fb;
   try{
@@ -1240,7 +1286,7 @@ var partyCache = {}; // email -> character
 function isSyncedKey(key){
  // TODA chave compartilhada precisa estar aqui, senao o dado fica preso no
  // navegador de quem criou e mais ninguem enxerga.
- return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:)/.test(key);
+ return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:|forge-chat:)/.test(key);
 }
 /* Values are stored wrapped as {__v:rev, __t:ts, d:data} so a stale or failed
  remote write can never overwrite newer local data on screen. */
@@ -1308,6 +1354,15 @@ async function sSet(key, value, shared){
  var prevRev = 0;
  var cachedPrev = readCache[key];
  if(cachedPrev){ prevRev = revOf(cachedPrev.value); }
+ else if(useFirestore()){
+ // Escrevendo no documento de OUTRO jogador (ex.: creditar uma venda) nao
+ // temos copia local: sem ler a revisao atual, a gravacao nasceria com
+ // rev 1 e seria descartada como "antiga" pelo dono do documento.
+ try{
+ var atualRemoto = await fsGet(key);
+ if(atualRemoto && atualRemoto!==FS_ERROR) prevRev = revOf(atualRemoto);
+ }catch(e){}
+ }
  else{
  try{
  if(window.storage){
@@ -1454,10 +1509,18 @@ async function detectModelChain(apiKey){
 
 
 async function callGeminiOnce(systemText, contents, model){
- var res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(model)+":generateContent", {
+ var res;
+ try{
+ res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(model)+":generateContent", {
  method:"POST", headers:{"x-goog-api-key":session.apiKey, "Content-Type":"application/json"},
  body: JSON.stringify({ systemInstruction:{parts:[{text:systemText}]}, contents:contents, generationConfig:{maxOutputTokens:8192} })
  });
+ }catch(netErr){
+ // "Failed to fetch": queda de rede, wifi trocando, DNS. É passageiro.
+ var e0 = new Error(netErr && netErr.message ? netErr.message : "Falha de rede");
+ e0.isNetworkError = true;
+ throw e0;
+ }
  var data = await res.json().catch(function(){return null;});
  if(!res.ok){
  var msg = (data && data.error && data.error.message) ? data.error.message : ("Erro HTTP "+res.status);
@@ -1491,6 +1554,11 @@ function classifyQuotaError(err){
 }
 /* Sobrecarga do modelo (503 / "high demand") não é culpa nem do jogador nem da
    cota: é passageira. Em vez de mostrar erro, tentamos de novo em silêncio. */
+function isNetworkError(err){
+  if(err && err.isNetworkError) return true;
+  var m = ((err && err.message) || "");
+  return /failed to fetch|networkerror|network request failed|load failed|connection|err_internet|timeout/i.test(m);
+}
 function isOverloadedError(err){
   // Cota NUNCA é sobrecarga: mensagens de 429 costumam trazer "try again later",
   // e tratá-las como congestionamento fazia o app repetir o mesmo modelo em vez
@@ -1504,87 +1572,116 @@ function isOverloadedError(err){
 var quotaWaitCb = null;   // avisa a interface durante a espera
 
 async function callGeminiRaw(systemText, contents){
-  var chain = (session.modelChain && session.modelChain.length) ? session.modelChain : [session.model];
-  var startIdx = chain.indexOf(session.model);
-  if(startIdx===-1) startIdx = 0;
+  // Garante uma fila com mais de um modelo: sem isso não há para onde rodar
+  // quando a cota do primeiro acaba.
+  if(!session.modelChain || session.modelChain.length < 2){
+    try{
+      var detectada = await detectModelChain(session.apiKey);
+      if(detectada && detectada.length) {
+        session.modelChain = detectada;
+        if(detectada.indexOf(session.model)===-1) session.model = detectada[0];
+      }
+    }catch(e){}
+  }
+  var chain = (session.modelChain && session.modelChain.length) ? session.modelChain.slice() : [session.model];
+  if(chain.indexOf(session.model)===-1) chain.unshift(session.model);
+
+  var startIdx = Math.max(0, chain.indexOf(session.model));
   var ordered = chain.slice(startIdx).concat(chain.slice(0, startIdx));
-  var esperas = [20, 40, 70];   // segundos; a janela por minuto reseta em ~60s
-  var sobrecargas = 0;
+
+  var esperas = [20, 40, 70];      // cota por minuto se renova em ~60s
   var lastErr = null;
+  var esgotadosPorMinuto = {};     // modelos que bateram limite nesta rodada
 
   for(var tentativa=0; tentativa<=esperas.length; tentativa++){
     var todosPorMinuto = true;
+    var algumTentado = false;
+
     for(var i=0; i<ordered.length; i++){
       var model = ordered[i];
-      try{
-        var text = await callGeminiOnce(systemText, contents, model);
-        if(model!==session.model){
-          console.info("Alternando para o modelo "+model+" (cota do anterior esgotada).");
-          session.model = model;
-          sSet("profile", {email:session.email, name:session.name, apiKey:session.apiKey, model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
-        }
-        if(quotaWaitCb) quotaWaitCb(null);
-        return text;
-      }catch(err){
-        lastErr = err;
-        // cota tem prioridade: troca de modelo em vez de insistir no mesmo
-        if(!err.isQuotaError && isOverloadedError(err)){
-          // modelo congestionado: espera curta e tenta o mesmo modelo de novo
-          for(var w=5; w>0; w--){
-            if(quotaWaitCb) quotaWaitCb(w, "sobrecarga");
-            await new Promise(function(r){ setTimeout(r, 1000); });
+      var transitorios = 0;
+
+      while(true){
+        try{
+          algumTentado = true;
+          var text = await callGeminiOnce(systemText, contents, model);
+          if(model!==session.model){
+            console.info("Cota esgotada no modelo anterior — usando "+model+".");
+            session.model = model;
+            sSet("profile", {email:session.email, name:session.name, apiKey:session.apiKey,
+                             model:session.model, modelChain:session.modelChain, updatedAt:Date.now()}, false);
           }
           if(quotaWaitCb) quotaWaitCb(null);
-          i--;                                    // repete este modelo
-          sobrecargas++;
-          if(sobrecargas > 6) throw err;          // insistiu demais: desiste
-          continue;
+          return text;
+        }catch(err){
+          lastErr = err;
+
+          // rede caiu ou modelo congestionado: espera curta e repete o MESMO modelo
+          if(!err.isQuotaError && (isNetworkError(err) || isOverloadedError(err))){
+            transitorios++;
+            if(transitorios > 3) break;      // insistiu bastante: passa ao próximo modelo
+            var motivo = isNetworkError(err) ? "rede" : "sobrecarga";
+            for(var w=5; w>0; w--){
+              if(quotaWaitCb) quotaWaitCb(w, motivo);
+              await new Promise(function(r){ setTimeout(r, 1000); });
+            }
+            if(quotaWaitCb) quotaWaitCb(null);
+            continue;                        // tenta de novo o mesmo modelo
+          }
+
+          if(!err.isQuotaError) throw err;   // erro real (chave inválida, bloqueio): mostrar
+
+          var tipo = classifyQuotaError(err);
+          if(tipo==="billing") throw err;    // exige ação do usuário
+          if(tipo==="minute") esgotadosPorMinuto[model] = true;
+          else todosPorMinuto = false;
+          break;                             // próximo modelo da fila
         }
-        if(!err.isQuotaError) throw err;         // erro real: não insistir
-        var tipo = classifyQuotaError(err);
-        if(tipo==="billing") throw err;          // exige ação do usuário
-        if(tipo!=="minute") todosPorMinuto = false;
       }
     }
-    // todos os modelos recusaram
-    if(!todosPorMinuto) break;                   // limite diário: esperar não ajuda
+
+    if(!algumTentado) break;
+    if(!todosPorMinuto) break;               // limite diário: esperar não resolve
     if(tentativa===esperas.length) break;
+
     var seg = esperas[tentativa];
-    for(var s=seg; s>0; s--){
-      if(quotaWaitCb) quotaWaitCb(s);
+    for(var s2=seg; s2>0; s2--){
+      if(quotaWaitCb) quotaWaitCb(s2, "cota");
       await new Promise(function(r){ setTimeout(r, 1000); });
     }
   }
+
   if(quotaWaitCb) quotaWaitCb(null);
   throw lastErr || new Error("Não foi possível completar a chamada.");
 }
-/* The GM occasionally mistypes a marker (a missing § is enough) — when that
- happened the whole JSON block leaked into the chat. Extraction is therefore
- deliberately forgiving: locate the block loosely, then read the JSON by
- brace matching so it works even with no closing marker at all. */
+
+/* O Mestre às vezes erra um marcador (basta um § a menos) — sem tolerância,
+   o bloco JSON inteiro vazava para o chat. A extração localiza o bloco de
+   forma flexível e lê o JSON por contagem de chaves, funcionando mesmo sem
+   marcador de fechamento. */
 var FICHA_START_RE = /\u00a7{2,}\s*FICHA-INICIO\s*\u00a7{0,3}/i;
 var FICHA_END_RE = /\u00a7{2,}\s*FICHA-FIM\s*\u00a7{0,3}/i;
 
 function sliceJsonObject(text){
- var start = text.indexOf("{");
- if(start===-1) return null;
- var depth = 0, inStr = false, escaped = false;
- for(var i=start;i<text.length;i++){
- var ch = text[i];
- if(inStr){
- if(escaped){ escaped = false; }
- else if(ch==="\\"){ escaped = true; }
- else if(ch==='"'){ inStr = false; }
- continue;
- }
- if(ch==='"'){ inStr = true; continue; }
- if(ch==="{") depth++;
- else if(ch==="}"){
- depth--;
- if(depth===0) return {json:text.slice(start,i+1), end:i+1};
- }
- }
- return null;
+  var start = text.indexOf("{");
+  if(start===-1) return null;
+  var depth = 0, inStr = false, escaped = false;
+  for(var i=start;i<text.length;i++){
+    var ch = text[i];
+    if(inStr){
+      if(escaped){ escaped = false; }
+      else if(ch==="\\"){ escaped = true; }
+      else if(ch==='"'){ inStr = false; }
+      continue;
+    }
+    if(ch==='"'){ inStr = true; continue; }
+    if(ch==="{") depth++;
+    else if(ch==="}"){
+      depth--;
+      if(depth===0) return {json:text.slice(start,i+1), end:i+1};
+    }
+  }
+  return null;
 }
 
 function extractBlock(raw){
@@ -1885,6 +1982,7 @@ el("auth-continue").addEventListener("click", async function(){
 });
 
 async function logout(){
+  pararTodosListeners();
  await sDel("profile", false);
  session = { email:null, name:null, apiKey:null, model:DEFAULT_MODEL_FALLBACK, modelChain:[DEFAULT_MODEL_FALLBACK] };
  character = null;
@@ -2204,6 +2302,7 @@ async function retryCreation(){
  HUB
  ========================================================= */
 async function enterHub(){
+  pararTodosListeners();
  showView("hub");
  el("hub-greeting").textContent = "Olá, "+(session.name||"");
  var cc = el("hub-char-card");
@@ -2212,6 +2311,10 @@ async function enterHub(){
  el("hub-admin").classList.toggle("hidden", session.email!==ADMIN_EMAIL);
  el("hub-event").classList.toggle("hidden", session.email!==ADMIN_EMAIL);
  renderEventos();
+ // rele a ficha: o ouro pode ter sido creditado por uma venda enquanto
+ // este jogador estava parado no hub
+ var fichaAtual = await sGet("character:"+session.email, true);
+ if(fichaAtual) character = fichaAtual;
  var advCount = await refreshHubAdventures();
  renderSupport(advCount||0);
  renderGear();
@@ -2443,8 +2546,46 @@ async function enterPlay(advId, preloaded){
  el("chat-form").classList.toggle("hidden", adv.status!=="ativa");
  updatePlayControls(adv);
  await refreshPlay(true);
+ ligarListenersDaAventura();
+}
+
+function ligarListenersDaAventura(){
+ if(!fbReady() || !currentAdvId || !currentSceneId) return;
+ pararTodosListeners();
+ var base = currentAdvId+":"+currentSceneId;
+ fsListen("scene-msgs:"+base, function(msgs){
+ if(view!=="game" || gameMode!=="play") return;
+ var lista = msgs || [];
+ if(lista.length===lastSeenMsgCount) return;
+ renderPlayChat(lista);
+ lastSeenMsgCount = lista.length;
+ });
+ fsListen("check:"+base, function(chk){
+ if(view==="game" && gameMode==="play") renderSkillCheck(chk);
+ });
+ fsListen("character:"+session.email, function(c){
+ if(!c) return;
+ character = c;
+ if(view==="game") renderCharacterSheet(character, "sheet-scroll");
+ });
+ fsListen("adv:"+currentAdvId, function(adv){
+ if(!adv || view!=="game") return;
+ currentAdv = adv;
+ var novaCena = mySceneId(adv);
+ if(novaCena !== currentSceneId){ currentSceneId = novaCena; ligarListenersDaAventura(); return; }
+ updatePlayControls(adv);
+ el("chat-form").classList.toggle("hidden", adv.status!=="ativa");
+ });
+ if(currentAdv && currentAdv.mode==="grupo"){
+ fsListen("pending-action:"+base, function(p){
+ currentPending = p; renderTimerPill();
+ if(p) maybeResolveTimeout(p);
+ });
+ }
+ listenersAtivos = true;
 }
 el("game-back").addEventListener("click", function(){
+  pararTodosListeners();
  if(gameMode==="creation"){ /* stay, creation must finish first */ return; }
  gameMode=null; currentAdvId=null; currentAdv=null; enterHub();
 });
@@ -3197,7 +3338,9 @@ quotaWaitCb = function(segundos, motivo){
     el0.id = "quota-wait";
     scroll.appendChild(el0);
   }
-  el0.innerHTML = (motivo==="sobrecarga")
+  el0.innerHTML = (motivo==="rede")
+    ? "📡 Conexão instável. Tentando de novo em <b>"+segundos+"s</b>…"
+    : (motivo==="sobrecarga")
     ? "⏳ O modelo está congestionado no momento. Tentando de novo em <b>"+segundos+"s</b>…"
     : "⏳ Limite de uso do Gemini atingido neste minuto. Retomando em <b>"+segundos+"s</b>… (a cota se renova sozinha)";
   scroll.scrollTop = scroll.scrollHeight;
@@ -3285,11 +3428,20 @@ function startPolling(){
  if(pollTimer) return;
  pollTimer = setInterval(pollTick, POLL_MS);
 }
+var ultimoPollHub = 0;
 async function pollTick(){
  try{
- if(view==="hub") await refreshHubAdventures();
+ if(view==="hub"){
+ if(Date.now()-ultimoPollHub < 20000) return;   // o hub muda pouco
+ ultimoPollHub = Date.now();
+ await refreshHubAdventures();
+ renderEventos();
+ }
  else if(view==="lobby") await refreshLobby();
- else if(view==="game" && gameMode==="play") await refreshPlay(false);
+ else if(view==="game" && gameMode==="play"){
+ if(listenersAtivos) return;                    // o servidor nos avisa
+ await refreshPlay(false);
+ }
  }catch(e){ console.warn("poll error", e); }
 }
 
@@ -3724,54 +3876,184 @@ async function exportarLivroPDF(adv, comIlustracoes, onProgress){
   doc.save("livro-"+slugify(livro.titulo || adv.name)+".pdf");
 }
 
-/* ---- Oficina de itens (restrita) ---- */
-function atualizarPrecoOficina(){
-  var n = parseInt(el("fg-niv").value,10) || 1;
-  var r = el("fg-rar").value;
-  el("fg-preco").textContent = "Preco de mercado: "+fmtMoeda(precoDoItem(n,r))+
-    " \u00b7 voce recebe "+fmtMoeda(Math.round(precoDoItem(n,r)*(1-TAXA_MERCADO)*100)/100)+" apos a taxa";
+/* ---- Oficina: diálogo com um mestre artesão ----
+   O que pode ser produzido sai da ficha: posto na perícia de ofício define a
+   raridade máxima, o nível do personagem limita o nível do item, e o custo em
+   ouro é debitado de verdade. Assim a oficina não vira uma fonte livre de
+   itens — está presa às capacidades do personagem. */
+var PERICIAS_OFICIO = ["manufatura","criacao","oficio","artesanato","alquimia","arcanismo","ocultismo","natureza","medicina"];
+var RARIDADE_POR_POSTO = {destreinado:null, treinado:"comum", especialista:"incomum", mestre:"raro", lendario:"lendario"};
+
+function melhorOficio(c){
+  var melhor = null;
+  (c && c.pericias || []).forEach(function(p){
+    var chave = normalizeSkillName(p.nome);
+    var eOficio = PERICIAS_OFICIO.indexOf(chave)>=0 || /lore|saber/.test(chave);
+    if(!eOficio) return;
+    if(!melhor || rankIndex(p.posto) > rankIndex(melhor.posto)) melhor = p;
+  });
+  return melhor;
 }
-function abrirOficina(){
+function capacidadeOficina(c){
+  var of = melhorOficio(c);
+  if(!of) return {pode:false, motivo:"Seu personagem não tem nenhuma perícia de ofício treinada (Manufatura, Alquimia, Arcanismo…). Sem isso não há o que produzir."};
+  var raridadeMax = RARIDADE_POR_POSTO[String(of.posto||"treinado").toLowerCase()] || "comum";
+  return {
+    pode:true, pericia:of.nome, posto:of.posto, raridadeMax:raridadeMax,
+    nivelMax: c.nivel || 1,
+    mod: computeSkillMod(c, of),
+    ouro: parseMoeda(c.dinheiro)
+  };
+}
+function custoDeProducao(nivel, raridade){ return Math.round(precoDoItem(nivel, raridade)*0.5*100)/100; }
+
+function buildForgeSystemPrompt(c){
+  var cap = capacidadeOficina(c);
+  var permitidas = RARIDADES.slice(0, RARIDADES.indexOf(cap.raridadeMax)+1)
+                   .map(function(r){ return LABEL_RARIDADE[r]; }).join(", ");
+  return "Você é um mestre artesão que orienta um aventureiro a produzir um item na oficina. Responda sempre em português do Brasil, em no máximo 2 parágrafos curtos, com tom de bancada de trabalho — prático e evocativo.\n\n"+
+  "ARTESÃO: "+(c.nome||"—")+", "+(c.ancestralidade||"")+" "+(c.classe||"")+", nível "+(c.nivel||1)+".\n"+
+  "Ofício principal: "+cap.pericia+" ("+cap.posto+", modificador "+fmtMod(cap.mod)+").\n"+
+  "Ouro disponível: "+fmtMoeda(cap.ouro)+".\n"+
+  "Equipamento e materiais em mãos: "+((c.equipamento||[]).join(", ")||"nada digno de nota")+".\n"+
+  "Magias conhecidas: "+((c.magias||[]).join(", ")||"nenhuma")+".\n\n"+
+  "LIMITES RÍGIDOS (nunca ultrapasse, mesmo se o jogador insistir):\n"+
+  "- Raridade máxima permitida pelo posto do ofício: "+LABEL_RARIDADE[cap.raridadeMax]+". Raridades possíveis: "+permitidas+".\n"+
+  "- Nível máximo do item: "+cap.nivelMax+" (o nível do personagem).\n"+
+  "- O item precisa ter relação com o que o personagem sabe fazer: um mago com Arcanismo produz focos, pergaminhos e itens mágicos; um ferreiro com Manufatura produz armas e armaduras; um alquimista produz elixires e bombas. Recuse pedidos fora do repertório do personagem e sugira uma alternativa que ele consiga fazer.\n"+
+  "- Custo em ouro: metade do valor de mercado do item. Se o jogador não tiver ouro suficiente, diga quanto falta e ofereça uma versão mais simples.\n"+
+  "- Nunca produza item que dependa de material raro que não esteja no inventário; nesse caso, oriente onde conseguir e não conclua.\n\n"+
+  "FLUXO: entenda o que ele quer, ajuste ao que é possível, confirme os detalhes (nome, efeito, raridade, nível, custo) e só então conclua a produção.\n\n"+
+  "FORMATO OBRIGATÓRIO: ao final de TODA resposta inclua um bloco oculto (o jogador não o vê):\n\n"+
+  FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n"+
+  "Esquema: {\"concluido\": boolean, \"item\": null | {\"nome\": string, \"raridade\": \"comum\"|\"incomum\"|\"raro\"|\"lendario\", \"nivelItem\": number, \"descricao\": string}}\n"+
+  "Use \"concluido\": true APENAS quando o item estiver pronto e o jogador tiver confirmado. Nos demais turnos use false e \"item\": null.";
+}
+
+var forgeMessages = [];
+var forgeLoading = false;
+
+function renderForgeChat(){
+  var box = el("forge-chat");
+  box.innerHTML = forgeMessages.filter(function(m){ return m.display!==false; }).map(function(m){
+    if(m.kind==="item"){
+      return '<div class="fg-item">⚒ <b>'+esc(m.nome)+'</b> — '+esc(LABEL_RARIDADE[m.raridade]||m.raridade)+
+             ' nível '+m.nivelItem+'. Custou '+esc(m.custo)+' e vale '+esc(m.valor)+' no mercado.</div>';
+    }
+    var cls = m.role==="user" ? "msg player" : "msg gm";
+    return '<div class="'+cls+'" style="max-width:88%"><span class="who">'+(m.role==="user"?"Você":"Artesão")+
+           '</span><div class="bubble">'+esc(m.text)+'</div></div>';
+  }).join("");
+  if(forgeLoading){
+    box.innerHTML += '<div class="typing"><span></span><span></span><span></span></div>';
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+function atualizarCabecalhoOficina(){
+  var cap = capacidadeOficina(character);
+  el("fg-ouro").textContent = "Ouro: "+fmtMoeda(parseMoeda(character.dinheiro));
+  el("fg-cap").innerHTML = cap.pode
+    ? esc(cap.pericia)+" ("+esc(cap.posto)+")<br>até "+esc(LABEL_RARIDADE[cap.raridadeMax])+" · nível "+cap.nivelMax
+    : "sem ofício treinado";
+}
+
+async function abrirOficina(){
   if(!podeProduzirItens(session.email)){
-    alert("A producao de itens e um recurso restrito. Comprar no mercado continua disponivel para todos.");
+    alert("A produção de itens é um recurso restrito. Comprar no mercado continua disponível para todos.");
     return;
   }
-  el("fg-nome").value=""; el("fg-desc").value="";
-  el("fg-rar").value="comum"; el("fg-niv").value="1";
-  el("forge-error").classList.add("hidden");
-  atualizarPrecoOficina();
   el("forge-overlay").classList.remove("hidden");
-}
-el("forge-close").addEventListener("click", function(){ el("forge-overlay").classList.add("hidden"); });
-el("forge-cancel").addEventListener("click", function(){ el("forge-overlay").classList.add("hidden"); });
-el("forge-overlay").addEventListener("click", function(e){ if(e.target===el("forge-overlay")) el("forge-overlay").classList.add("hidden"); });
-el("fg-rar").addEventListener("change", atualizarPrecoOficina);
-el("fg-niv").addEventListener("input", atualizarPrecoOficina);
-
-el("forge-save").addEventListener("click", async function(){
-  var err = el("forge-error"); err.classList.add("hidden");
-  var nome = el("fg-nome").value.trim();
-  if(!nome){ err.textContent="De um nome ao item."; err.classList.remove("hidden"); return; }
-  if((character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(nome); })){
-    err.textContent="Voce ja tem um item com esse nome no inventario."; err.classList.remove("hidden"); return;
+  atualizarCabecalhoOficina();
+  var salvo = await sGet("forge-chat:"+session.email, true);
+  forgeMessages = (salvo && salvo.messages) || [];
+  renderForgeChat();
+  var cap = capacidadeOficina(character);
+  if(!cap.pode){
+    forgeMessages = [{role:"model", text:cap.motivo, display:true}];
+    renderForgeChat();
+    return;
   }
-  var nivel = Math.max(1, Math.min(20, parseInt(el("fg-niv").value,10)||1));
-  var btn = el("forge-save"); btn.disabled=true; btn.textContent="Produzindo...";
+  if(!forgeMessages.length){
+    enviarMensagemOficina("[O artesão chega à oficina. Cumprimente-o, diga em uma frase o que ele consegue produzir com o ofício e o nível que tem, e pergunte o que ele quer fazer.]", {display:false});
+  }
+}
+
+async function enviarMensagemOficina(texto, opts){
+  opts = opts || {};
+  if(forgeLoading) return;
+  texto = (texto||"").trim();
+  if(!texto) return;
+  forgeMessages.push({role:"user", text:texto, display:opts.display!==false});
+  forgeLoading = true; renderForgeChat();
+  el("forge-send").disabled = true;
   try{
-    character.equipamento = applyListDelta(character.equipamento, [nome], []);
-    await sSet("character:"+session.email, character, true);
-    var criados = await registrarItensFabricados(session.email, [{
-      nome:nome, raridade:el("fg-rar").value, nivelItem:nivel, descricao:el("fg-desc").value.trim()
-    }]);
-    character = await sGet("character:"+session.email, true) || character;
-    renderCharacterSheet(character, "sheet-scroll");
-    logAdminEvent("item_forged", {nome:nome, raridade:el("fg-rar").value, nivel:nivel, por:session.email});
-    el("forge-overlay").classList.add("hidden");
-    alert("Item produzido: "+nome+" \u2014 vale "+fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(nivel, el("fg-rar").value))+" no mercado.");
+    var contents = forgeMessages.filter(function(m){ return m.kind!=="item"; })
+                                .map(function(m){ return {role:m.role, parts:[{text:m.text}]}; });
+    var raw = await callGeminiRaw(buildForgeSystemPrompt(character), contents);
+    var ext = extractBlock(raw);
+    forgeMessages.push({role:"model", text: ext.clean || "(o artesão fica em silêncio…)", display:true});
+
+    var d = ext.data;
+    if(d && d.concluido && d.item && d.item.nome){
+      var cap = capacidadeOficina(character);
+      var raridade = String(d.item.raridade||"comum").toLowerCase();
+      if(RARIDADES.indexOf(raridade)===-1) raridade = "comum";
+      // trava do app: a IA não pode passar do que a ficha permite
+      if(RARIDADES.indexOf(raridade) > RARIDADES.indexOf(cap.raridadeMax)) raridade = cap.raridadeMax;
+      var nivel = Math.max(1, Math.min(cap.nivelMax, parseInt(d.item.nivelItem,10)||1));
+      var custo = custoDeProducao(nivel, raridade);
+      var ouro = parseMoeda(character.dinheiro);
+
+      if(ouro < custo){
+        forgeMessages.push({role:"model", display:true,
+          text:"(Você não tem ouro suficiente: a produção custaria "+fmtMoeda(custo)+" e você tem "+fmtMoeda(ouro)+".)"});
+      } else if((character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(d.item.nome); })){
+        forgeMessages.push({role:"model", display:true, text:"(Você já tem um item com esse nome no inventário.)"});
+      } else {
+        character.dinheiro = fmtMoeda(ouro - custo);
+        character.equipamento = applyListDelta(character.equipamento, [d.item.nome], []);
+        await sSet("character:"+session.email, character, true);
+        var criados = await registrarItensFabricados(session.email, [{
+          nome:d.item.nome, raridade:raridade, nivelItem:nivel, descricao:d.item.descricao||""
+        }]);
+        character = await sGet("character:"+session.email, true) || character;
+        renderCharacterSheet(character, "sheet-scroll");
+        forgeMessages.push({kind:"item", nome:d.item.nome, raridade:raridade, nivelItem:nivel,
+          custo:fmtMoeda(custo), valor:fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(nivel,raridade)), display:true});
+        logAdminEvent("item_forged", {nome:d.item.nome, raridade:raridade, nivel:nivel, custo:custo, por:session.email});
+        forgeMessages = [];   // pronto: próxima conversa começa limpa
+      }
+    }
+  }catch(err){
+    forgeMessages.push({role:"model", text: friendlyApiError(err), display:true, error:true});
+  }finally{
+    forgeLoading = false;
+    el("forge-send").disabled = false;
+    await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
+    atualizarCabecalhoOficina();
+    renderForgeChat();
     if(!el("market-overlay").classList.contains("hidden")) renderMercado();
-  }catch(e){
-    err.textContent = "Erro ao produzir: "+e.message; err.classList.remove("hidden");
-  }finally{ btn.disabled=false; btn.textContent="Produzir item"; }
+  }
+}
+
+el("forge-close").addEventListener("click", function(){ el("forge-overlay").classList.add("hidden"); });
+el("forge-overlay").addEventListener("click", function(e){ if(e.target===el("forge-overlay")) el("forge-overlay").classList.add("hidden"); });
+el("forge-reset").addEventListener("click", async function(){
+  forgeMessages = [];
+  await sSet("forge-chat:"+session.email, {messages:[]}, true);
+  renderForgeChat();
+  abrirOficina();
+});
+el("forge-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  var t = el("forge-input").value.trim();
+  if(!t) return;
+  el("forge-input").value = "";
+  enviarMensagemOficina(t, {display:true});
+});
+el("forge-input").addEventListener("keydown", function(e){
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); el("forge-form").dispatchEvent(new Event("submit",{cancelable:true})); }
 });
 
 /* ---- Interface do mercado ---- */
