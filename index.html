@@ -323,6 +323,20 @@ a{color:var(--arcane-bright);}
 .info-section ol, .info-section ul{margin:0 0 8px;padding-left:20px;color:var(--text-lo);font-size:12.5px;line-height:1.7;}
 .info-section p{margin:0 0 8px;color:var(--text-lo);font-size:12.5px;line-height:1.7;}
 .info-section .note{background:var(--void-3);border:1px solid var(--line-soft);border-radius:8px;padding:9px 11px;font-size:11.5px;color:var(--text-faint);line-height:1.6;}
+.guia-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+.guia-nav button{padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--void-3);color:var(--text-lo);font-size:11.5px;font-weight:600;cursor:pointer;}
+.guia-nav button.active{background:var(--brass);border-color:var(--brass);color:var(--void);}
+.guia-nav button:hover:not(.active){border-color:var(--brass-dim);color:var(--text-hi);}
+.cap h4{font-family:var(--font-display);font-size:16px;color:var(--brass-bright);margin:0 0 10px;}
+.cap h5{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-lo);margin:16px 0 7px;}
+.cap p{font-size:12.5px;line-height:1.7;color:var(--text-lo);margin:0 0 9px;}
+.cap b{color:var(--text-hi);}
+.cap ol,.cap ul{margin:0 0 10px;padding-left:20px;font-size:12.5px;line-height:1.75;color:var(--text-lo);}
+.cap .nota{background:var(--void-3);border:1px solid var(--line-soft);border-radius:9px;padding:10px 12px;font-size:11.5px;color:var(--text-faint);line-height:1.65;margin:10px 0;}
+.cap table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0 12px;}
+.cap th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);padding:6px 8px;border-bottom:1px solid var(--line);}
+.cap td{padding:6px 8px;border-bottom:1px solid var(--line-soft);color:var(--text-lo);}
+.cap td b{color:var(--text-hi);}
 .class-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;}
 .class-grid .ci{font-size:12px;color:var(--text-lo);line-height:1.5;padding:6px 0;border-bottom:1px solid var(--line-soft);}
 .class-grid .ci b{color:var(--text-hi);display:block;font-size:12.5px;}
@@ -794,70 +808,13 @@ a{color:var(--arcane-bright);}
 
 <!-- INFO MODAL -->
 <div class="modal-overlay hidden" id="info-overlay">
- <div class="modal-box" style="max-width:640px;">
- <div class="modal-head"><h3>Guia rápido</h3><button class="icon-btn" id="info-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
- <div class="modal-body">
-
- <div class="info-section">
- <h4>🔑 Como conseguir uma chave gratuita do Gemini</h4>
- <ol>
- <li>Acesse <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> e entre com sua conta Google (a mesma do Gmail que você vai usar aqui).</li>
- <li>Clique em "Create API key" (Criar chave de API).</li>
- <li>Escolha "Create API key in new project" se for sua primeira chave — isso cria um projeto novo, geralmente já no nível gratuito.</li>
- <li>Copie a chave gerada (começa com <code>AIzaSy…</code>) e cole no cadastro deste app.</li>
- </ol>
- <div class="note">O nível gratuito não pede cartão de crédito, mas tem limites de uso por minuto/dia — suficientes para jogar. Se aparecer um aviso pedindo para configurar faturamento (comum em algumas regiões desde 2026), a própria tela do Google explica os passos; você pode recusar e continuar apenas no nível gratuito se a opção existir.</div>
- </div>
-
- <div class="info-section">
- <h4>🎲 Mecânica básica do sistema</h4>
- <p><b style="color:var(--text-hi)">Testes:</b> role 1d20, some seu modificador (atributo + proficiência + outros bônus) e compare com a Classe de Dificuldade (CD) do desafio.</p>
- <p><b style="color:var(--text-hi)">Quatro graus de sucesso:</b> se o total supera a CD em 10+, é sucesso crítico; se supera, sucesso; se fica abaixo, fracasso; se fica 10+ abaixo, fracasso crítico. Um 20 natural sobe um grau, um 1 natural desce um grau.</p>
- <p><b style="color:var(--text-hi)">Combate:</b> cada turno você tem 3 ações + 1 reação. Atacar, mover-se, lançar magias e usar habilidades geralmente custam 1 ou 2 ações — dá pra combinar como quiser.</p>
- <p><b style="color:var(--text-hi)">Proficiência:</b> vai de treinado → especialista → mestre → lendário, e soma um bônus crescente (junto com seu nível) aos testes daquela perícia, salvaguarda ou ataque.</p>
- </div>
-
- <div class="info-section">
- <h4>🧬 Ancestralidades comuns</h4>
- <p class="note" style="margin-bottom:10px;">Definem sua origem, tamanho, deslocamento e talentos únicos. As mais comuns nos livros principais:</p>
- <div class="class-grid">
- <div class="ci"><b>Humano</b>Versátil e adaptável, com um talento extra à escolha.</div>
- <div class="ci"><b>Anão</b>Resistente, forte contra venenos e magia, ligado à tradição e à forja.</div>
- <div class="ci"><b>Elfo</b>Ágil e perceptivo, longevo, conectado à magia antiga.</div>
- <div class="ci"><b>Gnomo</b>Curioso e mágico por natureza, pequeno e cheio de energia.</div>
- <div class="ci"><b>Goblin</b>Pequeno, rápido e criativo, com afinidade por fogo e engenhocas.</div>
- <div class="ci"><b>Halfling</b>Sortudo e discreto, ágil e difícil de acertar.</div>
- <div class="ci"><b>Silvano</b>Criatura vegetal desperta por magia da natureza, ligada a um tipo de planta.</div>
- <div class="ci"><b>Orc</b>Forte e resiliente, adaptado a ambientes hostis.</div>
- </div>
- </div>
-
- <div class="info-section">
- <h4>⚔️ Classes comuns</h4>
- <p class="note" style="margin-bottom:10px;">Definem seu papel, seus talentos e como você evolui. Alguns exemplos:</p>
- <div class="class-grid">
- <div class="ci"><b>Guerreiro</b>Mestre absoluto de armas, o mais preciso em combate.</div>
- <div class="ci"><b>Bárbaro</b>Entra em fúria para golpear com força bruta.</div>
- <div class="ci"><b>Patrulheiro</b>Caçador versátil, ótimo com arcos ou duas armas.</div>
- <div class="ci"><b>Ladino</b>Ágil e furtivo, especialista em perícias e ataques surpresa.</div>
- <div class="ci"><b>Campeão</b>Guerreiro devoto que protege aliados com reações divinas.</div>
- <div class="ci"><b>Monge</b>Luta desarmado com golpes ágeis e mobilidade acrobática.</div>
- <div class="ci"><b>Investigador</b>Raciocina antes de agir, usando dedução em combate.</div>
- <div class="ci"><b>Alquimista</b>Cria bombas, elixires e venenos combinando ciência e magia.</div>
- <div class="ci"><b>Mago</b>Conjurador acadêmico com um grimório de magias preparadas.</div>
- <div class="ci"><b>Clérigo</b>Canal do poder de uma divindade, equilibra cura e dano.</div>
- <div class="ci"><b>Druida</b>Guardião da natureza, transforma-se em animais.</div>
- <div class="ci"><b>Feiticeiro</b>Magia inata conjurada de forma espontânea.</div>
- <div class="ci"><b>Bardo</b>Inspira aliados com música e magia, versátil no apoio.</div>
- <div class="ci"><b>Bruxo</b>Recebe magia de uma patrona misteriosa através de um familiar.</div>
- <div class="ci"><b>Oráculo</b>Conjurador divino que aceita uma maldição em troca de poder profético.</div>
- <div class="ci"><b>Espadachim</b>Duelista estiloso que ganha vantagens lutando com estilo.</div>
- </div>
- <p class="note" style="margin-top:10px;">Isso é só um resumo rápido — o Mestre te explica as opções com mais detalhes durante a criação do personagem, e o livro anexado (se houver) tem a palavra final sobre regras específicas.</p>
- </div>
-
- </div>
- </div>
+  <div class="modal-box" style="max-width:680px;">
+    <div class="modal-head"><h3>Guia do jogador</h3><button class="icon-btn" id="info-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="guia-nav" id="guia-nav"></div>
+      <div id="guia-conteudo"></div>
+    </div>
+  </div>
 </div>
 
 <!-- MERCADO -->
@@ -873,19 +830,14 @@ a{color:var(--arcane-bright);}
   <div class="modal-box" style="max-width:600px;">
     <div class="modal-head"><h3>Novo evento global</h3><button class="icon-btn" id="event-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <p class="modal-note">O Mestre monta a aventura a partir da ambientação e do objetivo que você descrever. Requisitos em branco significam que qualquer personagem pode participar.</p>
-
+      <p class="modal-note">O Mestre monta a aventura a partir da ambientação e do objetivo. Requisitos em branco significam que qualquer personagem pode participar.</p>
       <div class="field"><label for="ev-nome">Nome da aventura</label>
         <input id="ev-nome" class="text-input" placeholder="Ex: O Cerco à Torre de Vidro"></div>
-
       <div class="field"><label for="ev-amb">Ambientação inicial</label>
-        <textarea id="ev-amb" class="text-input" rows="3" placeholder="Onde a história começa, que mundo é esse, que clima tem a cena de abertura."></textarea></div>
-
+        <textarea id="ev-amb" class="text-input" rows="3" placeholder="Onde a história começa e que clima tem a cena de abertura."></textarea></div>
       <div class="field"><label for="ev-obj">Objetivo final</label>
-        <textarea id="ev-obj" class="text-input" rows="2" placeholder="O que os grupos precisam alcançar para vencer o evento."></textarea></div>
-
+        <textarea id="ev-obj" class="text-input" rows="2" placeholder="O que os grupos precisam alcançar."></textarea></div>
       <div class="divider dark"><span>requisitos (opcionais)</span></div>
-
       <div class="ev-row">
         <div class="field" style="flex:1"><label for="ev-nmin">Nível mínimo</label>
           <input id="ev-nmin" class="text-input" type="number" min="1" max="20" placeholder="qualquer"></div>
@@ -898,7 +850,6 @@ a{color:var(--arcane-bright);}
       <div class="field"><label for="ev-cls">Classes aceitas</label>
         <input id="ev-cls" class="text-input" placeholder="Mago, Guerreiro (vazio = todas)">
         <p class="hint">Separe por vírgula.</p></div>
-
       <div class="divider dark"><span>datas</span></div>
       <div class="ev-row">
         <div class="field" style="flex:1"><label for="ev-inicio">Início da aventura</label>
@@ -906,7 +857,7 @@ a{color:var(--arcane-bright);}
         <div class="field" style="flex:1"><label for="ev-ate">Inscrições até</label>
           <input id="ev-ate" class="text-input" type="datetime-local"></div>
       </div>
-      <p class="hint">Após o horário de início, os inscritos têm 5 minutos para ingressar. Os participantes são divididos em cenas de até 4 personagens.</p>
+      <p class="hint">Após o início, os inscritos têm 5 minutos para ingressar. Grupos de até 4 personagens.</p>
       <p id="event-error" class="card-error hidden"></p>
     </div>
     <div class="modal-actions"><button class="secondary-btn" id="event-cancel">Cancelar</button><button class="primary-btn" id="event-save">Publicar evento</button></div>
@@ -1011,6 +962,14 @@ function skillMod(c, name){
  return computeSkillMod(c, found);
 } // 1000 XP advances a character one level
 var DEFAULT_MODEL_FALLBACK = "gemini-3.6-flash";
+/* Ordem de preferência conhecida (mais recente primeiro). Serve de reforço
+   quando a API não lista tudo ou devolve nomes fora de ordem. */
+var MODELOS_CONHECIDOS = [
+  "gemini-3.7-flash","gemini-3.6-flash","gemini-3.5-flash","gemini-3.1-flash",
+  "gemini-3-flash","gemini-2.5-flash","gemini-2-flash",
+  "gemini-3.5-flash-lite","gemini-3.1-flash-lite","gemini-2.5-flash-lite","gemini-2-flash-lite",
+  "gemini-3.1-pro","gemini-2.5-pro"
+];
 var ADMIN_EMAIL = "azevedo.hebert@gmail.com";
 var SHEETS_URL = "https://script.google.com/macros/s/AKfycbxmw5O3rNuFOYStis1ShHG04-eCD5iJLY-J-rPTDanY2WNmIo0rPFKaSfggnkGOuQ8t/exec";
 var adminConfig = null; // {sheetsWebhookUrl}
@@ -1437,7 +1396,16 @@ async function detectModelChain(apiKey){
  var id=idOf(m);
  return /flash/i.test(id) && /lite/i.test(id) && !/image/i.test(id) && !/tts/i.test(id);
  }).map(idOf).sort(cmpVerDesc);
- var chain = flashCore.concat(flashLite);
+ var proModels = models.filter(function(m){
+ var id=idOf(m);
+ return /pro/i.test(id) && !/vision|image|tts/i.test(id);
+ }).map(idOf).sort(cmpVerDesc);
+ var disponiveis = {};
+ models.forEach(function(m){ disponiveis[idOf(m)] = true; });
+ // 1) ordem conhecida, filtrada pelo que a chave realmente oferece
+ var chain = MODELOS_CONHECIDOS.filter(function(id){ return disponiveis[id]; });
+ // 2) completa com o que a API listou e nao estava previsto
+ chain = chain.concat(flashCore, flashLite, proModels);
  chain = chain.filter(function(id,idx){ return chain.indexOf(id)===idx; }); // dedupe
  return chain.length ? chain : [DEFAULT_MODEL_FALLBACK];
  }catch(e){ return [DEFAULT_MODEL_FALLBACK]; }
@@ -1703,7 +1671,7 @@ function advBody(isGroup){
 "- SEJA CONCISO: cada resposta deve ter no máximo 3 parágrafos curtos (idealmente 120 a 180 palavras). Descreva o essencial com força, corte adjetivos supérfluos e não repita o que o jogador já sabe. Prefira uma imagem marcante a três frases de enfeite.\n" +
 "- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
-"- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
+"- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
 "FABRICACAO DE ITENS: quando o personagem realmente FABRICAR um item em jogo (usando Manufatura, com tempo, materiais e um teste bem-sucedido narrado na cena), registre-o em \"itensFabricados\" com nome, raridade e nivel do item, alem de adiciona-lo ao inventario por \"itensGanhos\". Somente itens assim fabricados podem ser vendidos no mercado entre jogadores; itens encontrados, comprados ou recebidos NAO entram nesse campo. Seja criterioso: use \"raro\" ou \"lendario\" apenas para feitos excepcionais, e nunca defina nivel de item acima do nivel do personagem. O aplicativo calcula o preco sozinho; nao invente valores.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
@@ -1720,7 +1688,7 @@ FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n" +
 ' "aguardandoAcao": boolean, "jogadoresEsperados": [email,...],\n' : "") +
 ' "fichas": { "email-do-jogador": { ...mesmo esquema de personagem de sempre (nome, ancestralidade, linhagem, antecedente, classe, nivel, experiencia, pontosVida{atual,maximo}, ca, cdClasse, percepcao, deslocamento, resistencia{fortitude,reflexos,vontade}, atributos{for,des,con,int,sab,car}, pericias[], talentos[], equipamento[], dinheiro, condicoes[], magias[], aparencia, personalidade, notas)... } },\n'+
 ' "xpConcedido": [{"email": string, "quantidade": number, "motivo": string}],\n'+
-' "testeSolicitado": null | {"pericias": [string], "formula": string|null, "cd": number|null, "descricao": string},\n'+
+' "testeSolicitado": null | {"emails": [string], "pericias": [string], "formula": string|null, "cd": number|null, "descricao": string},\n'+
 ' "itensGanhos": [{"email": string, "itens": [string]}],\n'+
 ' "itensPerdidos": [{"email": string, "itens": [string]}],\n'+
 ' "magiasAprendidas": [{"email": string, "magias": [string]}],\n'+
@@ -2196,7 +2164,11 @@ async function enterHub(){
  cc.innerHTML = '<div class="cc-avatar">'+initialsOf(character&&character.nome)+'</div><div class="cc-info"><b>'+esc(character&&character.nome||"Personagem")+'</b><span>'+esc((character&&character.ancestralidade)||"")+' '+esc((character&&character.classe)||"")+(character&&character.nivel?" · nível "+character.nivel:"")+'</span></div>';
  el("hub-info").classList.remove("hidden");
  el("hub-admin").classList.toggle("hidden", session.email!==ADMIN_EMAIL);
- await refreshHubAdventures();
+ el("hub-event").classList.toggle("hidden", session.email!==ADMIN_EMAIL);
+ renderEventos();
+ var advCount = await refreshHubAdventures();
+ renderSupport(advCount||0);
+ renderGear();
  startPolling();
  setTimeout(function(){ initAdSlot("ad-hub"); }, 300);
 }
@@ -3272,6 +3244,44 @@ async function pollTick(){
  }catch(e){ console.warn("poll error", e); }
 }
 
+/* Distribui o cofre de taxas como prêmio aos participantes de um evento.
+   É assim que o ouro recolhido no mercado volta para a economia do jogo. */
+async function premiarEvento(evId, opcoes){
+  opcoes = opcoes || {};
+  var ev = await sGet("event:"+evId, true);
+  if(!ev) throw new Error("Evento não encontrado.");
+  var ganhadores = (opcoes.emails && opcoes.emails.length) ? opcoes.emails : (ev.ingressaram||[]);
+  if(!ganhadores.length) throw new Error("Ninguém participou deste evento.");
+
+  var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0, distribuido:0};
+  var disponivel = cofre.total || 0;
+  var valor = (typeof opcoes.total==="number" && opcoes.total>0) ? Math.min(opcoes.total, disponivel) : disponivel;
+  if(valor <= 0) throw new Error("O cofre de prêmios está vazio.");
+
+  var porCabeca = Math.floor((valor/ganhadores.length)*100)/100;
+  if(porCabeca <= 0) throw new Error("Valor insuficiente para dividir entre "+ganhadores.length+" participante(s).");
+
+  var pagos = [];
+  for(var i=0;i<ganhadores.length;i++){
+    var em = normEmail(ganhadores[i]);
+    var ficha = await sGet("character:"+em, true);
+    if(!ficha) continue;
+    ficha.dinheiro = fmtMoeda(parseMoeda(ficha.dinheiro) + porCabeca);
+    await sSet("character:"+em, ficha, true);
+    pagos.push(em);
+  }
+  var gasto = Math.round(porCabeca*pagos.length*100)/100;
+  cofre.total = Math.round((cofre.total - gasto)*100)/100;
+  cofre.distribuido = Math.round(((cofre.distribuido||0) + gasto)*100)/100;
+  await sSet("market-treasury", cofre, true);
+
+  ev.premiacao = {em:Date.now(), porCabeca:porCabeca, total:gasto, ganhadores:pagos};
+  ev.status = "encerrado";
+  await sSet("event:"+evId, ev, true);
+  logAdminEvent("event_prize", {evento:ev.nome, total:gasto, porCabeca:porCabeca, ganhadores:pagos.length});
+  return {porCabeca:porCabeca, total:gasto, ganhadores:pagos.length, restante:cofre.total};
+}
+
 /* =========================================================
    MERCADO DE ITENS (moeda do jogo)
    Só entram itens FABRICADOS pelo personagem. O preço é fixado
@@ -3279,7 +3289,7 @@ async function pollTick(){
    não define valor, o que impede inflar preço combinando com
    outro jogador ou pedindo item caro ao Mestre.
    ========================================================= */
-var TAXA_MERCADO = 0.05;          // 5% recolhidos ao administrador
+var TAXA_MERCADO = 0.05;          // 5% vão para o cofre de prêmios dos eventos globais
 var RARIDADES = ["comum","incomum","raro","lendario"];
 var MULT_RARIDADE = {comum:1, incomum:2.5, raro:6, lendario:15};
 var LABEL_RARIDADE = {comum:"Comum", incomum:"Incomum", raro:"Raro", lendario:"Lendário"};
@@ -3410,7 +3420,7 @@ async function comprarItem(itemId){
   a.status = "vendido"; a.compradoPor = session.email; a.compradoEm = Date.now(); a.taxa = taxa;
   await sSet("market:"+itemId, a, true);
 
-  var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0};
+  var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0, distribuido:0};
   cofre.total = Math.round((cofre.total + taxa)*100)/100;
   cofre.transacoes = (cofre.transacoes||0) + 1;
   await sSet("market-treasury", cofre, true);
@@ -3439,7 +3449,7 @@ async function renderMercado(){
 
     var h = '<p class="modal-note">Só itens <b>fabricados</b> pelo próprio personagem podem ser vendidos. '+
             'O preço é fixado pelo sistema conforme raridade e nível — ninguém define o próprio valor. '+
-            'Uma taxa de '+Math.round(TAXA_MERCADO*100)+'% é recolhida em cada venda.</p>'+
+            'Uma taxa de '+Math.round(TAXA_MERCADO*100)+'% de cada venda vai para o cofre de prêmios dos eventos globais.</p>'+
             '<p class="mk-saldo">Seu ouro: '+fmtMoeda(ouro)+' · você pode comprar itens até o nível '+nivelMax+'</p>';
 
     h += '<div class="adm-section" style="margin-top:16px;"><h4>À venda ('+anuncios.length+')</h4>';
@@ -3477,8 +3487,9 @@ async function renderMercado(){
 
     if(session.email===ADMIN_EMAIL){
       var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0};
-      h += '<div class="adm-section"><h4>Taxas recolhidas</h4><p class="mk-saldo">'+fmtMoeda(cofre.total)+
-           ' em '+(cofre.transacoes||0)+' venda(s)</p></div>';
+      h += '<div class="adm-section"><h4>Cofre de prêmios</h4><p class="mk-saldo">'+fmtMoeda(cofre.total)+
+           ' disponível · '+(cofre.transacoes||0)+' venda(s) · '+fmtMoeda(cofre.distribuido||0)+' já distribuído</p>'+
+           '<p class="adm-note">Use o botão de premiação no painel de eventos para dividir este valor entre os participantes.</p></div>';
     }
 
     body.innerHTML = h;
@@ -3773,11 +3784,15 @@ async function renderEventos(){
       acoes = inscrito
         ? '<button class="ev-btn" disabled>Inscrito · aguarde o início</button>'
         : '<button class="ev-btn" disabled>Inscrições encerradas</button>';
+      if(session.email===ADMIN_EMAIL && (ev.ingressaram||[]).length){
+        acoes += '<button class="ev-btn sec" data-premiar="'+ev.id+'">Premiar participantes</button>';
+      }
     } else if(fase==="ingresso" || fase==="emJogo"){
       var jaEntrou = (ev.ingressaram||[]).indexOf(session.email)>=0;
       var restante = (ev.inicioAt + EVENT_JOIN_WINDOW_MS) - agora;
       if(jaEntrou){
         acoes = '<button class="ev-btn" data-open="'+ev.id+'">Voltar à aventura</button>';
+        if(session.email===ADMIN_EMAIL) acoes += '<button class="ev-btn sec" data-premiar="'+ev.id+'">Premiar</button>';
       } else if(inscrito && restante>0){
         acoes = '<button class="ev-btn" data-join="'+ev.id+'">Ingressar agora ('+fmtClock(restante)+')</button>';
       } else if(inscrito){
@@ -3817,6 +3832,29 @@ async function renderEventos(){
         var adv = await sGet("adv:"+advId, true);
         await enterPlay(advId, adv);
       }catch(e){ alert(e.message); b.disabled=false; await renderEventos(); }
+    });
+  });
+  el("events-list").querySelectorAll("[data-premiar]").forEach(function(b){
+    b.addEventListener("click", async function(){
+      var evId = b.getAttribute("data-premiar");
+      var ev = await sGet("event:"+evId, true);
+      var cofre = await sGet("market-treasury", true) || {total:0};
+      var n = (ev.ingressaram||[]).length;
+      if(!n) return alert("Ninguém ingressou neste evento.");
+      if(!cofre.total) return alert("O cofre de prêmios está vazio. Ele é abastecido pelas taxas do mercado de artesãos.");
+      var txt = prompt("Premiar "+n+" participante(s) de \""+ev.nome+"\".\n\n"+
+        "Cofre disponível: "+fmtMoeda(cofre.total)+"\n"+
+        "Informe quanto distribuir (em ouro), ou deixe em branco para usar todo o cofre.\n"+
+        "O valor é dividido igualmente entre os participantes.", "");
+      if(txt===null) return;
+      var valor = txt.trim() ? parseMoeda(txt) : null;
+      b.disabled = true;
+      try{
+        var r = await premiarEvento(evId, valor ? {total:valor} : {});
+        alert("Prêmio distribuído: "+fmtMoeda(r.porCabeca)+" para cada um dos "+r.ganhadores+
+              " participantes.\nRestam "+fmtMoeda(r.restante)+" no cofre.");
+        await renderEventos();
+      }catch(e){ alert(e.message); b.disabled=false; }
     });
   });
   el("events-list").querySelectorAll("[data-open]").forEach(function(b){
@@ -3904,7 +3942,134 @@ function initAdSlot(slotId){
 /* =========================================================
  INFO MODAL
  ========================================================= */
-function openInfo(){ el("info-overlay").classList.remove("hidden"); }
+var CAPITULOS = [
+{id:"comecar", titulo:"Como começar", html:
+ '<div class="cap"><h4>Como começar</h4>'+
+ '<ol><li>Entre com sua conta Google.</li>'+
+ '<li>Cole sua chave do Gemini (só na primeira vez em cada dispositivo).</li>'+
+ '<li>Converse com o Mestre para criar seu personagem — ele guia passo a passo.</li>'+
+ '<li>Escolha uma aventura solo, em grupo, ou inscreva-se num evento global.</li></ol>'+
+ '<h5>Chave gratuita do Gemini</h5>'+
+ '<ol><li>Acesse <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</li>'+
+ '<li>Clique em "Create API key" e escolha criar num projeto novo.</li>'+
+ '<li>Copie a chave (começa com AIzaSy…) e cole aqui.</li></ol>'+
+ '<div class="nota">A chave fica só no seu navegador e nunca é enviada ao servidor. Você pode trocá-la ou removê-la pelo botão 🔑 na tela inicial.</div>'+
+ '<h5>Se o Mestre demorar</h5><p>O nível gratuito tem limite por minuto. Se ele for atingido, o app troca de modelo sozinho e, se preciso, espera e retoma — basta aguardar o aviso na tela.</p></div>'},
+
+{id:"mecanica", titulo:"Mecânica básica", html:
+ '<div class="cap"><h4>Mecânica básica</h4>'+
+ '<p><b>Testes:</b> role 1d20, some seu modificador e compare com a Classe de Dificuldade (CD). O app calcula tudo — você só escolhe a perícia.</p>'+
+ '<h5>Quatro graus de sucesso</h5>'+
+ '<table><tr><th>Resultado</th><th>Grau</th></tr>'+
+ '<tr><td>CD + 10 ou mais</td><td><b>Sucesso crítico</b></td></tr>'+
+ '<tr><td>Igual ou acima da CD</td><td><b>Sucesso</b></td></tr>'+
+ '<tr><td>Abaixo da CD</td><td><b>Fracasso</b></td></tr>'+
+ '<tr><td>CD − 10 ou menos</td><td><b>Fracasso crítico</b></td></tr></table>'+
+ '<p>Um <b>20 natural</b> sobe um grau; um <b>1 natural</b> desce um grau.</p>'+
+ '<h5>Combate</h5><p>Cada turno dá <b>3 ações</b> mais 1 reação. Atacar, mover, lançar magia e usar habilidades custam 1 ou 2 ações — combine como quiser.</p>'+
+ '<h5>Proficiência</h5>'+
+ '<table><tr><th>Posto</th><th>Bônus</th></tr>'+
+ '<tr><td>Destreinado</td><td>nenhum</td></tr>'+
+ '<tr><td><b>Treinado</b></td><td>nível + 2</td></tr>'+
+ '<tr><td><b>Especialista</b></td><td>nível + 4</td></tr>'+
+ '<tr><td><b>Mestre</b></td><td>nível + 6</td></tr>'+
+ '<tr><td><b>Lendário</b></td><td>nível + 8</td></tr></table>'+
+ '<p>O modificador final de uma perícia é <b>proficiência + atributo</b>, calculado automaticamente pelo app.</p></div>'},
+
+{id:"ficha", titulo:"Ficha e evolução", html:
+ '<div class="cap"><h4>Ficha e evolução</h4>'+
+ '<h5>Experiência</h5><p>Cada ação bem-sucedida rende XP: encontro trivial ~10, baixo ~15, moderado ~20, severo ~30, extremo ~40. A cada <b>1000 XP</b> você sobe de nível. A barra na ficha mostra o progresso.</p>'+
+ '<h5>Maestria pelo uso</h5><p>O app conta quantas vezes cada perícia é usada em jogo. Nos níveis em que o sistema concede aumento de perícia (<b>3, 5, 7, 9…</b>), a mais praticada é promovida automaticamente. Os limites do sistema são respeitados: especialista a partir do nível 3, mestre do 7, lendário do 15.</p>'+
+ '<h5>O que o Mestre pode e não pode mudar</h5>'+
+ '<table><tr><th>Livre</th><th>Protegido</th></tr>'+
+ '<tr><td>Pontos de vida</td><td>Nome, ancestralidade, classe</td></tr>'+
+ '<tr><td>Condições</td><td>Atributos, CA, salvaguardas</td></tr>'+
+ '<tr><td>Dinheiro</td><td>Perícias e talentos</td></tr>'+
+ '<tr><td>Itens e magias (por ganho/perda)</td><td>Nível e XP (nunca caem)</td></tr></table>'+
+ '<p>Use o botão ✎ na ficha para corrigir algo manualmente.</p></div>'},
+
+{id:"ancestralidades", titulo:"Ancestralidades", html:
+ '<div class="cap"><h4>Ancestralidades</h4>'+
+ '<p>Definem origem, tamanho, deslocamento e talentos próprios.</p>'+
+ '<div class="class-grid">'+
+ '<div class="ci"><b>Humano</b>Versátil e adaptável, ganha um talento extra à escolha.</div>'+
+ '<div class="ci"><b>Anão</b>Resistente a venenos e magia, ligado à tradição e à forja.</div>'+
+ '<div class="ci"><b>Elfo</b>Ágil e perceptivo, longevo, afinidade com a magia antiga.</div>'+
+ '<div class="ci"><b>Gnomo</b>Curioso e mágico por natureza, pequeno e enérgico.</div>'+
+ '<div class="ci"><b>Goblin</b>Pequeno e criativo, com apreço por fogo e engenhocas.</div>'+
+ '<div class="ci"><b>Halfling</b>Sortudo e discreto, difícil de acertar.</div>'+
+ '<div class="ci"><b>Silvano</b>Criatura vegetal desperta por magia da natureza.</div>'+
+ '<div class="ci"><b>Orc</b>Forte e resiliente, adaptado a ambientes hostis.</div>'+
+ '</div><div class="nota">Você pode propor outra ancestralidade ao Mestre durante a criação — estas são apenas as mais comuns.</div></div>'},
+
+{id:"classes", titulo:"Classes", html:
+ '<div class="cap"><h4>Classes</h4>'+
+ '<h5>Combate</h5><div class="class-grid">'+
+ '<div class="ci"><b>Guerreiro</b>Mestre de armas, o mais preciso em combate.</div>'+
+ '<div class="ci"><b>Bárbaro</b>Entra em fúria e golpeia com força bruta.</div>'+
+ '<div class="ci"><b>Campeão</b>Guerreiro devoto que protege aliados com reações.</div>'+
+ '<div class="ci"><b>Monge</b>Luta desarmado, ágil e acrobático.</div>'+
+ '<div class="ci"><b>Espadachim</b>Duelista estiloso que ganha vantagem com panache.</div>'+
+ '</div><h5>Perícia e astúcia</h5><div class="class-grid">'+
+ '<div class="ci"><b>Ladino</b>Furtivo, especialista em perícias e ataques surpresa.</div>'+
+ '<div class="ci"><b>Patrulheiro</b>Caçador versátil, ótimo com arcos ou duas armas.</div>'+
+ '<div class="ci"><b>Investigador</b>Deduz antes de agir, transformando análise em precisão.</div>'+
+ '<div class="ci"><b>Alquimista</b>Cria bombas, elixires e venenos.</div>'+
+ '</div><h5>Magia</h5><div class="class-grid">'+
+ '<div class="ci"><b>Mago</b>Conjurador acadêmico com grimório de magias preparadas.</div>'+
+ '<div class="ci"><b>Clérigo</b>Canal de uma divindade, equilibra cura e dano.</div>'+
+ '<div class="ci"><b>Druida</b>Guardião da natureza, transforma-se em animais.</div>'+
+ '<div class="ci"><b>Feiticeiro</b>Magia inata, conjurada espontaneamente.</div>'+
+ '<div class="ci"><b>Bardo</b>Inspira aliados com música e magia.</div>'+
+ '<div class="ci"><b>Bruxo</b>Recebe magia de uma patrona por meio de um familiar.</div>'+
+ '<div class="ci"><b>Oráculo</b>Aceita uma maldição em troca de poder profético.</div>'+
+ '</div></div>'},
+
+{id:"aventuras", titulo:"Aventuras", html:
+ '<div class="cap"><h4>Aventuras</h4>'+
+ '<h5>Solo</h5><p>Só você e o Mestre, sem limite de tempo para responder. Pode pausar e retomar quando quiser.</p>'+
+ '<h5>Em grupo</h5><p>Convide outros jogadores pelo e-mail cadastrado. Eles têm 3 minutos para aceitar na sala de espera. Depois de começar, cada jogador tem <b>7 minutos</b> para responder quando o Mestre pede uma ação — quem não responder tem a ação escolhida pelo Mestre.</p>'+
+ '<h5>Rolagens</h5><p>Quando o Mestre pede um teste, aparece uma caixa com as opções válidas e o modificador já aplicado. Em grupo, ela aparece <b>apenas para quem foi chamado</b>. Você não precisa calcular nada.</p>'+
+ '<h5>Pausar, concluir e exportar</h5><p>Os botões no topo da aventura permitem pausar (⏸), concluir (✓) e, depois de concluída, exportar (↓) toda a história como <b>roteiro de vídeo</b> pronto para uma IA de geração de vídeo.</p></div>'},
+
+{id:"eventos", titulo:"Eventos globais", html:
+ '<div class="cap"><h4>Eventos globais</h4>'+
+ '<p>Aventuras abertas publicadas pela administração, com data marcada e requisitos próprios.</p>'+
+ '<ol><li>O evento aparece na tela inicial com os requisitos (nível, ancestralidade, classe). Sem requisitos definidos, qualquer personagem entra.</li>'+
+ '<li>Inscreva-se antes do prazo de inscrições.</li>'+
+ '<li>No horário marcado você tem <b>5 minutos</b> para ingressar.</li>'+
+ '<li>Os participantes são divididos em grupos de até <b>4 personagens</b>, cada um vivendo a história em paralelo.</li>'+
+ '<li>Ao final, a administração distribui o cofre de prêmios entre os participantes.</li></ol>'+
+ '<div class="nota">O cofre de prêmios é formado pelas taxas recolhidas no mercado de artesãos — o ouro gasto em compras volta para a comunidade.</div></div>'},
+
+{id:"mercado", titulo:"Mercado de artesãos", html:
+ '<div class="cap"><h4>Mercado de artesãos</h4>'+
+ '<p>Só itens <b>fabricados pelo próprio personagem</b> podem ser vendidos. Para fabricar, use a perícia de <b>Manufatura</b> durante a aventura, com materiais e tempo — o Mestre conduz o processo.</p>'+
+ '<h5>Preço fixado pelo sistema</h5><p>Ninguém define o próprio preço. Ele vem da raridade e do nível do item:</p>'+
+ '<table><tr><th>Nível</th><th>Comum</th><th>Incomum</th><th>Raro</th><th>Lendário</th></tr>'+
+ '<tr><td>1</td><td>10 po</td><td>25 po</td><td>60 po</td><td>150 po</td></tr>'+
+ '<tr><td>5</td><td>110 po</td><td>275 po</td><td>660 po</td><td>1.650 po</td></tr>'+
+ '<tr><td>10</td><td>370 po</td><td>925 po</td><td>2.220 po</td><td>5.550 po</td></tr></table>'+
+ '<h5>Regras de equilíbrio</h5>'+
+ '<ul><li>Você só compra itens até <b>um nível acima</b> do seu.</li>'+
+ '<li>O item nunca tem nível acima do personagem que o fabricou.</li>'+
+ '<li>Item comprado <b>não pode ser revendido</b> — só o artesão original vende.</li>'+
+ '<li>Uma taxa de 5% vai para o cofre de prêmios dos eventos.</li></ul>'+
+ '<div class="nota">O mercado usa apenas ouro do jogo. Não há compra com dinheiro real, justamente para que ninguém avance pagando.</div></div>'}
+];
+
+var capAtual = "comecar";
+function renderGuia(){
+  el("guia-nav").innerHTML = CAPITULOS.map(function(c){
+    return '<button data-cap="'+c.id+'"'+(c.id===capAtual?' class="active"':'')+'>'+esc(c.titulo)+'</button>';
+  }).join("");
+  var cap = CAPITULOS.filter(function(c){ return c.id===capAtual; })[0] || CAPITULOS[0];
+  el("guia-conteudo").innerHTML = cap.html;
+  el("guia-nav").querySelectorAll("[data-cap]").forEach(function(b){
+    b.addEventListener("click", function(){ capAtual = b.getAttribute("data-cap"); renderGuia(); });
+  });
+}
+function openInfo(){ renderGuia(); el("info-overlay").classList.remove("hidden"); }
 el("open-info-auth").addEventListener("click", openInfo);
 el("hub-info").addEventListener("click", openInfo);
 el("info-close").addEventListener("click", function(){ el("info-overlay").classList.add("hidden"); });
@@ -4366,16 +4531,41 @@ function assinaturaCheck(c){
   if(!c) return null;
   return JSON.stringify([c.pericias||[], c.formula||null, c.cd||null, c.descricao||""]);
 }
-function consumirCheckAtual(){
-  checkConsumido = assinaturaCheck(pendingCheck);
+async function consumirCheckAtual(){
+  var atual = pendingCheck;
+  checkConsumido = assinaturaCheck(atual);
   pendingCheck = null;
   el("skill-check-box").classList.add("hidden");
-  if(gameMode==="play" && currentAdvId && currentSceneId){
-    sSet("check:"+currentAdvId+":"+currentSceneId, null, true).catch(function(){});
-  }
+  if(gameMode!=="play" || !currentAdvId || !currentSceneId) return;
+  var chave = "check:"+currentAdvId+":"+currentSceneId;
+  try{
+    var alvos = ((atual && atual.emails) || []).map(normEmail).filter(Boolean);
+    if(alvos.length > 1){
+      var vivo = await sGet(chave, true);
+      if(vivo){
+        vivo.jaRolaram = (vivo.jaRolaram||[]).concat([session.email]);
+        var faltam = alvos.filter(function(em){ return vivo.jaRolaram.indexOf(em)===-1; });
+        await sSet(chave, faltam.length ? vivo : null, true);
+        return;
+      }
+    }
+    await sSet(chave, null, true);
+  }catch(e){}
 }
 
+function checkEhParaMim(check){
+  if(!check) return false;
+  if((check.jaRolaram||[]).indexOf(session.email)>=0) return false;
+  var alvos = (check.emails||[]).map(normEmail).filter(Boolean);
+  if(!alvos.length) return true;
+  return alvos.indexOf(session.email)>=0;
+}
 function renderSkillCheck(check){
+  if(check && !checkEhParaMim(check)){
+    el("skill-check-box").classList.add("hidden");
+    pendingCheck = null;
+    return;
+  }
   // já rolamos este pedido: não reabrir
   if(check && checkConsumido && assinaturaCheck(check)===checkConsumido){
     el("skill-check-box").classList.add("hidden");
