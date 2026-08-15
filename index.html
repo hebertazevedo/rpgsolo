@@ -54,6 +54,7 @@ if (window.__fbPending) {
   window.dispatchEvent(new Event("firebase-ready"));
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5483062241581736" crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -729,6 +730,9 @@ a{color:var(--arcane-bright);}
  <main id="layout">
  <aside id="sheet-panel" class="panel tab-active">
  <div class="panel-head"><h2>Ficha</h2><div class="spacer"></div>
+ <button class="icon-btn" id="btn-sheet-pdf" title="Exportar ficha em PDF" aria-label="Exportar ficha em PDF">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h2"/></svg>
+ </button>
  <button class="icon-btn" id="btn-edit-sheet" title="Editar ficha manualmente" aria-label="Editar ficha">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
  </button>
@@ -825,6 +829,34 @@ a{color:var(--arcane-bright);}
   <div class="modal-box" style="max-width:640px;">
     <div class="modal-head"><h3>Mercado de artesãos</h3><button class="icon-btn" id="market-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
     <div class="modal-body" id="market-body"><p class="modal-note">Carregando…</p></div>
+  </div>
+</div>
+
+<!-- OFICINA (produção de itens) -->
+<div class="modal-overlay hidden" id="forge-overlay">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-head"><h3>Oficina de itens</h3><button class="icon-btn" id="forge-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p class="modal-note">Itens produzidos aqui entram no seu inventário marcados como <b>vendável</b> e podem ser anunciados no mercado. O preço é calculado automaticamente pela raridade e pelo nível.</p>
+      <div class="field"><label for="fg-nome">Nome do item</label>
+        <input id="fg-nome" class="text-input" placeholder="Ex: Amuleto Rúnico"></div>
+      <div class="ev-row">
+        <div class="field" style="flex:1"><label for="fg-rar">Raridade</label>
+          <select id="fg-rar" class="text-input">
+            <option value="comum">Comum</option>
+            <option value="incomum">Incomum</option>
+            <option value="raro">Raro</option>
+            <option value="lendario">Lendário</option>
+          </select></div>
+        <div class="field" style="flex:1"><label for="fg-niv">Nível do item</label>
+          <input id="fg-niv" class="text-input" type="number" min="1" max="20" value="1"></div>
+      </div>
+      <div class="field"><label for="fg-desc">Descrição (opcional)</label>
+        <input id="fg-desc" class="text-input" placeholder="O que o item faz"></div>
+      <p class="mk-saldo" id="fg-preco">Preço de mercado: —</p>
+      <p id="forge-error" class="card-error hidden"></p>
+    </div>
+    <div class="modal-actions"><button class="secondary-btn" id="forge-cancel">Cancelar</button><button class="primary-btn" id="forge-save">Produzir item</button></div>
   </div>
 </div>
 
@@ -1071,12 +1103,16 @@ function ttlFor(key){
  if(/^scene-msgs:|^pending-action:|^gm-lock:/.test(key)) return VOLATILE_TTL_MS;
  return READ_TTL_MS;
 }
+function clonar(v){
+ if(v===null || typeof v!=="object") return v;
+ try{ return JSON.parse(JSON.stringify(v)); }catch(e){ return v; }
+}
 function cacheGet(key){
  var e = readCache[key];
- if(e && (Date.now()-e.at) < ttlFor(key)) return e;
+ if(e && (Date.now()-e.at) < ttlFor(key)) return {value:clonar(e.value), at:e.at};
  return null;
 }
-function cachePut(key, value){ readCache[key] = {value:value, at:Date.now()}; }
+function cachePut(key, value){ readCache[key] = {value:clonar(value), at:Date.now()}; }
 function cacheInvalidate(key){ delete readCache[key]; }
 /* Leitura CRUA da planilha, ignorando o roteamento — usada apenas pela
    ferramenta de migração, para trazer o histórico antigo para o Firestore. */
@@ -1202,7 +1238,9 @@ var partyCache = {}; // email -> character
  a fast cache and offline fallback.
  ========================================================= */
 function isSyncedKey(key){
- return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config)/.test(key);
+ // TODA chave compartilhada precisa estar aqui, senao o dado fica preso no
+ // navegador de quem criou e mais ninguem enxerga.
+ return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:)/.test(key);
 }
 /* Values are stored wrapped as {__v:rev, __t:ts, d:data} so a stale or failed
  remote write can never overwrite newer local data on screen. */
@@ -1675,7 +1713,6 @@ function advBody(isGroup){
 "- Termine SEMPRE com uma pergunta ou gancho claro e direto, numa linha própria, dizendo o que o jogador precisa decidir agora (ex: \"O que você faz?\" ou \"Role Furtividade, CD 18.\").\n" +
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
-"ITENS PRODUZIDOS PELO PERSONAGEM: sempre que o personagem PRODUZIR um item em jogo — por Manufatura, alquimia, magia de criacao, encantamento, culinaria, escrita de pergaminhos, entalhe ou qualquer outro oficio narrado na cena — registre-o em \"itensFabricados\" com nome, raridade e nivel, alem de adiciona-lo ao inventario por \"itensGanhos\". O que importa e que o personagem tenha CRIADO o item com esforco proprio, nao a pericia usada. Somente itens produzidos assim podem ser vendidos no mercado; itens encontrados, saqueados, comprados ou recebidos de presente NAO entram nesse campo. Seja criterioso: use \"raro\" ou \"lendario\" apenas para feitos excepcionais, e nunca defina nivel de item acima do nivel do personagem. O aplicativo calcula o preco sozinho; nao invente valores.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
@@ -2186,6 +2223,8 @@ el("hub-new-solo").addEventListener("click", async function(){
  if(card.dataset.busy) return;
  card.dataset.busy="1"; card.style.opacity=".55"; card.style.pointerEvents="none";
  try{
+ var lim = await podeCriarAventura("solo");
+ if(!lim.ok){ alert(lim.motivo); return; }
  var adv = await createAdventure("solo", "Aventura Solo", []);
  logAdminEvent("adventure_created", {id:adv.id, name:adv.name, mode:adv.mode, hostEmail:session.email});
  await enterPlay(adv.id, adv);
@@ -2212,6 +2251,10 @@ async function refreshHubAdventures(){
  if(res){ await sSet("adv:"+list[j].id, res, true); list[j]=res; changed=true; }
  }
  list.sort(function(a,b){ return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0); });
+ var emCurso = list.filter(function(a){ return a.status!=="encerrada"; });
+ var concluidas = list.filter(function(a){ return a.status==="encerrada"; });
+ var arquivoLimitado = !podeArquivoCompleto(session.email) && concluidas.length > LIMITE_ARQUIVO_GRATUITO;
+ list = emCurso.concat(arquivoLimitado ? concluidas.slice(0, LIMITE_ARQUIVO_GRATUITO) : concluidas);
  var box = el("hub-adv-list");
  if(!list.length){ box.innerHTML = '<p class="empty-hint">Você ainda não tem aventuras. Crie uma acima.</p>'; return; }
  box.innerHTML = list.map(function(adv){
@@ -2309,6 +2352,8 @@ el("newadv-create").addEventListener("click", async function(){
  var emails = Array.from(el("newadv-invites").querySelectorAll("input")).map(function(i){ return normEmail(i.value); }).filter(Boolean);
  var btn = el("newadv-create"); btn.disabled=true; btn.textContent="Criando…";
  try{
+ var lim = await podeCriarAventura("grupo");
+ if(!lim.ok){ errBox.textContent = lim.motivo; errBox.classList.remove("hidden"); btn.disabled=false; btn.textContent="Criar aventura"; return; }
  var adv = await createAdventure("grupo", name, emails);
  logAdminEvent("adventure_created", {id:adv.id, name:adv.name, mode:adv.mode, hostEmail:session.email});
  el("newadv-overlay").classList.add("hidden");
@@ -3002,14 +3047,6 @@ async function runGmTurn(advId, sceneId){
  var earnedLevel = Math.floor(updatedSheet.experiencia / XP_PER_LEVEL) + 1;
  updatedSheet.nivel = Math.max(updatedSheet.nivel || 1, earnedLevel);
  // skills the GM legitimately trained this turn
- var craftEntry = (data.itensFabricados||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
- if(craftEntry && craftEntry.itens && craftEntry.itens.length){
- var limpos = craftEntry.itens.filter(function(it){
- return it && it.nome && (parseInt(it.nivelItem,10)||1) <= (updatedSheet.nivel||1);
- });
- var criados = await registrarItensFabricados(target, limpos);
- if(target===session.email && criados.length) criados.forEach(function(it){ showCraftToast(it); });
- }
  var skillEntry = (data.periciasTreinadas||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
  if(skillEntry) applySkillRankDeltas(updatedSheet, skillEntry.pericias);
  // mastery earned through actual use
@@ -3301,6 +3338,52 @@ async function premiarEvento(evId, opcoes){
    não define valor, o que impede inflar preço combinando com
    outro jogador ou pedindo item caro ao Mestre.
    ========================================================= */
+/* ---------------------------------------------------------
+   PLANOS
+   Tudo que é pago fica atrás de temPlanoPago(). Hoje só o
+   administrador tem acesso, para testar. Quando houver cobrança,
+   basta esta função consultar o plano do usuário — nada mais
+   no app precisa mudar.
+   Regra que orienta o que é pago: conveniência, capacidade e
+   criação. Nunca poder de jogo.
+   --------------------------------------------------------- */
+var LIMITE_AVENTURAS_ATIVAS = 2;   // simultâneas no plano gratuito (ativa ou pausada)
+var LIMITE_GRUPO_ATIVAS = 1;       // aventuras em grupo simultâneas (por ora, para todos)
+var LIMITE_ARQUIVO_GRATUITO = 3;   // aventuras concluídas visíveis no plano gratuito
+
+function temPlanoPago(email){
+  return normEmail(email) === ADMIN_EMAIL;
+}
+function podeProduzirItens(email){ return temPlanoPago(email); }
+function podeExportar(email){ return temPlanoPago(email); }
+function podeArquivoCompleto(email){ return temPlanoPago(email); }
+
+/* Conta o que ocupa "vaga" do jogador: em andamento, pausada ou em lobby */
+function ocupaVaga(adv){
+  return adv && (adv.status==="ativa" || adv.status==="pausada" || adv.status==="lobby");
+}
+async function minhasAventuras(){
+  var ids = await sGet("member-adv:"+session.email, true) || [];
+  var lista = await Promise.all(ids.map(function(id){ return sGet("adv:"+id, true); }));
+  return lista.filter(Boolean);
+}
+/* Verifica se o jogador pode abrir mais uma aventura. Eventos globais não
+   contam: são atividade da comunidade, não campanha pessoal. */
+async function podeCriarAventura(modo){
+  if(temPlanoPago(session.email)) return {ok:true};
+  var minhas = (await minhasAventuras()).filter(function(a){ return !a.eventoId; });
+  var ativas = minhas.filter(ocupaVaga);
+  if(modo==="grupo"){
+    var gruposAtivos = ativas.filter(function(a){ return a.mode==="grupo"; });
+    if(gruposAtivos.length >= LIMITE_GRUPO_ATIVAS){
+      return {ok:false, motivo:"Você já tem uma aventura em grupo em andamento ou pausada. Conclua-a antes de criar outra."};
+    }
+  }
+  if(ativas.length >= LIMITE_AVENTURAS_ATIVAS){
+    return {ok:false, motivo:"Você atingiu o limite de "+LIMITE_AVENTURAS_ATIVAS+" aventuras simultâneas do plano gratuito. Conclua ou apague uma para começar outra — aventuras concluídas não ocupam vaga."};
+  }
+  return {ok:true};
+}
 var TAXA_MERCADO = 0.05;          // 5% vão para o cofre de prêmios dos eventos globais
 var RARIDADES = ["comum","incomum","raro","lendario"];
 var MULT_RARIDADE = {comum:1, incomum:2.5, raro:6, lendario:15};
@@ -3334,6 +3417,7 @@ function idDeItem(){ return "it_"+Date.now().toString(36)+"_"+Math.random().toSt
 /* Registro do que o personagem fabricou — só isso pode ser vendido */
 async function registrarItensFabricados(email, lista){
   if(!lista || !lista.length) return [];
+  if(!podeProduzirItens(email)) return [];   // produção é recurso restrito
   var chave = "crafted:"+normEmail(email);
   var atual = await sGet(chave, true) || [];
   var novos = [];
@@ -3465,6 +3549,231 @@ async function comprarItem(itemId){
   return {anuncio:a, taxa:taxa, liquido:liquido};
 }
 
+/* =========================================================
+   EXPORTAÇÃO EM PDF (recurso do plano pago)
+   Livro da campanha, ficha ilustrada e memórias marcantes.
+   Nada aqui afeta o jogo — é registro e lembrança.
+   ========================================================= */
+function jsPDFDisponivel(){ return !!(window.jspdf && window.jspdf.jsPDF); }
+
+/* Gera uma ilustração pelo Gemini. Se a chave não tiver acesso a modelo de
+   imagem, devolve null e o PDF sai só com texto — nunca trava a exportação. */
+async function gerarIlustracao(prompt){
+  var modelos = ["gemini-2.5-flash-image","imagen-4.0-generate-001","gemini-2.0-flash-preview-image-generation"];
+  for(var i=0;i<modelos.length;i++){
+    try{
+      var res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(modelos[i])+":generateContent", {
+        method:"POST", headers:{"x-goog-api-key":session.apiKey,"Content-Type":"application/json"},
+        body: JSON.stringify({
+          contents:[{role:"user", parts:[{text:prompt}]}],
+          generationConfig:{responseModalities:["IMAGE"]}
+        })
+      });
+      if(!res.ok) continue;
+      var data = await res.json();
+      var parts = (((data.candidates||[])[0]||{}).content||{}).parts||[];
+      for(var j=0;j<parts.length;j++){
+        var inline = parts[j].inlineData || parts[j].inline_data;
+        if(inline && inline.data) return "data:"+(inline.mimeType||inline.mime_type||"image/png")+";base64,"+inline.data;
+      }
+    }catch(e){ /* tenta o próximo modelo */ }
+  }
+  return null;
+}
+
+function pdfNovo(){
+  var J = window.jspdf.jsPDF;
+  return new J({unit:"pt", format:"a4"});
+}
+function pdfTexto(doc, texto, x, y, larg, tam, cor){
+  doc.setFontSize(tam||11);
+  if(cor) doc.setTextColor(cor[0],cor[1],cor[2]); else doc.setTextColor(40,35,25);
+  var linhas = doc.splitTextToSize(String(texto||""), larg);
+  for(var i=0;i<linhas.length;i++){
+    if(y > 780){ doc.addPage(); y = 60; }
+    doc.text(linhas[i], x, y);
+    y += (tam||11) * 1.45;
+  }
+  return y;
+}
+
+async function exportarFichaPDF(comImagem){
+  if(!jsPDFDisponivel()) throw new Error("Biblioteca de PDF não carregou. Recarregue a página e tente de novo.");
+  var c = character;
+  var doc = pdfNovo();
+  var y = 70;
+  doc.setFont("helvetica","bold");
+  y = pdfTexto(doc, c.nome || "Personagem", 60, y, 480, 26, [120,90,40]);
+  doc.setFont("helvetica","normal");
+  var sub = [c.ancestralidade, c.linhagem && "("+c.linhagem+")", c.antecedente, c.classe && (c.classe+" nível "+(c.nivel||1))]
+            .filter(Boolean).join(" · ");
+  y = pdfTexto(doc, sub, 60, y+4, 480, 12, [110,100,80]);
+  y += 8;
+  doc.setDrawColor(180,160,110); doc.line(60, y, 535, y); y += 22;
+
+  if(comImagem){
+    var img = await gerarIlustracao(
+      "Retrato de personagem de RPG de fantasia, estilo ilustração de livro, meio corpo: "+
+      (c.nome||"herói")+", "+(c.ancestralidade||"")+" "+(c.classe||"")+". "+
+      (c.aparencia||"")+". Fundo neutro, iluminação suave, sem texto na imagem.");
+    if(img){
+      try{ doc.addImage(img, "PNG", 60, y, 200, 200); y += 214; }catch(e){}
+    }
+  }
+
+  doc.setFont("helvetica","bold");
+  y = pdfTexto(doc, "ATRIBUTOS", 60, y, 480, 12, [120,90,40]);
+  doc.setFont("helvetica","normal");
+  var a = c.atributos||{};
+  y = pdfTexto(doc, "FOR "+fmtMod(a.for)+"   DES "+fmtMod(a.des)+"   CON "+fmtMod(a.con)+
+                    "   INT "+fmtMod(a.int)+"   SAB "+fmtMod(a.sab)+"   CAR "+fmtMod(a.car), 60, y+4, 480, 12);
+  var pv = c.pontosVida||{};
+  var r = c.resistencia||{};
+  y = pdfTexto(doc, "PV "+(pv.atual!=null?pv.atual:"—")+"/"+(pv.maximo!=null?pv.maximo:"—")+
+    "   CA "+(c.ca!=null?c.ca:"—")+"   CD "+(c.cdClasse!=null?c.cdClasse:"—")+
+    "   Percepção "+fmtMod(c.percepcao)+"   Deslocamento "+(c.deslocamento||"—"), 60, y+6, 480, 12);
+  y = pdfTexto(doc, "Fortitude "+fmtMod(r.fortitude)+"   Reflexos "+fmtMod(r.reflexos)+"   Vontade "+fmtMod(r.vontade),
+    60, y+2, 480, 12);
+  y = pdfTexto(doc, "XP "+(c.experiencia||0)+"   Dinheiro "+(c.dinheiro||"—"), 60, y+2, 480, 12);
+
+  function secao(titulo, itens){
+    if(!itens || !itens.length) return;
+    y += 12;
+    doc.setFont("helvetica","bold");
+    y = pdfTexto(doc, titulo.toUpperCase(), 60, y, 480, 12, [120,90,40]);
+    doc.setFont("helvetica","normal");
+    y = pdfTexto(doc, itens.join(" · "), 60, y+4, 480, 11);
+  }
+  secao("Perícias", (c.pericias||[]).map(function(p){ return p.nome+" "+fmtMod(computeSkillMod(c,p))+" ("+(p.posto||"treinado")+")"; }));
+  secao("Talentos", c.talentos);
+  secao("Magias", c.magias);
+  secao("Equipamento", c.equipamento);
+  secao("Condições", c.condicoes);
+  if(c.aparencia){ y += 12; doc.setFont("helvetica","bold"); y = pdfTexto(doc,"APARÊNCIA",60,y,480,12,[120,90,40]); doc.setFont("helvetica","normal"); y = pdfTexto(doc,c.aparencia,60,y+4,480,11); }
+  if(c.personalidade){ y += 10; doc.setFont("helvetica","bold"); y = pdfTexto(doc,"PERSONALIDADE",60,y,480,12,[120,90,40]); doc.setFont("helvetica","normal"); y = pdfTexto(doc,c.personalidade,60,y+4,480,11); }
+
+  doc.save("ficha-"+slugify(c.nome||"personagem")+".pdf");
+}
+
+/* Divide a transcrição em capítulos e escolhe as cenas mais marcantes */
+async function montarLivro(adv, transcricao, comIlustracoes, onProgress){
+  var prompt = "Transforme a transcrição de sessão de RPG abaixo em um LIVRO em português do Brasil.\n\n"+
+    "Responda APENAS com JSON válido, sem markdown, neste formato:\n"+
+    '{"titulo":"...","subtitulo":"...","sinopse":"...","capitulos":[{"titulo":"...","texto":"...","cenaMarcante":"descrição visual curta da cena mais marcante do capítulo, para ilustração"}]}\n\n'+
+    "Regras: escreva em prosa literária na terceira pessoa, fiel aos acontecimentos, sem inventar reviravoltas. "+
+    "Converta rolagens e mecânica em ação dramática (não cite dados, XP ou fichas). "+
+    "Use de 3 a 8 capítulos, cada um com 200 a 500 palavras.\n\n--- TRANSCRIÇÃO ---\n\n"+transcricao;
+  if(onProgress) onProgress("Escrevendo o livro…");
+  var raw = await callGeminiRaw("Você é um romancista que adapta sessões de RPG em livros, em português do Brasil.",
+    [{role:"user", parts:[{text:prompt}]}]);
+  var limpo = raw.trim().replace(/^```json/i,"").replace(/^```/,"").replace(/```$/,"").trim();
+  var livro;
+  try{ livro = JSON.parse(limpo); }
+  catch(e){ livro = {titulo:adv.name, subtitulo:"", sinopse:"", capitulos:[{titulo:"A campanha", texto:raw, cenaMarcante:null}]}; }
+  if(comIlustracoes){
+    for(var i=0;i<(livro.capitulos||[]).length;i++){
+      var cap = livro.capitulos[i];
+      if(!cap.cenaMarcante) continue;
+      if(onProgress) onProgress("Ilustrando memória "+(i+1)+" de "+livro.capitulos.length+"…");
+      cap.imagem = await gerarIlustracao("Ilustração de livro de fantasia, estilo pintura digital: "+
+        cap.cenaMarcante+". Sem texto na imagem.");
+    }
+  }
+  return livro;
+}
+
+async function exportarLivroPDF(adv, comIlustracoes, onProgress){
+  if(!jsPDFDisponivel()) throw new Error("Biblioteca de PDF não carregou. Recarregue a página e tente de novo.");
+  var transcricao = await gatherAdventureTranscript(adv.id, adv);
+  if(!transcricao.trim()) throw new Error("Esta aventura não tem história registrada.");
+  if(transcricao.length > 900000) transcricao = transcricao.slice(0, 900000);
+  var livro = await montarLivro(adv, transcricao, comIlustracoes, onProgress);
+  if(onProgress) onProgress("Montando o PDF…");
+
+  var doc = pdfNovo();
+  // capa
+  var y = 240;
+  doc.setFont("helvetica","bold");
+  y = pdfTexto(doc, livro.titulo || adv.name, 70, y, 460, 30, [120,90,40]);
+  doc.setFont("helvetica","italic");
+  if(livro.subtitulo) y = pdfTexto(doc, livro.subtitulo, 70, y+10, 460, 14, [110,100,80]);
+  doc.setFont("helvetica","normal");
+  var elenco = (adv.members||[]).filter(function(m){ return m.status==="confirmado"; }).map(function(m){ return m.name; }).join(" · ");
+  if(elenco) pdfTexto(doc, elenco, 70, y+40, 460, 11, [130,120,100]);
+  pdfTexto(doc, new Date(adv.finishedAt||adv.updatedAt||Date.now()).toLocaleDateString("pt-BR"), 70, 760, 460, 10, [150,140,120]);
+
+  if(livro.sinopse){
+    doc.addPage(); y = 90;
+    doc.setFont("helvetica","bold"); y = pdfTexto(doc, "SINOPSE", 70, y, 460, 14, [120,90,40]);
+    doc.setFont("helvetica","normal"); pdfTexto(doc, livro.sinopse, 70, y+10, 460, 12);
+  }
+
+  (livro.capitulos||[]).forEach(function(cap, idx){
+    doc.addPage(); var yy = 90;
+    doc.setFont("helvetica","bold");
+    yy = pdfTexto(doc, "Capítulo "+(idx+1), 70, yy, 460, 11, [150,130,90]);
+    yy = pdfTexto(doc, cap.titulo || "", 70, yy+4, 460, 20, [120,90,40]);
+    doc.setFont("helvetica","normal");
+    yy += 12;
+    if(cap.imagem){
+      try{ doc.addImage(cap.imagem, "PNG", 70, yy, 460, 260); yy += 275; }catch(e){}
+    }
+    pdfTexto(doc, cap.texto || "", 70, yy, 460, 12);
+  });
+
+  doc.save("livro-"+slugify(livro.titulo || adv.name)+".pdf");
+}
+
+/* ---- Oficina de itens (restrita) ---- */
+function atualizarPrecoOficina(){
+  var n = parseInt(el("fg-niv").value,10) || 1;
+  var r = el("fg-rar").value;
+  el("fg-preco").textContent = "Preco de mercado: "+fmtMoeda(precoDoItem(n,r))+
+    " \u00b7 voce recebe "+fmtMoeda(Math.round(precoDoItem(n,r)*(1-TAXA_MERCADO)*100)/100)+" apos a taxa";
+}
+function abrirOficina(){
+  if(!podeProduzirItens(session.email)){
+    alert("A producao de itens e um recurso restrito. Comprar no mercado continua disponivel para todos.");
+    return;
+  }
+  el("fg-nome").value=""; el("fg-desc").value="";
+  el("fg-rar").value="comum"; el("fg-niv").value="1";
+  el("forge-error").classList.add("hidden");
+  atualizarPrecoOficina();
+  el("forge-overlay").classList.remove("hidden");
+}
+el("forge-close").addEventListener("click", function(){ el("forge-overlay").classList.add("hidden"); });
+el("forge-cancel").addEventListener("click", function(){ el("forge-overlay").classList.add("hidden"); });
+el("forge-overlay").addEventListener("click", function(e){ if(e.target===el("forge-overlay")) el("forge-overlay").classList.add("hidden"); });
+el("fg-rar").addEventListener("change", atualizarPrecoOficina);
+el("fg-niv").addEventListener("input", atualizarPrecoOficina);
+
+el("forge-save").addEventListener("click", async function(){
+  var err = el("forge-error"); err.classList.add("hidden");
+  var nome = el("fg-nome").value.trim();
+  if(!nome){ err.textContent="De um nome ao item."; err.classList.remove("hidden"); return; }
+  if((character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(nome); })){
+    err.textContent="Voce ja tem um item com esse nome no inventario."; err.classList.remove("hidden"); return;
+  }
+  var nivel = Math.max(1, Math.min(20, parseInt(el("fg-niv").value,10)||1));
+  var btn = el("forge-save"); btn.disabled=true; btn.textContent="Produzindo...";
+  try{
+    character.equipamento = applyListDelta(character.equipamento, [nome], []);
+    await sSet("character:"+session.email, character, true);
+    var criados = await registrarItensFabricados(session.email, [{
+      nome:nome, raridade:el("fg-rar").value, nivelItem:nivel, descricao:el("fg-desc").value.trim()
+    }]);
+    character = await sGet("character:"+session.email, true) || character;
+    renderCharacterSheet(character, "sheet-scroll");
+    logAdminEvent("item_forged", {nome:nome, raridade:el("fg-rar").value, nivel:nivel, por:session.email});
+    el("forge-overlay").classList.add("hidden");
+    alert("Item produzido: "+nome+" \u2014 vale "+fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(nivel, el("fg-rar").value))+" no mercado.");
+    if(!el("market-overlay").classList.contains("hidden")) renderMercado();
+  }catch(e){
+    err.textContent = "Erro ao produzir: "+e.message; err.classList.remove("hidden");
+  }finally{ btn.disabled=false; btn.textContent="Produzir item"; }
+});
+
 /* ---- Interface do mercado ---- */
 function abrirMercado(){
   el("market-overlay").classList.remove("hidden");
@@ -3512,7 +3821,7 @@ async function renderMercado(){
       return (character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(it.nome); });
     });
     h += '<div class="adm-section"><h4>Seus itens fabricados ('+vendaveis.length+')</h4>';
-    if(!meus.length) h += '<p class="modal-note">Você ainda não produziu nada. Fabrique, forje, prepare ou encante um item durante a aventura para ter o que vender.</p>';
+    if(!meus.length) h += '<p class="modal-note">Você ainda não tem itens para vender. A produção de itens é um recurso restrito — comprar no mercado continua livre para todos.</p>';
     else if(!vendaveis.length) h += '<p class="modal-note">Todos os seus itens fabricados já estão anunciados ou saíram do inventário.</p>';
     else vendaveis.forEach(function(it){
       h += '<div class="mk-item"><span class="mk-i">🔨</span><span class="mk-info">'+
@@ -3523,6 +3832,11 @@ async function renderMercado(){
     });
     h += '</div>';
 
+    if(podeProduzirItens(session.email)){
+      h += '<div class="adm-section"><h4>Oficina</h4>'+
+           '<p class="modal-note">Produza um item novo para vender no mercado.</p>'+
+           '<button class="mk-btn" id="mk-forge" style="width:100%;padding:11px;">Produzir item</button></div>';
+    }
     if(session.email===ADMIN_EMAIL){
       var cofre = await sGet("market-treasury", true) || {total:0, transacoes:0};
       h += '<div class="adm-section"><h4>Cofre de prêmios</h4><p class="mk-saldo">'+fmtMoeda(cofre.total)+
@@ -3531,6 +3845,8 @@ async function renderMercado(){
     }
 
     body.innerHTML = h;
+    var fb2 = el("mk-forge");
+    if(fb2) fb2.addEventListener("click", abrirOficina);
     body.querySelectorAll("[data-anunciar]").forEach(function(b){
       b.addEventListener("click", async function(){
         b.disabled=true;
@@ -4082,7 +4398,7 @@ var CAPITULOS = [
 
 {id:"mercado", titulo:"Mercado de artesãos", html:
  '<div class="cap"><h4>Mercado de artesãos</h4>'+
- '<p>Só itens <b>produzidos pelo próprio personagem</b> podem ser vendidos: por Manufatura, alquimia, magia de criação, encantamento, culinária, entalhe ou qualquer ofício narrado na cena.</p>'+'<p>No inventário, itens produzidos aparecem marcados como <b>vendável</b>; os adquiridos de outro jogador, como <b>comprado</b> — e estes não podem ser revendidos.</p>'+
+ '<p><b>Comprar é livre para todos.</b> Já a <b>produção</b> de itens vendáveis é um recurso restrito — hoje só para a administração, e previsto como benefício de assinatura no futuro.</p>'+'<p>No inventário, itens produzidos aparecem marcados como <b>vendável</b>; os adquiridos de outro jogador, como <b>comprado</b> — e estes não podem ser revendidos.</p>'+
  '<h5>Preço fixado pelo sistema</h5><p>Ninguém define o próprio preço. Ele vem da raridade e do nível do item:</p>'+
  '<table><tr><th>Nível</th><th>Comum</th><th>Incomum</th><th>Raro</th><th>Lendário</th></tr>'+
  '<tr><td>1</td><td>10 po</td><td>25 po</td><td>60 po</td><td>150 po</td></tr>'+
@@ -4439,34 +4755,69 @@ async function gatherAdventureTranscript(advId, adv){
  return lines.join("\n\n");
 }
 
+function exportBloqueado(){
+  alert("A exportacao e um recurso do plano pago.\n\nSua aventura continua salva e pode ser lida a qualquer momento.");
+}
+el("btn-sheet-pdf").addEventListener("click", async function(){
+  if(!podeExportar(session.email)) return exportBloqueado();
+  if(!character || !character.nome) return alert("Crie um personagem primeiro.");
+  var bb = el("btn-sheet-pdf"); bb.disabled = true;
+  var comImg = confirm("Gerar uma ilustracao do personagem para a ficha?\n\nPode levar alguns segundos. Cancele para uma ficha so com texto.");
+  try{ await exportarFichaPDF(comImg); }
+  catch(e){ alert("Nao consegui gerar a ficha: "+e.message); }
+  finally{ bb.disabled = false; }
+});
+
 el("btn-export").addEventListener("click", async function(){
- if(!currentAdv) return;
- var btn = el("btn-export");
- btn.disabled = true;
- var original = btn.innerHTML;
- btn.innerHTML = "…";
- try{
- var transcript = await gatherAdventureTranscript(currentAdvId, currentAdv);
- if(!transcript.trim()){ alert("Esta aventura não tem registro suficiente para virar roteiro."); return; }
- if(transcript.length > 900000) transcript = transcript.slice(0, 900000);
- var cast = (currentAdv.members||[]).filter(function(m){return m.status==="confirmado";}).map(function(m){return m.name;}).join(", ");
- var prompt = "Transforme a transcrição de sessão de RPG abaixo em um ROTEIRO DE VÍDEO em português do Brasil, pronto para ser entregue a uma IA de geração de vídeo.\n\n"+
- "Formato de saída:\n"+
- "1) TÍTULO da história.\n"+
- "2) LOGLINE (1 a 2 frases).\n"+
- "3) PERSONAGENS: nome + descrição visual curta de cada um (para consistência visual entre cenas).\n"+
- "4) ROTEIRO dividido em CENAS numeradas. Para cada cena: CENA N — LOCAL — DIA/NOITE; DESCRIÇÃO VISUAL (o que a câmera vê, em linguagem concreta e descritiva, ideal para prompt de vídeo); AÇÃO; DIÁLOGO (personagem: fala); e SUGESTÃO DE TRILHA/ATMOSFERA.\n"+
- "5) NARRAÇÃO EM OFF sugerida, quando fizer sentido.\n\n"+
- "Regras: mantenha-se fiel aos acontecimentos da transcrição, sem inventar reviravoltas que não aconteceram. Converta as rolagens de dados e a mecânica de jogo em ação dramática (não mencione dados, XP, fichas ou regras). Escreva de forma cinematográfica e visualmente concreta.\n\n"+
- "Elenco: "+cast+"\nTítulo da aventura: "+currentAdv.name+"\n\n--- TRANSCRIÇÃO ---\n\n"+transcript;
- var raw = await callGeminiRaw("Você é um roteirista profissional que adapta sessões de RPG em roteiros de vídeo cinematográficos, em português do Brasil.", [{role:"user", parts:[{text:prompt}]}]);
- downloadText("roteiro-"+slugify(currentAdv.name)+".txt", raw);
- logAdminEvent("adventure_exported", {id:currentAdvId, name:currentAdv.name, byEmail:session.email});
- }catch(err){
- alert(friendlyApiError(err));
- }finally{
- btn.disabled = false; btn.innerHTML = original;
- }
+  if(!podeExportar(session.email)) return exportBloqueado();
+  if(!currentAdv) return;
+  var escolha = prompt(
+    "Exportar \"" + currentAdv.name + "\"\n\n" +
+    "1 — Livro em PDF (capítulos ilustrados)\n" +
+    "2 — Livro em PDF (só texto, mais rápido)\n" +
+    "3 — Roteiro de vídeo (.txt)\n\n" +
+    "Digite o número da opção:", "1");
+  if(escolha===null) return;
+  escolha = escolha.trim();
+  var btn = el("btn-export");
+  btn.disabled = true;
+  var aviso = null;
+  function progresso(txt){
+    if(!aviso){
+      aviso = document.createElement("div");
+      aviso.className = "quota-wait"; aviso.id = "export-wait";
+      el("chat-scroll").appendChild(aviso);
+    }
+    aviso.innerHTML = "📖 " + esc(txt);
+    el("chat-scroll").scrollTop = el("chat-scroll").scrollHeight;
+  }
+  try{
+    if(escolha==="1" || escolha==="2"){
+      await exportarLivroPDF(currentAdv, escolha==="1", progresso);
+      logAdminEvent("export_book", {id:currentAdvId, ilustrado:escolha==="1"});
+    } else if(escolha==="3"){
+      progresso("Escrevendo o roteiro…");
+      var transcript = await gatherAdventureTranscript(currentAdvId, currentAdv);
+      if(!transcript.trim()) throw new Error("Esta aventura não tem registro suficiente.");
+      if(transcript.length > 900000) transcript = transcript.slice(0, 900000);
+      var cast = (currentAdv.members||[]).filter(function(m){return m.status==="confirmado";}).map(function(m){return m.name;}).join(", ");
+      var prompt2 = "Transforme a transcrição de sessão de RPG abaixo em um ROTEIRO DE VÍDEO em português do Brasil, pronto para uma IA de geração de vídeo.\n\n"+
+        "Formato: 1) TÍTULO; 2) LOGLINE; 3) PERSONAGENS com descrição visual curta; 4) ROTEIRO em CENAS numeradas (CENA N — LOCAL — DIA/NOITE; DESCRIÇÃO VISUAL; AÇÃO; DIÁLOGO; TRILHA); 5) NARRAÇÃO EM OFF quando fizer sentido.\n\n"+
+        "Regras: fiel à transcrição, sem inventar reviravoltas. Converta dados e mecânica em ação dramática (não mencione dados, XP, fichas ou regras). Escreva de forma cinematográfica.\n\n"+
+        "Elenco: "+cast+"\nTítulo: "+currentAdv.name+"\n\n--- TRANSCRIÇÃO ---\n\n"+transcript;
+      var raw = await callGeminiRaw("Você é um roteirista que adapta sessões de RPG em roteiros de vídeo, em português do Brasil.",
+        [{role:"user", parts:[{text:prompt2}]}]);
+      downloadText("roteiro-"+slugify(currentAdv.name)+".txt", raw);
+      logAdminEvent("adventure_exported", {id:currentAdvId, name:currentAdv.name});
+    } else {
+      alert("Opção inválida.");
+    }
+  }catch(err){
+    alert(friendlyApiError(err));
+  }finally{
+    if(aviso && aviso.parentNode) aviso.remove();
+    btn.disabled = false;
+  }
 });
 
 function slugify(s){
