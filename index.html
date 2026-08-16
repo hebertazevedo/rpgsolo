@@ -399,6 +399,16 @@ a{color:var(--arcane-bright);}
 .forge-form textarea{flex:1;resize:none;max-height:110px;min-height:42px;background:var(--void-3);border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:var(--text-hi);font-size:14px;}
 .forge-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px 14px;}
 .fg-cap{font-size:10.5px;color:var(--text-faint);margin-left:auto;margin-right:10px;text-align:right;line-height:1.4;}
+.cat-box{margin:4px 0;padding:12px 14px;border-radius:11px;background:var(--void-3);border:1px solid var(--brass-dim);}
+.cat-t{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-bright);font-weight:700;margin-bottom:9px;}
+.cat-item{padding:10px 0;border-bottom:1px solid var(--line-soft);}
+.cat-item:last-child{border-bottom:none;}
+.ci-h{display:flex;align-items:center;gap:7px;}
+.ci-h b{font-size:13px;color:var(--text-hi);}
+.ci-d{font-size:11.5px;color:var(--text-lo);margin-top:3px;line-height:1.5;}
+.ci-m{font-size:11px;color:var(--arcane-bright);margin-top:4px;}
+.ci-s{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);margin-top:4px;}
+.cat-item .mk-btn{margin-top:8px;}
 .fg-item{margin:2px 0;padding:11px 13px;border-radius:10px;background:rgba(79,143,124,.14);border:1px solid var(--arcane);font-size:12.5px;color:var(--arcane-bright);line-height:1.6;}
 .mk-item{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;background:var(--void-2);border:1px solid var(--line);margin-bottom:8px;}
 .mk-item .mk-i{font-size:18px;flex-shrink:0;}
@@ -1286,7 +1296,7 @@ var partyCache = {}; // email -> character
 function isSyncedKey(key){
  // TODA chave compartilhada precisa estar aqui, senao o dado fica preso no
  // navegador de quem criou e mais ninguem enxerga.
- return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:|forge-chat:)/.test(key);
+ return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:|producao:|ledger:|forge-chat:|producao:)/.test(key);
 }
 /* Values are stored wrapped as {__v:rev, __t:ts, d:data} so a stale or failed
  remote write can never overwrite newer local data on screen. */
@@ -1377,10 +1387,13 @@ async function sSet(key, value, shared){
  try{
  if(window.storage){ await window.storage.set(key, JSON.stringify(wrapped), !!shared); ok = true; }
  }catch(e){ console.warn("storage set failed", key, e); }
- if(shared && isSyncedKey(key)){
- // don't block the UI on the slow Apps Script round-trip
- sheetsPut("kv", key, wrapped).catch(function(){});
- }
+   if(shared && isSyncedKey(key)){
+    // não trava a interface esperando a ida ao servidor, mas se a gravação for
+    // recusada (regras de segurança) o cache local não pode continuar mentindo
+    sheetsPut("kv", key, wrapped).then(function(okRemoto){
+      if(okRemoto===false) cacheInvalidate(key);
+    }).catch(function(){ cacheInvalidate(key); });
+  }
  return ok;
 }
 async function sDel(key, shared){
@@ -1811,6 +1824,7 @@ function advBody(isGroup){
 "- Em combate, seja ainda mais enxuto: relate o resultado da ação, o estado do inimigo e passe a vez ao jogador.\n" +
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
+"ESPOLIO E EXPLORACAO: sempre que o grupo derrotar ou neutralizar inimigos, ofereca espontaneamente a chance de vasculhar o local — descreva o que encontram em moedas, consumiveis (pocoes, reagentes, componentes, materiais de oficio), equipamento e principalmente INFORMACOES: cartas, mapas, marcas, ordens escritas, algo que empurre a historia adiante. Registre os ganhos em \"itensGanhos\" e o dinheiro na ficha. Da mesma forma, ao narrar deslocamento entre dois lugares, nao faca um corte seco: descreva brevemente o caminho e ofereca algo pelo percurso — um encontro, um vestigio, um recurso colhido ou uma pista. Nunca deixe uma vitoria ou uma viagem passar sem oportunidade de ganho ou descoberta.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
 "CONTROLE DE CENA: a aventura pode ter uma ou mais cenas simultâneas (ex: o grupo se dividiu). Apenas UMA cena está \"em foco\" por vez (campo \"cenaAtiva\"). Jogadores fora da cena ativa não veem nada até você voltar a atenção para eles. Prefira manter todos numa cena só; separe apenas quando fizer sentido narrativo, e sempre avise no texto quando cortar de uma cena para outra. Para reunir o grupo, volte a colocar todos na mesma cena.\n\n" +
@@ -2192,6 +2206,7 @@ async function enterCreation(){
  renderCharacterSheet(character, "sheet-scroll");
  renderCreationChat({reset:true});
  setActiveTab("chat");
+ atualizarBotaoEdicao();
  updateSendUI();
  if(creationMessages.length===0) sendCreationMessage(KICKOFF_CREATION, {display:false});
 }
@@ -2303,6 +2318,7 @@ async function retryCreation(){
  ========================================================= */
 async function enterHub(){
   pararTodosListeners();
+  processarPendencias();
  showView("hub");
  el("hub-greeting").textContent = "Olá, "+(session.name||"");
  var cc = el("hub-char-card");
@@ -2527,6 +2543,8 @@ async function refreshLobby(preloaded){
  PLAY (adventure in progress)
  ========================================================= */
 async function enterPlay(advId, preloaded){
+ var bloq = await bloqueadoPorProducao();
+ if(bloq){ alert(bloq); return; }
  currentAdvId = advId; gameMode="play";
  var adv = preloaded || await sGet("adv:"+advId, true);
  if(!adv){ enterHub(); return; }
@@ -2542,6 +2560,7 @@ async function enterPlay(advId, preloaded){
  renderRollLog();
  renderCharacterSheet(character, "sheet-scroll");
  setActiveTab("chat");
+ atualizarBotaoEdicao();
  updateSendUI();
  el("chat-form").classList.toggle("hidden", adv.status!=="ativa");
  updatePlayControls(adv);
@@ -3375,26 +3394,69 @@ el("chat-form").addEventListener("submit", function(e){
 /* =========================================================
  SHEET EDITOR
  ========================================================= */
-el("btn-edit-sheet").addEventListener("click", function(){
- el("editor-textarea").value = JSON.stringify(character, null, 2);
- el("editor-error").classList.add("hidden");
- el("sheet-editor-modal").classList.remove("hidden");
-});
+/* A ficha deixa de ser editável pelo jogador: o personagem é resultado do
+   jogo, não um formulário. Só a administração corrige quando necessário. */
+function atualizarBotaoEdicao(){
+  var b = el("btn-edit-sheet");
+  if(b) b.classList.toggle("hidden", session.email!==ADMIN_EMAIL);
+}
+var editandoEmail = null;   // null = minha própria ficha
+
+async function abrirEditorFicha(email){
+  editandoEmail = (email && email!==session.email) ? email : null;
+  var alvo = editandoEmail ? await sGet("character:"+editandoEmail, true) : character;
+  if(!alvo) return alert("Personagem não encontrado.");
+  el("editor-textarea").value = JSON.stringify(alvo, null, 2);
+  el("editor-error").classList.add("hidden");
+  var titulo = el("sheet-editor-modal").querySelector("h3");
+  if(titulo) titulo.textContent = editandoEmail
+    ? "Editar ficha de "+(alvo.nome||editandoEmail)
+    : "Editar ficha";
+  el("sheet-editor-modal").classList.remove("hidden");
+}
+
+el("btn-edit-sheet").addEventListener("click", function(){ abrirEditorFicha(null); });
 el("editor-close").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
 el("editor-cancel").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
 el("sheet-editor-modal").addEventListener("click", function(e){ if(e.target===el("sheet-editor-modal")) el("sheet-editor-modal").classList.add("hidden"); });
 el("editor-save").addEventListener("click", async function(){
- var errBox = el("editor-error"); var parsed;
- try{ parsed = JSON.parse(el("editor-textarea").value); }catch(e){ errBox.textContent="JSON inválido: "+e.message; errBox.classList.remove("hidden"); return; }
- character = mergeCharacter(parsed);
- character.pericias = normalizeSkillList(character.pericias) || [];
- if(gameMode==="play") await sSet("character:"+session.email, character, true);
- renderCharacterSheet(character, "sheet-scroll");
- el("sheet-editor-modal").classList.add("hidden");
- var note = "[Nota do sistema: o jogador "+(session.name||"")+" ajustou a ficha manualmente. Dados atuais: "+JSON.stringify(character)+". Considere isso correto a partir de agora, sem re-explicar a ficha inteira.]";
- if(gameMode==="creation") sendCreationMessage(note, {display:false});
- else sendSceneMessage(note, {display:false});
+  var errBox = el("editor-error"); var parsed;
+  try{ parsed = JSON.parse(el("editor-textarea").value); }
+  catch(e){ errBox.textContent="JSON inválido: "+e.message; errBox.classList.remove("hidden"); return; }
+
+  var ficha = mergeCharacter(parsed);
+  ficha.pericias = normalizeSkillList(ficha.pericias) || [];
+
+  if(editandoEmail){
+    // Editando a ficha de outro jogador (administração)
+    var btn = el("editor-save"); btn.disabled=true; btn.textContent="Salvando…";
+    try{
+      await sSet("character:"+editandoEmail, ficha, true);
+      cacheInvalidate("character:"+editandoEmail);
+      var conferencia = await sGet("character:"+editandoEmail, true);
+      if(!conferencia || conferencia.nome!==ficha.nome){
+        throw new Error("A gravação não foi aceita. Verifique se as regras do Firestore permitem que o administrador edite fichas.");
+      }
+      logAdminEvent("sheet_edited", {alvo:editandoEmail, por:session.email});
+      el("sheet-editor-modal").classList.add("hidden");
+      editandoEmail = null;
+      alert("Ficha atualizada.");
+      if(!el("admin-overlay").classList.contains("hidden")) openAdmin();
+    }catch(e){
+      errBox.textContent = e.message; errBox.classList.remove("hidden");
+    }finally{ btn.disabled=false; btn.textContent="Salvar ficha"; }
+    return;
+  }
+
+  character = ficha;
+  if(gameMode==="play") await sSet("character:"+session.email, character, true);
+  renderCharacterSheet(character, "sheet-scroll");
+  el("sheet-editor-modal").classList.add("hidden");
+  var note = "[Nota do sistema: a ficha foi ajustada pela administração. Dados atuais: "+JSON.stringify(character)+". Considere isso correto a partir de agora.]";
+  if(gameMode==="creation") sendCreationMessage(note, {display:false});
+  else if(gameMode==="play") sendSceneMessage(note, {display:false});
 });
+
 
 
 /* =========================================================
@@ -3507,6 +3569,9 @@ function temPlanoPago(email){
   return normEmail(email) === ADMIN_EMAIL;
 }
 function podeProduzirItens(email){ return temPlanoPago(email); }
+/* O administrador produz sem catálogo, sem teste e sem espera: precisa poder
+   abastecer o mercado e testar o sistema rapidamente. */
+function produzLivremente(email){ return normEmail(email) === ADMIN_EMAIL; }
 function podeExportar(email){ return temPlanoPago(email); }
 function podeArquivoCompleto(email){ return temPlanoPago(email); }
 
@@ -3652,6 +3717,46 @@ async function retirarAnuncio(itemId){
   return a;
 }
 
+/* O vendedor aplica sozinho os créditos que ficaram pendentes. Roda ao abrir
+   o app e ao voltar à tela inicial — barato, porque só lê a própria fila. */
+async function processarPendencias(){
+  if(!session.email || !character) return 0;
+  var chaves = await sList("ledger:"+session.email+":", true);
+  if(!chaves.length) return 0;
+  var aplicados = 0, ouroTotal = 0, itens = [];
+  for(var i=0;i<chaves.length;i++){
+    var p = await sGet(chaves[i], true);
+    if(!p) continue;
+    if(typeof p.ouro==="number" && p.ouro>0){
+      character.dinheiro = fmtMoeda(parseMoeda(character.dinheiro) + p.ouro);
+      ouroTotal += p.ouro;
+    }
+    if(p.removerItem){
+      character.equipamento = applyListDelta(character.equipamento, [], [p.removerItem]);
+      character.itensVendaveis = (character.itensVendaveis||[]).filter(function(n){
+        return normaliza(n)!==normaliza(p.removerItem);
+      });
+      itens.push(p.removerItem);
+    }
+    if(p.adicionarItem){
+      character.equipamento = applyListDelta(character.equipamento, [p.adicionarItem], []);
+      character.itensComprados = (character.itensComprados||[]).concat([p.adicionarItem]);
+    }
+    await sDel(chaves[i], true);
+    aplicados++;
+  }
+  if(aplicados){
+    await sSet("character:"+session.email, character, true);
+    renderCharacterSheet(character, "sheet-scroll");
+    if(ouroTotal>0){
+      setTimeout(function(){
+        alert("Você recebeu "+fmtMoeda(ouroTotal)+" de venda"+(itens.length?" ("+itens.join(", ")+")":"")+".");
+      }, 300);
+    }
+  }
+  return aplicados;
+}
+
 async function comprarItem(itemId){
   var a = await sGet("market:"+itemId, true);
   if(!a || a.status!=="aberto") throw new Error("Este item não está mais à venda.");
@@ -3668,6 +3773,10 @@ async function comprarItem(itemId){
     a.status="cancelado"; await sSet("market:"+itemId, a, true);
     throw new Error("O vendedor não tem mais este item. Anúncio cancelado.");
   }
+  /* As regras do Firestore só deixam cada jogador escrever na PRÓPRIA ficha —
+     por isso o comprador não pode creditar o vendedor diretamente (era esse o
+     motivo do ouro sumir). Registramos um crédito pendente, que o vendedor
+     aplica sozinho ao abrir o app. */
 
   var taxa = Math.round(a.preco * TAXA_MERCADO * 100)/100;
   var liquido = Math.round((a.preco - taxa)*100)/100;
@@ -3680,10 +3789,12 @@ async function comprarItem(itemId){
   await sSet("character:"+session.email, character, true);
 
   // vendedor: entrega o item e recebe o líquido
-  vendedorFicha.dinheiro = fmtMoeda(parseMoeda(vendedorFicha.dinheiro) + liquido);
-  vendedorFicha.equipamento = applyListDelta(vendedorFicha.equipamento, [], [a.nome]);
-  vendedorFicha.itensVendaveis = (vendedorFicha.itensVendaveis||[]).filter(function(n){ return normaliza(n)!==normaliza(a.nome); });
-  await sSet("character:"+a.vendedor, vendedorFicha, true);
+  var pend = {
+    id: "ld_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),
+    para: a.vendedor, ouro: liquido, removerItem: a.nome,
+    motivo: "Venda de "+a.nome, de: session.email, ts: Date.now()
+  };
+  await sSet("ledger:"+a.vendedor+":"+pend.id, pend, true);
 
   // o item deixa de ser "fabricado por" para efeito de revenda: quem compra não pode revender
   var craftedVendedor = await itensFabricadosDe(a.vendedor);
@@ -3905,29 +4016,70 @@ function capacidadeOficina(c){
     ouro: parseMoeda(c.dinheiro)
   };
 }
+/* CD e tempo saem do nível e da raridade — não da IA, para que o desafio
+   seja igual para todo mundo. CD base do sistema d20 por nível do item. */
+function cdDeProducao(nivel, raridade){
+  var base = 14 + Math.floor((nivel||1) * 1.2);
+  var extra = {comum:0, incomum:2, raro:5, lendario:9}[raridade] || 0;
+  return base + extra;
+}
+function horasDeProducao(nivel, raridade){
+  var mult = {comum:1, incomum:2, raro:4, lendario:8}[raridade] || 1;
+  return Math.max(1, Math.round((nivel||1) * mult * 0.75));
+}
+function fmtDuracao(horas){
+  if(horas < 24) return horas+"h";
+  var d = Math.floor(horas/24), h = horas%24;
+  return d+" dia"+(d>1?"s":"")+(h?" e "+h+"h":"");
+}
+
+/* ---- Estado de produção: o personagem fica ocupado na bancada ---- */
+async function producaoEmCurso(email){
+  var p = await sGet("producao:"+normEmail(email||session.email), true);
+  if(!p || !p.terminaEm) return null;
+  if(Date.now() >= p.terminaEm) return Object.assign({}, p, {pronto:true});
+  return p;
+}
+function tempoRestante(p){ return Math.max(0, (p.terminaEm||0) - Date.now()); }
+function fmtRestante(ms){
+  var min = Math.ceil(ms/60000);
+  if(min < 60) return min+" min";
+  var h = Math.floor(min/60), m = min%60;
+  return h+"h"+(m?" "+m+"min":"");
+}
+/* Enquanto produz, o personagem não entra em aventura — está na oficina. */
+async function bloqueadoPorProducao(){
+  var p = await producaoEmCurso(session.email);
+  if(p && !p.pronto){
+    return "Seu personagem está na oficina produzindo "+p.item+". Faltam "+
+           fmtRestante(tempoRestante(p))+" — volte à oficina para acompanhar.";
+  }
+  return null;
+}
+
 function custoDeProducao(nivel, raridade){ return Math.round(precoDoItem(nivel, raridade)*0.5*100)/100; }
 
 function buildForgeSystemPrompt(c){
   var cap = capacidadeOficina(c);
   var permitidas = RARIDADES.slice(0, RARIDADES.indexOf(cap.raridadeMax)+1)
                    .map(function(r){ return LABEL_RARIDADE[r]; }).join(", ");
-  return "Você é um mestre artesão que orienta um aventureiro a produzir um item na oficina. Responda sempre em português do Brasil, em no máximo 2 parágrafos curtos, com tom de bancada de trabalho — prático e evocativo.\n\n"+
+  return "Você é um mestre artesão que orienta um aventureiro na oficina. Responda em português do Brasil, no máximo 2 parágrafos curtos, com tom de bancada de trabalho.\n\n"+
   "ARTESÃO: "+(c.nome||"—")+", "+(c.ancestralidade||"")+" "+(c.classe||"")+", nível "+(c.nivel||1)+".\n"+
   "Ofício principal: "+cap.pericia+" ("+cap.posto+", modificador "+fmtMod(cap.mod)+").\n"+
-  "Ouro disponível: "+fmtMoeda(cap.ouro)+".\n"+
-  "Equipamento e materiais em mãos: "+((c.equipamento||[]).join(", ")||"nada digno de nota")+".\n"+
-  "Magias conhecidas: "+((c.magias||[]).join(", ")||"nenhuma")+".\n\n"+
-  "LIMITES RÍGIDOS (nunca ultrapasse, mesmo se o jogador insistir):\n"+
-  "- Raridade máxima permitida pelo posto do ofício: "+LABEL_RARIDADE[cap.raridadeMax]+". Raridades possíveis: "+permitidas+".\n"+
-  "- Nível máximo do item: "+cap.nivelMax+" (o nível do personagem).\n"+
-  "- O item precisa ter relação com o que o personagem sabe fazer: um mago com Arcanismo produz focos, pergaminhos e itens mágicos; um ferreiro com Manufatura produz armas e armaduras; um alquimista produz elixires e bombas. Recuse pedidos fora do repertório do personagem e sugira uma alternativa que ele consiga fazer.\n"+
-  "- Custo em ouro: metade do valor de mercado do item. Se o jogador não tiver ouro suficiente, diga quanto falta e ofereça uma versão mais simples.\n"+
-  "- Nunca produza item que dependa de material raro que não esteja no inventário; nesse caso, oriente onde conseguir e não conclua.\n\n"+
-  "FLUXO: entenda o que ele quer, ajuste ao que é possível, confirme os detalhes (nome, efeito, raridade, nível, custo) e só então conclua a produção.\n\n"+
-  "FORMATO OBRIGATÓRIO: ao final de TODA resposta inclua um bloco oculto (o jogador não o vê):\n\n"+
+  "Talentos: "+((c.talentos||[]).join(", ")||"nenhum")+".\n"+
+  "Magias: "+((c.magias||[]).join(", ")||"nenhuma")+".\n"+
+  "Ouro: "+fmtMoeda(cap.ouro)+".\n"+
+  "INVENTÁRIO COMPLETO (única fonte de materiais): "+((c.equipamento||[]).join(", ")||"vazio")+".\n\n"+
+  "LIMITES RÍGIDOS:\n"+
+  "- Raridade máxima: "+LABEL_RARIDADE[cap.raridadeMax]+" (possíveis: "+permitidas+").\n"+
+  "- Nível máximo do item: "+cap.nivelMax+".\n"+
+  "- O item precisa combinar com o ofício, os talentos e as magias do personagem.\n"+
+  "- Cada item exige CONSUMÍVEIS que precisam estar no inventário acima. Nunca invente material que ele não tenha.\n\n"+
+  "SUA TAREFA: apresente um CATÁLOGO do que ele consegue produzir agora. Para cada item liste os consumíveis exigidos (apenas nomes que aparecem no inventário, exatamente como escritos). O aplicativo esconde automaticamente o que ele não puder fazer, calcula a dificuldade, o tempo e o custo — não invente esses números.\n\n"+
+  "FORMATO OBRIGATÓRIO: ao final de TODA resposta inclua o bloco oculto (o jogador não o vê):\n\n"+
   FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n"+
-  "Esquema: {\"concluido\": boolean, \"item\": null | {\"nome\": string, \"raridade\": \"comum\"|\"incomum\"|\"raro\"|\"lendario\", \"nivelItem\": number, \"descricao\": string}}\n"+
-  "Use \"concluido\": true APENAS quando o item estiver pronto e o jogador tiver confirmado. Nos demais turnos use false e \"item\": null.";
+  "Esquema: {\"catalogo\": [{\"nome\": string, \"raridade\": \"comum\"|\"incomum\"|\"raro\"|\"lendario\", \"nivelItem\": number, \"descricao\": string, \"consumiveis\": [string]}]}\n"+
+  "Ofereça de 3 a 6 opções variadas quando possível. Se ele não tiver material para nada, devolva \"catalogo\": [] e explique o que falta conseguir.";
 }
 
 var forgeMessages = [];
@@ -3936,6 +4088,9 @@ var forgeLoading = false;
 function renderForgeChat(){
   var box = el("forge-chat");
   box.innerHTML = forgeMessages.filter(function(m){ return m.display!==false; }).map(function(m){
+    if(m.kind==="rolagem"){
+      return '<div class="fg-item" style="background:rgba(193,154,91,.14);border-color:var(--brass-dim);color:var(--brass-bright)">'+esc(m.texto)+'</div>';
+    }
     if(m.kind==="item"){
       return '<div class="fg-item">⚒ <b>'+esc(m.nome)+'</b> — '+esc(LABEL_RARIDADE[m.raridade]||m.raridade)+
              ' nível '+m.nivelItem+'. Custou '+esc(m.custo)+' e vale '+esc(m.valor)+' no mercado.</div>';
@@ -3948,6 +4103,22 @@ function renderForgeChat(){
     box.innerHTML += '<div class="typing"><span></span><span></span><span></span></div>';
   }
   box.scrollTop = box.scrollHeight;
+}
+
+async function renderProducaoEmCurso(){
+  var p = await producaoEmCurso(session.email);
+  if(!p) return false;
+  if(p.pronto){ await concluirProducao(null); return false; }
+  var box = el("forge-chat");
+  var d = document.createElement("div");
+  d.className = "cat-box";
+  d.innerHTML = '<div class="cat-t">Trabalho em andamento</div>'+
+    '<div class="cat-item"><div class="ci-h"><b>'+esc(p.item)+'</b></div>'+
+    '<div class="ci-s">Faltam '+esc(fmtRestante(tempoRestante(p)))+' de trabalho na bancada.</div>'+
+    '<div class="ci-m">Enquanto produz, seu personagem nao entra em aventuras.</div></div>';
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return true;
 }
 
 function atualizarCabecalhoOficina(){
@@ -3968,6 +4139,7 @@ async function abrirOficina(){
   var salvo = await sGet("forge-chat:"+session.email, true);
   forgeMessages = (salvo && salvo.messages) || [];
   renderForgeChat();
+  if(await renderProducaoEmCurso()) return;
   var cap = capacidadeOficina(character);
   if(!cap.pode){
     forgeMessages = [{role:"model", text:cap.motivo, display:true}];
@@ -3979,6 +4151,130 @@ async function abrirOficina(){
   }
 }
 
+function temConsumiveis(c, lista){
+  return (lista||[]).every(function(m){
+    return (c.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(m); });
+  });
+}
+function renderCatalogo(cat){
+  var box = el("forge-chat");
+  var cap = capacidadeOficina(character);
+  var viaveis = (cat||[]).filter(function(it){
+    if(!it || !it.nome) return false;
+    var nivel = parseInt(it.nivelItem,10)||1;
+    if(nivel > cap.nivelMax) return false;
+    var rar = String(it.raridade||"comum").toLowerCase();
+    if(RARIDADES.indexOf(rar) > RARIDADES.indexOf(cap.raridadeMax)) return false;
+    return temConsumiveis(character, it.consumiveis);   // sem material, nem aparece
+  });
+  if(!viaveis.length) return;
+  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>';
+  viaveis.forEach(function(it, idx){
+    var nivel = parseInt(it.nivelItem,10)||1;
+    var rar = String(it.raridade||"comum").toLowerCase();
+    var cd = cdDeProducao(nivel, rar), horas = horasDeProducao(nivel, rar), custo = custoDeProducao(nivel, rar);
+    catalogoAtual[idx] = {nome:it.nome, raridade:rar, nivelItem:nivel, descricao:it.descricao||"",
+                          consumiveis:it.consumiveis||[], cd:cd, horas:horas, custo:custo};
+    html += '<div class="cat-item"><div class="ci-h"><b>'+esc(it.nome)+
+      '</b><span class="rar '+esc(rar)+'">'+esc(LABEL_RARIDADE[rar])+'</span></div>'+
+      '<div class="ci-d">'+esc(it.descricao||"")+'</div>'+
+      '<div class="ci-m">Materiais: '+esc((it.consumiveis||[]).join(", ")||"nenhum")+'</div>'+
+      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · '+fmtDuracao(horas)+' · '+fmtMoeda(custo)+
+      ' · vale '+fmtMoeda(precoDoItem(nivel,rar))+'</div>'+
+      '<button class="mk-btn" data-produzir="'+idx+'">Produzir</button></div>';
+  });
+  html += '</div>';
+  var d = document.createElement("div");
+  d.innerHTML = html;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  d.querySelectorAll("[data-produzir]").forEach(function(b){
+    b.addEventListener("click", function(){ iniciarProducao(catalogoAtual[b.getAttribute("data-produzir")]); });
+  });
+}
+
+var catalogoAtual = {};
+
+async function iniciarProducao(item){
+  if(!item) return;
+  var bloqueio = await bloqueadoPorProducao();
+  if(bloqueio) return alert(bloqueio);
+  if(!temConsumiveis(character, item.consumiveis)) return alert("Você não tem mais os materiais necessários.");
+  var ouro = parseMoeda(character.dinheiro);
+  if(ouro < item.custo) return alert("Ouro insuficiente: a produção custa "+fmtMoeda(item.custo)+".");
+
+  var cap = capacidadeOficina(character);
+  var livre = produzLivremente(session.email);
+  var msg = "Produzir "+item.nome+"?\n\n"+
+    "Materiais consumidos: "+(item.consumiveis.join(", ")||"nenhum")+"\n"+
+    "Custo: "+fmtMoeda(item.custo)+"\n"+
+    (livre ? "Produção livre (administrador): sem teste e sem espera.\n"
+           : "Teste de "+cap.pericia+" "+fmtMod(cap.mod)+" contra CD "+item.cd+"\n"+
+             "Tempo de trabalho: "+fmtDuracao(item.horas)+"\n\n"+
+             "Os materiais são consumidos mesmo se o trabalho falhar, e você não poderá entrar em aventuras enquanto produz.")
+    ;
+  if(!confirm(msg)) return;
+
+  // consome materiais e ouro de imediato — sucesso ou fracasso
+  character.dinheiro = fmtMoeda(ouro - item.custo);
+  (item.consumiveis||[]).forEach(function(m){
+    character.equipamento = applyListDelta(character.equipamento, [], [m]);
+  });
+  await sSet("character:"+session.email, character, true);
+  renderCharacterSheet(character, "sheet-scroll");
+
+  if(livre){
+    await concluirProducao({item:item, sucesso:true, rolagem:null});
+    return;
+  }
+
+  var dado = rollOne(20);
+  var total = dado + (cap.mod||0);
+  var sucesso = total >= item.cd;
+  var critico = (dado===20 && sucesso) || total >= item.cd+10;
+  var terminaEm = Date.now() + item.horas*60*1000;   // 1h de jogo = 1 min real
+
+  forgeMessages.push({kind:"rolagem", display:true,
+    texto:"🎲 "+cap.pericia+": 1d20 ("+dado+") "+fmtMod(cap.mod)+" = "+total+" contra CD "+item.cd+
+          " — "+(critico?"sucesso crítico!":sucesso?"sucesso":"fracasso")});
+  await sSet("producao:"+session.email, {
+    item:item.nome, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao,
+    sucesso:sucesso, critico:critico, rolagem:total, cd:item.cd,
+    iniciadoEm:Date.now(), terminaEm:terminaEm, horas:item.horas
+  }, true);
+  renderForgeChat();
+  atualizarCabecalhoOficina();
+  await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
+}
+
+async function concluirProducao(res){
+  var p = res || await producaoEmCurso(session.email);
+  if(!p) return;
+  var item = res ? res.item : {nome:p.item, raridade:p.raridade, nivelItem:p.nivelItem, descricao:p.descricao};
+  var sucesso = res ? res.sucesso : p.sucesso;
+  if(sucesso){
+    character.equipamento = applyListDelta(character.equipamento, [item.nome], []);
+    await sSet("character:"+session.email, character, true);
+    var criados = await registrarItensFabricados(session.email, [{
+      nome:item.nome, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao||""
+    }]);
+    character = await sGet("character:"+session.email, true) || character;
+    renderCharacterSheet(character, "sheet-scroll");
+    forgeMessages.push({kind:"item", nome:item.nome, raridade:item.raridade, nivelItem:item.nivelItem,
+      custo:fmtMoeda(custoDeProducao(item.nivelItem,item.raridade)),
+      valor:fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(item.nivelItem,item.raridade)), display:true});
+    logAdminEvent("item_forged", {nome:item.nome, raridade:item.raridade, por:session.email});
+  } else {
+    forgeMessages.push({role:"model", display:true,
+      text:"O trabalho não deu certo. Os materiais se perderam na tentativa — acontece até com os melhores artesãos."});
+  }
+  await sDel("producao:"+session.email, true);
+  await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
+  renderForgeChat();
+  atualizarCabecalhoOficina();
+  if(!el("market-overlay").classList.contains("hidden")) renderMercado();
+}
+
 async function enviarMensagemOficina(texto, opts){
   opts = opts || {};
   if(forgeLoading) return;
@@ -3988,42 +4284,15 @@ async function enviarMensagemOficina(texto, opts){
   forgeLoading = true; renderForgeChat();
   el("forge-send").disabled = true;
   try{
-    var contents = forgeMessages.filter(function(m){ return m.kind!=="item"; })
+    var contents = forgeMessages.filter(function(m){ return !m.kind; })
                                 .map(function(m){ return {role:m.role, parts:[{text:m.text}]}; });
     var raw = await callGeminiRaw(buildForgeSystemPrompt(character), contents);
     var ext = extractBlock(raw);
     forgeMessages.push({role:"model", text: ext.clean || "(o artesão fica em silêncio…)", display:true});
-
-    var d = ext.data;
-    if(d && d.concluido && d.item && d.item.nome){
-      var cap = capacidadeOficina(character);
-      var raridade = String(d.item.raridade||"comum").toLowerCase();
-      if(RARIDADES.indexOf(raridade)===-1) raridade = "comum";
-      // trava do app: a IA não pode passar do que a ficha permite
-      if(RARIDADES.indexOf(raridade) > RARIDADES.indexOf(cap.raridadeMax)) raridade = cap.raridadeMax;
-      var nivel = Math.max(1, Math.min(cap.nivelMax, parseInt(d.item.nivelItem,10)||1));
-      var custo = custoDeProducao(nivel, raridade);
-      var ouro = parseMoeda(character.dinheiro);
-
-      if(ouro < custo){
-        forgeMessages.push({role:"model", display:true,
-          text:"(Você não tem ouro suficiente: a produção custaria "+fmtMoeda(custo)+" e você tem "+fmtMoeda(ouro)+".)"});
-      } else if((character.equipamento||[]).some(function(e){ return normaliza(e)===normaliza(d.item.nome); })){
-        forgeMessages.push({role:"model", display:true, text:"(Você já tem um item com esse nome no inventário.)"});
-      } else {
-        character.dinheiro = fmtMoeda(ouro - custo);
-        character.equipamento = applyListDelta(character.equipamento, [d.item.nome], []);
-        await sSet("character:"+session.email, character, true);
-        var criados = await registrarItensFabricados(session.email, [{
-          nome:d.item.nome, raridade:raridade, nivelItem:nivel, descricao:d.item.descricao||""
-        }]);
-        character = await sGet("character:"+session.email, true) || character;
-        renderCharacterSheet(character, "sheet-scroll");
-        forgeMessages.push({kind:"item", nome:d.item.nome, raridade:raridade, nivelItem:nivel,
-          custo:fmtMoeda(custo), valor:fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(nivel,raridade)), display:true});
-        logAdminEvent("item_forged", {nome:d.item.nome, raridade:raridade, nivel:nivel, custo:custo, por:session.email});
-        forgeMessages = [];   // pronto: próxima conversa começa limpa
-      }
+    renderForgeChat();
+    if(ext.data && ext.data.catalogo){
+      catalogoAtual = {};
+      renderCatalogo(ext.data.catalogo);
     }
   }catch(err){
     forgeMessages.push({role:"model", text: friendlyApiError(err), display:true, error:true});
@@ -4033,7 +4302,6 @@ async function enviarMensagemOficina(texto, opts){
     await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
     atualizarCabecalhoOficina();
     renderForgeChat();
-    if(!el("market-overlay").classList.contains("hidden")) renderMercado();
   }
 }
 
@@ -4288,6 +4556,8 @@ async function ingressarNoEvento(evId){
   if(fase!=="ingresso" && fase!=="emJogo") throw new Error("Fora da janela de ingresso deste evento.");
   var inscrito = (ev.inscritos||[]).some(function(i){ return i.email===session.email; });
   if(!inscrito) throw new Error("Você não está inscrito neste evento.");
+  var bloqProd = await bloqueadoPorProducao();
+  if(bloqProd) throw new Error(bloqProd);
 
   ev.ingressaram = ev.ingressaram || [];
   if(ev.ingressaram.indexOf(session.email)===-1) ev.ingressaram.push(session.email);
@@ -4938,6 +5208,7 @@ async function openAdmin(){
           '<span class="pn"><b style="color:var(--text-hi)">'+esc(u.name||u.email)+'</b>'+
           '<span style="color:var(--text-faint)">'+esc(u.email)+' · '+
           (ch&&ch.nome ? esc(ch.nome)+" nv."+(ch.nivel||1) : "sem personagem")+' · '+nAdv+' aventura(s)</span></span>'+
+          (ch&&ch.nome ? '<button class="mk-btn sec" data-editar-ficha="'+esc(u.email)+'" style="padding:6px 10px;font-size:11px;">Editar ficha</button>' : '')+
           '<span class="php" style="color:var(--text-faint)">'+(u.createdAt? new Date(u.createdAt).toLocaleDateString("pt-BR"):"—")+'</span></div>';
       });
       html += '</div>';
@@ -4957,6 +5228,9 @@ async function openAdmin(){
     html += '<p class="adm-note" style="margin-top:16px;opacity:.75;">⚠️ Este painel mostra dados de todos os jogadores. Trate essas informações com cuidado.</p>';
 
     el("admin-body").innerHTML = html;
+    el("admin-body").querySelectorAll("[data-editar-ficha]").forEach(function(b){
+      b.addEventListener("click", function(){ abrirEditorFicha(b.getAttribute("data-editar-ficha")); });
+    });
     var migBtn = el("admin-migrar");
     if(migBtn) migBtn.addEventListener("click", async function(){
       if(!confirm("Importar o histórico antigo para o Firebase?\n\nNada é apagado: registros que já existem no Firebase são mantidos como estão.")) return;
