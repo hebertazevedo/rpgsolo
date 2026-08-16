@@ -1463,7 +1463,7 @@ function apiBase(){ return "https://generativelanguage.googleapis.com"; }
 function friendlyApiError(err){
  var m = (err && err.message) ? err.message : (typeof err==="string" ? err : "Erro desconhecido.");
  var low = m.toLowerCase();
- if(low.indexOf("prepay")>=0 || low.indexOf("credit")>=0 || low.indexOf("billing")>=0){
+ if((err && err.faturamentoEmTodos) || ((low.indexOf("prepay")>=0 || low.indexOf("credit")>=0) && !(err && err.httpStatus===429))){
  return "Sua chave do Gemini está sem créditos ou precisa de faturamento configurado. Acesse aistudio.google.com/projects (com a conta Google usada para criar a chave), veja a aba de faturamento e adicione créditos — ou crie uma chave nova em um projeto ainda no nível gratuito (Get API key > Create API key > novo projeto). Detalhe original do Google: "+m;
  }
  if((err && err.isQuotaError) || low.indexOf("resource_exhausted")>=0 || low.indexOf("quota")>=0 || low.indexOf("rate limit")>=0 || low.indexOf("429")>=0){
@@ -1564,7 +1564,11 @@ async function callGeminiOnce(systemText, contents, model){
    tem cota própria) e, se todos estiverem saturados, aguarda e tenta de novo. */
 function classifyQuotaError(err){
   var m = ((err && err.message) || "").toLowerCase();
-  if(/prepay|credit|billing/.test(m)) return "billing";
+  // Um 429 é SEMPRE cota, mesmo quando a mensagem cita "billing" num link de
+  // ajuda. Classificar isso como faturamento fazia o app desistir na primeira
+  // tentativa, sem rodar os demais modelos.
+  var quota429 = (err && (err.httpStatus===429 || err.isQuotaError));
+  if(!quota429 && /prepay|credit|billing/.test(m)) return "billing";
   if(/per day|daily|requests per day|rpd/.test(m)) return "daily";
   return "minute";
 }
@@ -1616,7 +1620,8 @@ async function callGeminiRaw(systemText, contents){
 
   var esperas = [20, 40, 70];      // cota por minuto se renova em ~60s
   var lastErr = null;
-  var esgotadosPorMinuto = {};     // modelos que bateram limite nesta rodada
+  var esgotadosPorMinuto = {};
+  var billingEmAlgum = false;     // modelos que bateram limite nesta rodada
 
   for(var tentativa=0; tentativa<=esperas.length; tentativa++){
     var todosPorMinuto = true;
@@ -1662,8 +1667,16 @@ async function callGeminiRaw(systemText, contents){
           if(!err.isQuotaError) throw err;   // erro real (chave inválida, bloqueio): mostrar
 
           var tipo = classifyQuotaError(err);
-          if(tipo==="billing") throw err;    // exige ação do usuário
+          if(tipo==="billing"){
+            // pode ser específico deste modelo/projeto: tenta os demais antes
+            // de incomodar o jogador
+            billingEmAlgum = true;
+            break;
+          }
           if(tipo==="minute") esgotadosPorMinuto[model] = true;
+          if(quotaWaitCb && i < ordered.length-1){
+            quotaWaitCb(0, "trocando", ordered[i+1]);
+          }
           else todosPorMinuto = false;
           break;                             // próximo modelo da fila
         }
@@ -3360,7 +3373,7 @@ function showMasteryToast(pr){
 }
 
 /* Enquanto a cota se recupera, o jogador vê um aviso em vez de achar que travou */
-quotaWaitCb = function(segundos, motivo){
+quotaWaitCb = function(segundos, motivo, extra){
   var el0 = document.getElementById("quota-wait");
   if(segundos===null || segundos===undefined){
     if(el0) el0.remove();
@@ -3373,6 +3386,10 @@ quotaWaitCb = function(segundos, motivo){
     el0.className = "quota-wait";
     el0.id = "quota-wait";
     scroll.appendChild(el0);
+  }
+  if(motivo==="trocando"){
+    el0.innerHTML = "🔁 Cota esgotada neste modelo. Passando para <b>"+esc(extra||"outro modelo")+"</b>…";
+    return;
   }
   el0.innerHTML = (motivo==="rede")
     ? "📡 Conexão instável. Tentando de novo em <b>"+segundos+"s</b>…"
