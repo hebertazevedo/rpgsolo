@@ -485,6 +485,7 @@ a{color:var(--arcane-bright);}
 .decline-btn:hover{border-color:var(--ember);color:var(--ember-bright);}
 
 /* ---------- Modals ---------- */
+.modal-overlay.acima{z-index:140;}
 .modal-overlay{position:fixed;inset:0;background:rgba(10,10,13,.72);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
 .modal-box{background:var(--void-2);border:1px solid var(--line);border-radius:16px;width:100%;max-width:520px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
 .modal-head{padding:18px 20px 4px;display:flex;align-items:center;}
@@ -1540,6 +1541,8 @@ async function callGeminiOnce(systemText, contents, model){
  var err = new Error(msg);
  var status = (data && data.error && data.error.status) || "";
  err.isQuotaError = (res.status===429) || status==="RESOURCE_EXHAUSTED" || /quota|rate limit/i.test(msg);
+ err.modeloInexistente = (res.status===404) || status==="NOT_FOUND" ||
+ /not found|not supported|does not exist|is not found/i.test(msg);
  err.httpStatus = res.status;
  throw err;
  }
@@ -1602,6 +1605,15 @@ async function callGeminiRaw(systemText, contents){
   var startIdx = Math.max(0, chain.indexOf(session.model));
   var ordered = chain.slice(startIdx).concat(chain.slice(0, startIdx));
 
+  /* Rede de seguranca: se a listagem de modelos falhou (acontece com algumas
+     chaves), a fila chegaria aqui com um item so e nao haveria para onde rodar.
+     Acrescentamos os modelos conhecidos: um 404 e barato e simplesmente
+     pulamos o que a chave nao oferecer. */
+  MODELOS_CONHECIDOS.forEach(function(id){
+    if(ordered.indexOf(id)===-1) ordered.push(id);
+  });
+  console.info("Fila de modelos:", ordered.join(" -> "));
+
   var esperas = [20, 40, 70];      // cota por minuto se renova em ~60s
   var lastErr = null;
   var esgotadosPorMinuto = {};     // modelos que bateram limite nesta rodada
@@ -1642,6 +1654,11 @@ async function callGeminiRaw(systemText, contents){
             continue;                        // tenta de novo o mesmo modelo
           }
 
+          if(err.modeloInexistente){
+            // a chave nao tem acesso a este modelo: tira da fila e segue
+            session.modelChain = (session.modelChain||[]).filter(function(m){ return m!==model; });
+            break;
+          }
           if(!err.isQuotaError) throw err;   // erro real (chave inválida, bloqueio): mostrar
 
           var tipo = classifyQuotaError(err);
@@ -3412,13 +3429,21 @@ async function abrirEditorFicha(email){
   if(titulo) titulo.textContent = editandoEmail
     ? "Editar ficha de "+(alvo.nome||editandoEmail)
     : "Editar ficha";
+  // quando aberto sobre o painel admin, precisa ficar na frente dele
+  el("sheet-editor-modal").classList.toggle("acima", !el("admin-overlay").classList.contains("hidden"));
   el("sheet-editor-modal").classList.remove("hidden");
 }
 
 el("btn-edit-sheet").addEventListener("click", function(){ abrirEditorFicha(null); });
-el("editor-close").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
-el("editor-cancel").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); });
-el("sheet-editor-modal").addEventListener("click", function(e){ if(e.target===el("sheet-editor-modal")) el("sheet-editor-modal").classList.add("hidden"); });
+el("editor-close").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); el("sheet-editor-modal").classList.remove("acima"); editandoEmail=null; });
+el("editor-cancel").addEventListener("click", function(){ el("sheet-editor-modal").classList.add("hidden"); el("sheet-editor-modal").classList.remove("acima"); editandoEmail=null; });
+el("sheet-editor-modal").addEventListener("click", function(e){
+  if(e.target!==el("sheet-editor-modal")) return;
+  e.stopPropagation();                      // não deixa o clique atingir o painel de baixo
+  el("sheet-editor-modal").classList.add("hidden");
+  el("sheet-editor-modal").classList.remove("acima");
+  editandoEmail = null;
+});
 el("editor-save").addEventListener("click", async function(){
   var errBox = el("editor-error"); var parsed;
   try{ parsed = JSON.parse(el("editor-textarea").value); }
@@ -3439,6 +3464,7 @@ el("editor-save").addEventListener("click", async function(){
       }
       logAdminEvent("sheet_edited", {alvo:editandoEmail, por:session.email});
       el("sheet-editor-modal").classList.add("hidden");
+      el("sheet-editor-modal").classList.remove("acima");
       editandoEmail = null;
       alert("Ficha atualizada.");
       if(!el("admin-overlay").classList.contains("hidden")) openAdmin();
