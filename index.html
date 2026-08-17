@@ -224,6 +224,8 @@ a{color:var(--arcane-bright);}
 #chat-panel .panel-head{border-bottom:1px solid var(--line);}
 .pdf-banner{margin:0 16px 0;padding:8px 12px;border-radius:8px;background:var(--void-3);border:1px solid var(--line-soft);font-size:11.5px;color:var(--text-faint);display:flex;align-items:center;gap:8px;}
 .pdf-banner a{color:var(--arcane-bright);text-decoration:none;font-weight:600;}
+.turno-pill{font-size:11px;padding:5px 11px;border-radius:999px;background:var(--void-3);border:1px solid var(--line);color:var(--text-faint);}
+.turno-pill.minha{background:rgba(79,143,124,.18);border-color:var(--arcane);color:var(--arcane-bright);font-weight:700;}
 .timer-pill{margin:10px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(176,71,58,.14);border:1px solid var(--ember);font-size:12px;color:var(--ember-bright);display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-weight:700;}
 .timer-pill.calm{background:var(--void-3);border-color:var(--line-soft);color:var(--text-lo);}
 #chat-scroll{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;}
@@ -764,7 +766,9 @@ a{color:var(--arcane-bright);}
  </aside>
  <section id="chat-panel" class="panel tab-active">
  <div class="panel-head"><h2 id="chat-panel-title">O Mestre</h2></div>
- <div id="timer-pill" class="timer-pill hidden"></div>
+ <div class="turno-pill hidden" id="turno-pill"></div>
+ <div id="timer-pill" class="timer-pill hidden">
+</div>
  <div id="skill-check-box" class="skill-check hidden">
  <div class="sc-head">
  <div class="sc-title" id="sc-title">Teste solicitado</div>
@@ -1310,7 +1314,7 @@ var partyCache = {}; // email -> character
 function isSyncedKey(key){
  // TODA chave compartilhada precisa estar aqui, senao o dado fica preso no
  // navegador de quem criou e mais ninguem enxerga.
- return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:|producao:|ledger:|forge-chat:|producao:)/.test(key);
+ return /^(pub:|character:|adv:|member-adv:|scene-msgs:|pending-action:|check:|admin-config|event:|events-index|market:|market-index|market-treasury|crafted:|producao:|ledger:|forge-chat:|turno:|iteminfo:|producao:)/.test(key);
 }
 /* Values are stored wrapped as {__v:rev, __t:ts, d:data} so a stale or failed
  remote write can never overwrite newer local data on screen. */
@@ -1871,6 +1875,7 @@ function advBody(isGroup){
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
 "CONTROLE DE CENA: a aventura pode ter uma ou mais cenas simultâneas (ex: o grupo se dividiu). Apenas UMA cena está \"em foco\" por vez (campo \"cenaAtiva\"). Jogadores fora da cena ativa não veem nada até você voltar a atenção para eles. Prefira manter todos numa cena só; separe apenas quando fizer sentido narrativo, e sempre avise no texto quando cortar de uma cena para outra. Para reunir o grupo, volte a colocar todos na mesma cena.\n\n" +
+"UM DE CADA VEZ: dirija-se sempre a UM personagem por vez. Termine a narracao com uma pergunta ou situacao endereçada a ele pelo nome e preencha \"vezDe\" com o e-mail desse jogador — somente ele podera responder. Depois que ele agir, narre a consequencia e passe a vez ao proximo, alternando para que ninguem fique de fora. Nunca faca perguntas abertas ao grupo inteiro. Se a cena exigir reacao coletiva, ainda assim resolva um personagem por vez.\n\n" +
 "PEDIDOS DE AÇÃO E TEMPO: quando sua narração termina esperando uma ação de um ou mais jogadores da cena ativa, marque \"aguardandoAcao\": true e liste os e-mails desses jogadores em \"jogadoresEsperados\". O aplicativo dá até 7 minutos para cada um responder; quem não responder a tempo terá uma ação escolhida por você automaticamente na rodada seguinte. Quando não há pedido pendente, marque \"aguardandoAcao\": false e \"jogadoresEsperados\": [].\n\n"
 : "Esta é uma aventura SOLO: existe apenas o jogador e apenas uma cena contínua. Não divida cenas, não gerencie grupos e não use campos de cena — narre direto para ele e aguarde a resposta pelo tempo que ele precisar.\n\n") +
 "FORMATO DE SAÍDA OBRIGATÓRIO: depois de todo texto narrativo, inclua sempre, sem exceção, um bloco oculto (os jogadores nunca o verão):\n\n" +
@@ -2628,6 +2633,7 @@ function ligarListenersDaAventura(){
  renderPlayChat(lista);
  lastSeenMsgCount = lista.length;
  });
+ fsListen("turno:"+base, function(t){ currentTurno = t; renderVezPill(); });
  fsListen("check:"+base, function(chk){
  if(view==="game" && gameMode==="play") renderSkillCheck(chk);
  });
@@ -2721,6 +2727,7 @@ async function refreshPlayInner(force){
 
  var msgsP = sGet("scene-msgs:"+currentAdvId+":"+currentSceneId, true);
  var checkP = sGet("check:"+currentAdvId+":"+currentSceneId, true);
+ var turnoP = sGet("turno:"+currentAdvId+":"+currentSceneId, true);
  var pendP = (adv.mode==="grupo") ? sGet("pending-action:"+currentAdvId+":"+currentSceneId, true) : Promise.resolve(null);
  var sceneMsgs = (await msgsP) || [];
  if(force || sceneMsgs.length!==lastSeenMsgCount){
@@ -2740,6 +2747,8 @@ async function refreshPlayInner(force){
 
  // pending action timer — each player's clock starts when THEY see the prompt
  currentPending = await pendP;
+ currentTurno = await turnoP;
+ renderVezPill();
  if(currentPending){
  var amExp = (currentPending.expectedEmails||[]).indexOf(session.email)>=0;
  var didResp = (currentPending.respondedEmails||[]).indexOf(session.email)>=0;
@@ -2756,6 +2765,34 @@ async function refreshPlayInner(force){
 }
 
 var currentPending = null;
+var currentTurno = null;   // {email} de quem tem a vez na cena (grupo)
+
+function ehMinhaVez(){
+  if(!currentAdv || currentAdv.mode!=="grupo") return true;
+  if(!currentTurno || !currentTurno.email) return true;   // sem vez definida: livre
+  return normEmail(currentTurno.email)===session.email;
+}
+function renderVezPill(){
+  var box = el("turno-pill");
+  if(!box) return;
+  if(!currentAdv || currentAdv.mode!=="grupo" || !currentTurno || !currentTurno.email){
+    box.classList.add("hidden");
+    el("chat-input").disabled = false;
+    el("chat-input").placeholder = "O que você faz?";
+    return;
+  }
+  var meu = ehMinhaVez();
+  var nome = meu ? "você" : nomeDoMembro(currentTurno.email);
+  box.classList.remove("hidden");
+  box.className = "turno-pill" + (meu ? " minha" : "");
+  box.textContent = meu ? "É a sua vez de agir" : "Vez de "+nome+" — aguarde";
+  el("chat-input").disabled = !meu;
+  el("chat-input").placeholder = meu ? "O que você faz?" : "Aguardando "+nome+"…";
+}
+function nomeDoMembro(email){
+  var m = ((currentAdv && currentAdv.members) || []).filter(function(x){ return normEmail(x.email)===normEmail(email); })[0];
+  return (m && m.name) || String(email||"").split("@")[0];
+}
 var lastTypingAt = 0;
 function myActionDeadline(pending){
  if(!pending) return 0;
@@ -3140,6 +3177,10 @@ async function doAppend(key, advId, sceneId, newMsgs){
 async function releaseLock(key){ await sDel(key, true); }
 
 async function sendSceneMessage(text, opts){
+ if(opts && opts.display!==false && !ehMinhaVez()) return;   // nao e a vez deste jogador
+  if(opts && opts.display!==false && !ehMinhaVez()){
+    return;   // não é a vez deste jogador
+  }
  opts=opts||{}; var display = opts.display!==false;
  if(loading) return; text=(text||"").trim(); if(!text) return;
  var advId=currentAdvId, sceneId=currentSceneId;
@@ -3223,6 +3264,10 @@ async function runGmTurn(advId, sceneId){
  if(data.xpConcedido && Array.isArray(data.xpConcedido) && data.xpConcedido.length){
  var mineXp = data.xpConcedido.filter(function(x){ return normEmail(x.email)===session.email; })[0];
  if(mineXp && mineXp.quantidade) showXpToast(mineXp.quantidade, mineXp.motivo);
+ }
+ if(adv.mode==="grupo"){
+ var vez = data.vezDe ? normEmail(data.vezDe) : null;
+ await sSet("turno:"+advId+":"+sceneId, vez ? {email:vez, desde:Date.now()} : null, true);
  }
  var checkPedido = data.testeSolicitado || null;
  if(!checkPedido || !((checkPedido.pericias||[]).length || checkPedido.formula)){
@@ -3781,7 +3826,29 @@ async function retirarAnuncio(itemId){
 
 /* O vendedor aplica sozinho os créditos que ficaram pendentes. Roda ao abrir
    o app e ao voltar à tela inicial — barato, porque só lê a própria fila. */
-async function processarPendencias(){
+/* Guarda contra crédito duplicado: a função é chamada de vários lugares (hub,
+   mercado, oficina) e execuções simultâneas aplicavam o mesmo crédito duas
+   vezes. Uma execução por vez, e cada crédito é apagado ANTES de ser aplicado. */
+var pendenciasEmCurso = null;
+function creditosJaAplicados(){
+  try{ return JSON.parse(localStorage.getItem("creditos-aplicados")||"[]"); }catch(e){ return []; }
+}
+function marcarCreditoAplicado(id){
+  try{
+    var l = creditosJaAplicados();
+    if(l.indexOf(id)===-1) l.push(id);
+    if(l.length>200) l = l.slice(-200);
+    localStorage.setItem("creditos-aplicados", JSON.stringify(l));
+  }catch(e){}
+}
+
+function processarPendencias(){
+  if(pendenciasEmCurso) return pendenciasEmCurso;      // já está rodando
+  pendenciasEmCurso = _processarPendencias().finally(function(){ pendenciasEmCurso = null; });
+  return pendenciasEmCurso;
+}
+
+async function _processarPendencias(){
   if(!session.email) return 0;
   // A ficha em memória pode estar velha (venda concluída em outro dispositivo,
   // item produzido em outra aba). Parte sempre do que está no servidor.
@@ -3792,9 +3859,18 @@ async function processarPendencias(){
   var chaves = await sList("ledger:"+session.email+":", true);
   if(!chaves.length) return 0;
   var aplicados = 0, ouroTotal = 0, itens = [];
+  var aplicadosAntes = creditosJaAplicados();
   for(var i=0;i<chaves.length;i++){
     var p = await sGet(chaves[i], true);
     if(!p) continue;
+    if(p.id && aplicadosAntes.indexOf(p.id)>=0){        // já creditado antes
+      await sDel(chaves[i], true);
+      continue;
+    }
+    // apaga primeiro: melhor perder um crédito em falha rara do que creditar duas vezes
+    await sDel(chaves[i], true);
+    cacheInvalidate(chaves[i]);
+    if(p.id) marcarCreditoAplicado(p.id);
     if(typeof p.ouro==="number" && p.ouro>0){
       character.dinheiro = fmtMoeda(parseMoeda(character.dinheiro) + p.ouro);
       ouroTotal += p.ouro;
@@ -3810,7 +3886,6 @@ async function processarPendencias(){
       character.equipamento = applyListDelta(character.equipamento, [p.adicionarItem], []);
       character.itensComprados = (character.itensComprados||[]).concat([p.adicionarItem]);
     }
-    await sDel(chaves[i], true);
     aplicados++;
   }
   if(aplicados){
@@ -3889,27 +3964,102 @@ function jsPDFDisponivel(){ return !!(window.jspdf && window.jspdf.jsPDF); }
 
 /* Gera uma ilustração pelo Gemini. Se a chave não tiver acesso a modelo de
    imagem, devolve null e o PDF sai só com texto — nunca trava a exportação. */
-async function gerarIlustracao(prompt){
-  var modelos = ["gemini-2.5-flash-image","imagen-4.0-generate-001","gemini-2.0-flash-preview-image-generation"];
-  for(var i=0;i<modelos.length;i++){
-    try{
-      var res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(modelos[i])+":generateContent", {
-        method:"POST", headers:{"x-goog-api-key":session.apiKey,"Content-Type":"application/json"},
-        body: JSON.stringify({
-          contents:[{role:"user", parts:[{text:prompt}]}],
-          generationConfig:{responseModalities:["IMAGE"]}
-        })
-      });
-      if(!res.ok) continue;
-      var data = await res.json();
-      var parts = (((data.candidates||[])[0]||{}).content||{}).parts||[];
-      for(var j=0;j<parts.length;j++){
-        var inline = parts[j].inlineData || parts[j].inline_data;
-        if(inline && inline.data) return "data:"+(inline.mimeType||inline.mime_type||"image/png")+";base64,"+inline.data;
-      }
-    }catch(e){ /* tenta o próximo modelo */ }
+/* Modelos de imagem (Nano Banana), do mais recente para o mais antigo.
+   Mesma lógica de rotação usada para texto: 429 troca de modelo, sobrecarga e
+   queda de rede esperam e repetem, 404 é removido da fila. */
+var MODELOS_IMAGEM = [
+  "gemini-3.1-flash-image",
+  "gemini-3.1-flash-lite-image",
+  "gemini-3-pro-image"
+];
+var modelosImagemIndisponiveis = {};
+
+async function gerarImagemUmModelo(prompt, model){
+  var res;
+  try{
+    res = await fetch(apiBase()+"/v1beta/models/"+encodeURIComponent(model)+":generateContent", {
+      method:"POST", headers:{"x-goog-api-key":session.apiKey,"Content-Type":"application/json"},
+      body: JSON.stringify({
+        contents:[{role:"user", parts:[{text:prompt}]}],
+        generationConfig:{responseModalities:["IMAGE"]}
+      })
+    });
+  }catch(netErr){
+    var e0 = new Error(netErr && netErr.message ? netErr.message : "Falha de rede");
+    e0.isNetworkError = true;
+    throw e0;
   }
-  return null;
+  var data = await res.json().catch(function(){ return null; });
+  if(!res.ok){
+    var msg = (data && data.error && data.error.message) ? data.error.message : ("Erro HTTP "+res.status);
+    var status = (data && data.error && data.error.status) || "";
+    var err = new Error(msg);
+    err.httpStatus = res.status;
+    err.isQuotaError = (res.status===429) || status==="RESOURCE_EXHAUSTED" || /quota|rate limit/i.test(msg);
+    err.modeloInexistente = (res.status===404) || status==="NOT_FOUND" ||
+                            /not found|not supported|does not exist/i.test(msg);
+    throw err;
+  }
+  var parts = (((data.candidates||[])[0]||{}).content||{}).parts||[];
+  for(var j=0;j<parts.length;j++){
+    var inline = parts[j].inlineData || parts[j].inline_data;
+    if(inline && inline.data) return "data:"+(inline.mimeType||inline.mime_type||"image/png")+";base64,"+inline.data;
+  }
+  var vazio = new Error("O modelo não devolveu imagem.");
+  vazio.semImagem = true;
+  throw vazio;
+}
+
+async function gerarIlustracao(prompt, onProgress){
+  var fila = MODELOS_IMAGEM.filter(function(m){ return !modelosImagemIndisponiveis[m]; });
+  if(!fila.length) fila = MODELOS_IMAGEM.slice();   // tenta tudo de novo se todos foram descartados
+
+  var esperas = [20, 40];
+  for(var tentativa=0; tentativa<=esperas.length; tentativa++){
+    var todosPorCota = true;
+    var algumTentado = false;
+
+    for(var i=0;i<fila.length;i++){
+      var model = fila[i];
+      var transitorios = 0;
+      while(true){
+        try{
+          algumTentado = true;
+          if(onProgress) onProgress("Ilustrando com "+model+"…");
+          return await gerarImagemUmModelo(prompt, model);
+        }catch(err){
+          if(!err.isQuotaError && (isNetworkError(err) || isOverloadedError(err))){
+            transitorios++;
+            if(transitorios > 2) break;
+            for(var w=5; w>0; w--){
+              if(quotaWaitCb) quotaWaitCb(w, isNetworkError(err) ? "rede" : "sobrecarga");
+              await new Promise(function(r){ setTimeout(r, 1000); });
+            }
+            if(quotaWaitCb) quotaWaitCb(null);
+            continue;
+          }
+          if(err.modeloInexistente){
+            modelosImagemIndisponiveis[model] = true;   // a chave não tem acesso
+            todosPorCota = false;
+            break;
+          }
+          if(!err.isQuotaError){ todosPorCota = false; break; }   // erro real: próximo modelo
+          if(quotaWaitCb && i < fila.length-1) quotaWaitCb(0, "trocando", fila[i+1]);
+          break;                                                  // cota: próximo modelo
+        }
+      }
+    }
+
+    if(!algumTentado || !todosPorCota) break;
+    if(tentativa===esperas.length) break;
+    var seg = esperas[tentativa];
+    for(var s2=seg; s2>0; s2--){
+      if(quotaWaitCb) quotaWaitCb(s2, "cota");
+      await new Promise(function(r){ setTimeout(r, 1000); });
+    }
+  }
+  if(quotaWaitCb) quotaWaitCb(null);
+  return null;   // sem imagem: quem chamou segue só com texto
 }
 
 function pdfNovo(){
@@ -4464,12 +4614,12 @@ async function mostrarDetalheItem(nome){
     return;
   }
 
-  // 2) já perguntamos antes?
-  var chaveCache = "iteminfo:"+normaliza(nome);
-  var salvo = null;
-  try{ salvo = localStorage.getItem(chaveCache); }catch(e){}
-  if(salvo){
-    body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(salvo)+'</p>';
+  // 2) alguém já perguntou isto antes? A resposta fica no Firebase, então a
+  //    descrição é escrita uma única vez para toda a base de jogadores.
+  var chaveCache = "iteminfo:"+normaliza(nome).replace(/[^a-z0-9]+/g,"-").slice(0,60);
+  var salvo = await sGet(chaveCache, true);
+  if(salvo && salvo.texto){
+    body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(salvo.texto)+'</p>';
     return;
   }
 
@@ -4484,7 +4634,7 @@ async function mostrarDetalheItem(nome){
     var texto = await callGeminiRaw("Você descreve itens de RPG de forma breve, concreta e útil ao jogador.",
       [{role:"user", parts:[{text:prompt}]}]);
     texto = (texto||"").trim();
-    try{ localStorage.setItem(chaveCache, texto); }catch(e){}
+    if(texto) await sSet(chaveCache, {nome:nome, texto:texto, em:Date.now(), por:session.email}, true);
     body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(texto)+'</p>';
   }catch(err){
     body.innerHTML = '<div class="item-tags">'+tags+'</div>'+
