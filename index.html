@@ -154,6 +154,8 @@ a{color:var(--arcane-bright);}
 .xp-block{margin-top:8px;}
 .hp-bar-fill.xp-fill{background:linear-gradient(90deg,var(--brass-dim),var(--brass-bright));}
 .xp-note{margin:6px 0 0;font-size:10.5px;color:var(--ink-soft);letter-spacing:.01em;}
+.uso-toast{background:rgba(193,154,91,.14)!important;border-color:var(--brass-dim)!important;color:var(--brass-bright)!important;}
+.uso-toast.esgotou{background:rgba(176,84,58,.16)!important;border-color:var(--ember)!important;color:var(--ember-bright)!important;}
 .craft-toast{background:rgba(79,143,124,.16)!important;border-color:var(--arcane)!important;color:var(--arcane-bright)!important;}
 .mastery-toast{background:rgba(138,92,196,.16)!important;border-color:var(--violet)!important;color:var(--violet-bright)!important;}
 .quota-wait{margin:8px 16px 0;padding:9px 12px;border-radius:9px;background:rgba(193,154,91,.14);border:1px solid var(--brass-dim);font-size:12px;color:var(--brass-bright);line-height:1.5;}
@@ -207,6 +209,8 @@ a{color:var(--arcane-bright);}
 .item-det{font-size:12.5px;line-height:1.7;color:var(--text-lo);}
 .item-det b{color:var(--text-hi);}
 .item-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.uso-cont{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:7px;background:rgba(79,143,124,.2);color:#2c6152;border:1px solid var(--arcane);}
+.uso-cont[data-zero]{background:rgba(176,84,58,.18);color:#8a3c28;border-color:var(--ember);}
 .tag-item{font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:999px;margin-left:7px;vertical-align:middle;font-weight:700;}
 .tag-item.vend{background:rgba(79,143,124,.25);color:#2c6152;border:1px solid var(--arcane);}
 .tag-item.comp{background:rgba(43,34,19,.1);color:var(--ink-soft);border:1px solid var(--parchment-line);}
@@ -1872,6 +1876,8 @@ function advBody(isGroup){
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "ESPOLIO E EXPLORACAO: sempre que o grupo derrotar ou neutralizar inimigos, ofereca espontaneamente a chance de vasculhar o local — descreva o que encontram em moedas, consumiveis (pocoes, reagentes, componentes, materiais de oficio), equipamento e principalmente INFORMACOES: cartas, mapas, marcas, ordens escritas, algo que empurre a historia adiante. Registre os ganhos em \"itensGanhos\" e o dinheiro na ficha. Da mesma forma, ao narrar deslocamento entre dois lugares, nao faca um corte seco: descreva brevemente o caminho e ofereca algo pelo percurso — um encontro, um vestigio, um recurso colhido ou uma pista. Nunca deixe uma vitoria ou uma viagem passar sem oportunidade de ganho ou descoberta.\n\n" +
+"USOS LIMITADOS: itens consumíveis (poções, elixires, bombas, pergaminhos), magias por espaço e habilidades com número de vezes por dia têm CONTADOR. Ao conceder um item assim, declare o total em \"usosDefinidos\" (ex.: 3 doses). Sempre que o personagem usar um deles na cena, registre em \"usosConsumidos\" com a quantidade gasta — o aplicativo subtrai e mostra o restante na ficha. Um item consumível que chega a zero é REMOVIDO do inventário automaticamente; não o mencione mais como disponível. Magias e habilidades esgotadas ficam indisponíveis até um descanso longo.\n\n" +
+"DESCANSO LONGO: quando o grupo dormir ou descansar várias horas em segurança, marque \"descansoLongo\" com a lista de e-mails que descansaram (ou true para todos). O aplicativo restaura os pontos de vida ao máximo, recarrega magias e habilidades e remove a fadiga. Narre isso no texto. Itens consumíveis gastos NÃO voltam. Nunca deixe um descanso longo passar sem marcar este campo.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
 (isGroup ?
 "CONTROLE DE CENA: a aventura pode ter uma ou mais cenas simultâneas (ex: o grupo se dividiu). Apenas UMA cena está \"em foco\" por vez (campo \"cenaAtiva\"). Jogadores fora da cena ativa não veem nada até você voltar a atenção para eles. Prefira manter todos numa cena só; separe apenas quando fizer sentido narrativo, e sempre avise no texto quando cortar de uma cena para outra. Para reunir o grupo, volte a colocar todos na mesma cena.\n\n" +
@@ -1887,6 +1893,9 @@ FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n" +
 ' "aguardandoAcao": boolean, "jogadoresEsperados": [email,...],\n' : "") +
 ' "fichas": { "email-do-jogador": { ...mesmo esquema de personagem de sempre (nome, ancestralidade, linhagem, antecedente, classe, nivel, experiencia, pontosVida{atual,maximo}, ca, cdClasse, percepcao, deslocamento, resistencia{fortitude,reflexos,vontade}, atributos{for,des,con,int,sab,car}, pericias[], talentos[], equipamento[], dinheiro, condicoes[], magias[], aparencia, personalidade, notas)... } },\n'+
 ' "xpConcedido": [{"email": string, "quantidade": number, "motivo": string}],\n'+
+' \"usosDefinidos\": [{\"email\": string, \"itens\": [{\"nome\": string, \"maximo\": number, \"tipo\": \"item\"|\"magia\"|\"habilidade\"}]}],\n'+
+' \"usosConsumidos\": [{\"email\": string, \"nome\": string, \"quantidade\": number}],\n'+
+' \"descansoLongo\": false | [emails],\n'+
 ' "testeSolicitado": null | {"emails": [string], "pericias": [string], "formula": string|null, "cd": number|null, "descricao": string},\n'+
 ' "itensGanhos": [{"email": string, "itens": [string]}],\n'+
 ' "itensPerdidos": [{"email": string, "itens": [string]}],\n'+
@@ -2195,8 +2204,8 @@ function renderCharacterSheet(c, rootId){
  return '<div class="skill-row"><span class="skill-dot '+esc(rank)+'" title="'+esc(rank)+'"></span><span class="name">'+esc(p.nome)+'</span>'+pratica+'<span class="mod">'+fmtMod(computeSkillMod(c,p))+'</span></div>';
  }).join(""));
  }
- if(c.talentos && c.talentos.length) html += sectionHtml("talentos","Talentos",'<ul class="list-plain">'+c.talentos.map(function(x){return '<li>'+esc(x)+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
- if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
+ if(c.talentos && c.talentos.length) html += sectionHtml("talentos","Talentos",'<ul class="list-plain">'+c.talentos.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
+ if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
  if((c.equipamento&&c.equipamento.length)||c.dinheiro){
  var eqBody=""; if(c.dinheiro) eqBody+='<p class="gold-line">'+esc(c.dinheiro)+'</p>';
  if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){
@@ -2204,7 +2213,9 @@ function renderCharacterSheet(c, rootId){
  var comprado = (c.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(x); });
  var tag = vendavel ? '<span class="tag-item vend" title="Produzido pelo personagem — pode ser vendido no mercado">vendável</span>'
  : comprado ? '<span class="tag-item comp" title="Comprado de outro jogador — não pode ser revendido">comprado</span>' : '';
- return '<li>'+esc(x)+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e este item?">?</button></li>';
+ var u = (c.usos||{})[normaliza(x)];
+ var cont = u ? '<span class="uso-cont"'+(u.atual===0?' data-zero="1"':'')+'>'+u.atual+'/'+u.maximo+'</span>' : '';
+ return '<li>'+esc(x)+cont+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e este item?">?</button></li>';
  }).join("")+'</ul>';
  html += sectionHtml("equip","Equipamento", eqBody);
  }
@@ -2924,6 +2935,63 @@ var APP_OWNED_LISTS = ["equipamento","magias","pericias"];
  WHICH skill receives the rank increase the character has legitimately
  earned at levels 3, 5, 7, 9... So mastery grows through play, but the
  numbers stay exactly within the system's intended range. */
+/* ---------------------------------------------------------
+   USOS LIMITADOS
+   Itens consumíveis, magias e habilidades com número de usos.
+   - Item que zera é REMOVIDO do inventário (acabou).
+   - Magia/habilidade que zera fica visível com 0/N e só volta
+     no descanso longo (ou quando o Mestre disser).
+   --------------------------------------------------------- */
+function chaveUso(nome){ return normaliza(nome); }
+
+function definirUsos(c, nome, maximo, tipo){
+  if(!c || !nome || !(maximo>0)) return c;
+  c.usos = c.usos || {};
+  var k = chaveUso(nome);
+  if(!c.usos[k]) c.usos[k] = {nome:nome, atual:maximo, maximo:maximo, tipo:tipo||"item"};
+  else { c.usos[k].maximo = maximo; c.usos[k].nome = nome; if(tipo) c.usos[k].tipo = tipo; }
+  return c;
+}
+function consumirUso(c, nome, quantidade){
+  if(!c || !nome) return {removido:false, restante:null};
+  c.usos = c.usos || {};
+  var k = chaveUso(nome);
+  var reg = c.usos[k];
+  if(!reg) return {removido:false, restante:null};
+  var qtd = Math.max(1, parseInt(quantidade,10)||1);
+  reg.atual = Math.max(0, (reg.atual||0) - qtd);
+  if(reg.atual===0 && reg.tipo==="item"){
+    // acabou: sai do inventário e deixa de ser rastreado
+    c.equipamento = applyListDelta(c.equipamento, [], [reg.nome]);
+    c.itensVendaveis = (c.itensVendaveis||[]).filter(function(n){ return normaliza(n)!==k; });
+    c.itensComprados = (c.itensComprados||[]).filter(function(n){ return normaliza(n)!==k; });
+    delete c.usos[k];
+    return {removido:true, restante:0, nome:reg.nome};
+  }
+  return {removido:false, restante:reg.atual, nome:reg.nome, maximo:reg.maximo, tipo:reg.tipo};
+}
+function usosDe(c, nome){
+  var reg = (c && c.usos) ? c.usos[chaveUso(nome)] : null;
+  return reg || null;
+}
+/* Descanso longo: PV cheio e usos recarregados. Itens consumíveis NÃO voltam. */
+function aplicarDescansoLongo(c){
+  if(!c) return c;
+  if(c.pontosVida && typeof c.pontosVida.maximo==="number"){
+    c.pontosVida.atual = c.pontosVida.maximo;
+  }
+  var recarregados = [];
+  Object.keys(c.usos||{}).forEach(function(k){
+    var r = c.usos[k];
+    if(r.tipo==="item") return;                    // poção usada não reaparece
+    if(r.atual < r.maximo){ r.atual = r.maximo; recarregados.push(r.nome); }
+  });
+  c.condicoes = (c.condicoes||[]).filter(function(cond){
+    return !/fatigad|cansad|exaust/i.test(String(cond));
+  });
+  return {char:c, recarregados:recarregados};
+}
+
 function registerSkillUse(c, skillName){
  if(!c || !skillName) return c;
  var key = normalizeSkillName(skillName);
@@ -3091,6 +3159,9 @@ function applyGmSheetUpdate(existing, incoming){
  ["itensVendaveis","itensComprados"].forEach(function(f){
  base[f] = (existing && Array.isArray(existing[f])) ? existing[f].slice() : [];
  });
+  // contadores de uso são do app, nunca da IA
+  base.usos = (existing && existing.usos && typeof existing.usos==="object")
+              ? JSON.parse(JSON.stringify(existing.usos)) : {};
  base.pericias = normalizeSkillList(base.pericias) || [];
 
  // structural stats are frozen unless the character actually leveled up
@@ -3274,6 +3345,35 @@ async function runGmTurn(advId, sceneId){
    checkPedido = inferCheckFromText(extracted.clean, character) || null;
  }
  await sSet("check:"+advId+":"+sceneId, checkPedido, true);
+/* O XP vinha sendo aplicado apenas dentro do bloco de fichas: quando o Mestre
+   mandava "xpConcedido" sem repetir a ficha, o ganho era descartado em
+   silêncio. Garantimos que toda ficha citada em xpConcedido seja processada,
+   mesmo sem entrada em "fichas". */
+      if(data.xpConcedido && Array.isArray(data.xpConcedido) && data.xpConcedido.length){
+        data.fichas = data.fichas || {};
+        data.xpConcedido.forEach(function(x){
+          if(!x || !x.email) return;
+          var em0 = normEmail(x.email);
+          if(!Object.prototype.hasOwnProperty.call(data.fichas, em0)) data.fichas[em0] = {};
+        });
+      }
+      if(data.usosConsumidos && Array.isArray(data.usosConsumidos) && data.usosConsumidos.length){
+        data.fichas = data.fichas || {};
+        data.usosConsumidos.forEach(function(u){
+          if(!u || !u.email) return;
+          var em1 = normEmail(u.email);
+          if(!Object.prototype.hasOwnProperty.call(data.fichas, em1)) data.fichas[em1] = {};
+        });
+      }
+      if(data.descansoLongo){
+        data.fichas = data.fichas || {};
+        var lista = Array.isArray(data.descansoLongo) ? data.descansoLongo
+                  : (adv.members||[]).filter(function(m){ return m.status==="confirmado"; }).map(function(m){ return m.email; });
+        lista.forEach(function(e2){
+          var em2 = normEmail(e2);
+          if(!Object.prototype.hasOwnProperty.call(data.fichas, em2)) data.fichas[em2] = {};
+        });
+      }
  if(data.fichas){
  var validMembers = (adv.members||[]).filter(function(mm){ return mm.status==="confirmado"; }).map(function(mm){ return normEmail(mm.email); });
  for(var em in data.fichas){
@@ -3301,6 +3401,31 @@ async function runGmTurn(advId, sceneId){
  var earnedLevel = Math.floor(updatedSheet.experiencia / XP_PER_LEVEL) + 1;
  updatedSheet.nivel = Math.max(updatedSheet.nivel || 1, earnedLevel);
  // skills the GM legitimately trained this turn
+ // usos limitados: definir, consumir e descansar
+ var defEntry = (data.usosDefinidos||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
+ if(defEntry && defEntry.itens){
+ defEntry.itens.forEach(function(u){
+ if(u && u.nome) definirUsos(updatedSheet, u.nome, parseInt(u.maximo,10)||0, u.tipo);
+ });
+ }
+ (data.usosConsumidos||[]).forEach(function(u){
+ if(!u || normEmail(u.email)!==target || !u.nome) return;
+ var r = consumirUso(updatedSheet, u.nome, u.quantidade);
+ if(target===session.email && r.nome){
+ if(r.removido) showUsoToast(r.nome+" acabou e saiu do inventario", true);
+ else if(r.restante!==null) showUsoToast(r.nome+": "+r.restante+" de "+r.maximo+" restantes", false);
+ }
+ });
+ var descansou = data.descansoLongo===true ||
+ (Array.isArray(data.descansoLongo) && data.descansoLongo.some(function(e){ return normEmail(e)===target; }));
+ if(descansou){
+ var resDesc = aplicarDescansoLongo(updatedSheet);
+ updatedSheet = resDesc.char;
+ if(target===session.email){
+ showUsoToast("Descanso longo: pontos de vida restaurados" +
+ (resDesc.recarregados.length ? " \u00b7 recarregados: "+resDesc.recarregados.join(", ") : ""), false);
+ }
+ }
  var skillEntry = (data.periciasTreinadas||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
  if(skillEntry) applySkillRankDeltas(updatedSheet, skillEntry.pericias);
  // mastery earned through actual use
@@ -3402,6 +3527,17 @@ async function maybeResolveTimeout(pending){
 /* =========================================================
  SHARED CHAT FORM / TYPING / SEND DISPATCH
  ========================================================= */
+function showUsoToast(texto, esgotou){
+  var scroll = el("chat-scroll");
+  if(!scroll) return;
+  var d = document.createElement("div");
+  d.className = "xp-toast uso-toast" + (esgotou ? " esgotou" : "");
+  d.innerHTML = (esgotou ? "\u26A0\uFE0F " : "\u2699\uFE0F ") + esc(texto);
+  scroll.appendChild(d);
+  requestAnimationFrame(function(){ scroll.scrollTop = scroll.scrollHeight; });
+  setTimeout(function(){ if(d.parentNode) d.remove(); }, 12000);
+}
+
 function showCraftToast(it){
   var scroll = el("chat-scroll");
   if(!scroll) return;
