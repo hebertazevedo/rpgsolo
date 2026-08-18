@@ -120,12 +120,6 @@ a{color:var(--arcane-bright);}
 .text-btn{background:none;border:none;color:var(--text-lo);font-size:12.5px;font-weight:600;cursor:pointer;padding:6px 8px;}
 .text-btn:hover{color:var(--text-hi);}
 
-/* ---------- Language selector ---------- */
-.lang-picker{display:inline-flex;align-items:center;background:var(--void-3);border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px;flex-shrink:0;}
-.lang-btn{border:none;background:transparent;color:var(--text-lo);font-size:11.5px;font-weight:600;padding:4px 7px;border-radius:6px;cursor:pointer;line-height:1.1;display:flex;align-items:center;gap:3px;transition:background .15s, color .15s;user-select:none;}
-.lang-btn:hover{background:var(--void-4);color:var(--text-hi);}
-.lang-btn.active{background:var(--brass);color:var(--void);font-weight:700;}
-
 /* ---------- Layout grid (creation & play) ---------- */
 #layout{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:308px 1fr 292px;gap:14px;padding:14px;}
 .panel{background:var(--void-2);border:1px solid var(--line);border-radius:var(--radius);min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;}
@@ -212,47 +206,6 @@ a{color:var(--arcane-bright);}
 .sheet-note{font-size:12px;line-height:1.6;color:var(--ink-soft);white-space:pre-wrap;}
 .item-help{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:10px;padding:0 4px;opacity:.55;font-weight:700;}
 .item-help:hover{opacity:1;color:var(--brass-dim);}
-.item-row{display:flex;align-items:center;gap:7px;padding:6px 2px;border-bottom:1px solid rgba(43,34,19,.08);font-size:12.5px;color:var(--ink);}
-.item-row:last-child{border-bottom:none;}
-.item-cat-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-size:12px;background:rgba(43,34,19,.07);border:1px solid rgba(43,34,19,.12);flex-shrink:0;cursor:help;line-height:1;user-select:none;}
-.item-cat-badge.cat-pocao{background:rgba(79,143,124,.18);border-color:rgba(79,143,124,.4);}
-.item-cat-badge.cat-arma{background:rgba(176,71,58,.16);border-color:rgba(176,71,58,.4);}
-.item-cat-badge.cat-pergaminho{background:rgba(193,154,91,.18);border-color:rgba(193,154,91,.4);}
-.item-cat-badge.cat-armadura{background:rgba(138,92,196,.16);border-color:rgba(138,92,196,.4);}
-.item-cat-badge.cat-acessorio{background:rgba(212,168,83,.18);border-color:rgba(212,168,83,.4);}
-.item-cat-badge.cat-ferramenta{background:rgba(100,105,120,.15);border-color:rgba(100,105,120,.35);}
-.item-cat-badge.cat-outro{background:rgba(43,34,19,.07);border-color:rgba(43,34,19,.15);}
-.item-row .item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.item-modal-top{display:flex;align-items:center;gap:13px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);}
-.item-modal-glyph{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--void-3);border:1px solid var(--line);flex-shrink:0;}
-.item-modal-glyph.cat-pocao{background:rgba(79,143,124,.18);border-color:var(--arcane);}
-.item-modal-glyph.cat-arma{background:rgba(176,71,58,.18);border-color:var(--ember);}
-.item-modal-glyph.cat-pergaminho{background:rgba(193,154,91,.18);border-color:var(--brass);}
-.item-modal-glyph.cat-armadura{background:rgba(138,92,196,.18);border-color:var(--violet);}
-.item-modal-glyph.cat-acessorio{background:rgba(212,168,83,.18);border-color:var(--brass-dim);}
-.item-modal-glyph.cat-ferramenta{background:rgba(100,105,120,.18);border-color:var(--line-soft);}
-.item-modal-glyph.cat-outro{background:var(--void-4);border-color:var(--line);}
-.item-modal-info{flex:1;min-width:0;}
-.item-modal-title{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text-hi);margin:0 0 5px;}
-.item-cat-control{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.item-cat-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--void-4);border:1px solid var(--line-soft);color:var(--text-hi);}
-.item-cat-tag.cat-pocao{color:var(--arcane-bright);border-color:var(--arcane);background:rgba(79,143,124,.15);}
-.item-cat-tag.cat-arma{color:var(--ember-bright);border-color:var(--ember);background:rgba(176,71,58,.15);}
-.item-cat-tag.cat-pergaminho{color:var(--brass-bright);border-color:var(--brass);background:rgba(193,154,91,.15);}
-.item-cat-tag.cat-armadura{color:var(--violet-bright);border-color:var(--violet);background:rgba(138,92,196,.15);}
-.item-cat-tag.cat-acessorio{color:var(--brass-bright);border-color:var(--brass-dim);background:rgba(212,168,83,.15);}
-.item-cat-tag.cat-ferramenta{color:var(--text-lo);border-color:var(--line);background:var(--void-3);}
-.item-cat-tag.cat-outro{color:var(--text-lo);border-color:var(--line);background:var(--void-3);}
-.item-cat-select{background:var(--void-3);border:1px solid var(--line);border-radius:6px;color:var(--text-hi);font-size:11px;padding:3px 6px;cursor:pointer;}
-.ci-penalidade{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ember-bright);background:rgba(176,71,58,.12);border:1px solid rgba(176,71,58,.3);border-radius:7px;padding:5px 9px;margin-top:6px;line-height:1.4;}
-.ci-penalidade i{font-style:normal;opacity:.85;font-size:10.5px;}
-.prod-active-card{background:linear-gradient(160deg,rgba(176,71,58,.14),var(--void-3));border:1px solid var(--ember);border-radius:12px;padding:14px 16px;margin:8px 0;}
-.prod-active-card .pac-h{display:flex;align-items:center;gap:9px;}
-.prod-active-card .pac-h b{font-family:var(--font-display);font-size:15px;color:var(--text-hi);}
-.prod-active-timer{margin:10px 0;text-align:center;padding:12px;background:var(--void-4);border-radius:9px;border:1px solid var(--line-soft);}
-.prod-active-timer .pat-val{font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--ember-bright);letter-spacing:.05em;}
-.prod-active-timer .pat-lbl{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
-.prod-warning-note{font-size:11.5px;color:var(--brass-bright);line-height:1.5;display:flex;align-items:flex-start;gap:6px;margin-top:8px;}
 .item-det{font-size:12.5px;line-height:1.7;color:var(--text-lo);}
 .item-det b{color:var(--text-hi);}
 .item-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
@@ -277,12 +230,6 @@ a{color:var(--arcane-bright);}
 .pdf-banner a{color:var(--arcane-bright);text-decoration:none;font-weight:600;}
 .turno-pill{font-size:11px;padding:5px 11px;border-radius:999px;background:var(--void-3);border:1px solid var(--line);color:var(--text-faint);}
 .turno-pill.minha{background:rgba(79,143,124,.18);border-color:var(--arcane);color:var(--arcane-bright);font-weight:700;}
-.turn-alert-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(79,143,124,.18);border:1px solid var(--arcane-bright);color:var(--arcane-bright);font-family:var(--font-display);font-size:11.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap;cursor:pointer;user-select:none;animation:turn-bell-pulse 2.2s infinite ease-in-out;box-shadow:0 0 10px rgba(79,143,124,.25);transition:all .15s ease;flex-shrink:0;}
-.turn-alert-pill:hover{background:rgba(79,143,124,.32);transform:scale(1.03);border-color:#72e0bf;box-shadow:0 0 14px rgba(79,143,124,.45);}
-.turn-alert-icon{display:inline-flex;align-items:center;justify-content:center;animation:turn-bell-swing 2.2s infinite ease-in-out;transform-origin:top center;color:#72e0bf;}
-.turn-alert-text{line-height:1;}
-@keyframes turn-bell-pulse{0%,100%{box-shadow:0 0 6px rgba(79,143,124,.2);border-color:rgba(79,143,124,.6);opacity:.92;}50%{box-shadow:0 0 14px 3px rgba(79,143,124,.6);border-color:var(--arcane-bright);opacity:1;}}
-@keyframes turn-bell-swing{0%,65%,100%{transform:rotate(0deg);}70%{transform:rotate(14deg);}75%{transform:rotate(-12deg);}80%{transform:rotate(8deg);}85%{transform:rotate(-6deg);}90%{transform:rotate(0deg);}}
 .timer-pill{margin:10px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(176,71,58,.14);border:1px solid var(--ember);font-size:12px;color:var(--ember-bright);display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-weight:700;}
 .timer-pill.calm{background:var(--void-3);border-color:var(--line-soft);color:var(--text-lo);}
 #chat-scroll{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;}
@@ -320,86 +267,9 @@ a{color:var(--arcane-bright);}
 .scene-wait h3{font-family:var(--font-display);font-size:18px;margin:0;color:var(--text-hi);}
 .scene-wait p{font-size:13px;color:var(--text-lo);max-width:320px;margin:0;line-height:1.6;}
 
-/* ---------- Quick Tips & Commands Popover / Modal ---------- */
-.chat-tips-grid{display:grid;grid-template-columns:1fr;gap:10px;}
-@media(min-width:540px){.chat-tips-grid{grid-template-columns:1fr 1fr;}}
-.chat-tips-card{background:var(--void-3);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;transition:all .15s ease;cursor:pointer;}
-.chat-tips-card:hover{border-color:var(--brass-dim);background:var(--void-4);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.25);}
-.chat-cmd-badge{display:inline-block;font-family:var(--font-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(193,154,91,.15);color:var(--brass-bright);border:1px solid var(--brass-dim);}
-.chat-cmd-desc{font-size:12px;color:var(--text-lo);line-height:1.45;flex:1;}
-.chat-cmd-example{font-family:var(--font-mono);font-size:10.5px;color:var(--arcane-bright);background:var(--void);padding:3px 6px;border-radius:4px;border:1px solid var(--line-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-
-/* ---------- Dice panel & Adventure Stats ---------- */
+/* ---------- Dice panel ---------- */
 #dice-panel .panel-head{border-bottom:1px solid var(--line);}
-#dice-scroll{padding:10px 16px 16px;}
-.adv-stats-box{background:var(--void-3);border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.25);}
-.adv-stats-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
-.adv-stats-head h3{font-family:var(--font-display);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brass-bright);margin:0;display:flex;align-items:center;gap:6px;}
-.adv-stat-badge{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--void-4);border:1px solid var(--line-soft);color:var(--text-faint);}
-.adv-stat-badge.ativa{background:rgba(79,143,124,.16);border-color:var(--arcane);color:var(--arcane-bright);}
-.adv-stat-badge.concluida{background:rgba(193,154,91,.16);border-color:var(--brass);color:var(--brass-bright);}
-.adv-stat-badge.pausada{background:rgba(176,71,58,.16);border-color:var(--ember);color:var(--ember-bright);}
-.adv-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.adv-stat-tile{background:linear-gradient(180deg,var(--void-4),var(--void-2));border:1px solid var(--line-soft);border-radius:8px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.adv-stat-tile:hover{border-color:var(--brass-dim);}
-.adv-stat-tile .val{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--text-hi);line-height:1.2;}
-.adv-stat-tile .val.highlight{color:var(--brass-bright);}
-.adv-stat-tile .val.ember{color:var(--ember-bright);}
-.adv-stat-tile .val.arcane{color:var(--arcane-bright);}
-.adv-stat-tile .lbl{font-size:9px;letter-spacing:.03em;text-transform:uppercase;color:var(--text-faint);margin-top:4px;line-height:1.2;}
-.adv-stats-sub{margin-top:9px;padding-top:8px;border-top:1px solid var(--line-soft);font-size:10.5px;color:var(--text-faint);display:flex;align-items:center;justify-content:space-between;}
-.adv-foes-wrapper{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-soft);}
-.adv-foes-title{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;}
-.adv-foe-list{display:flex;flex-wrap:wrap;gap:4px;}
-.adv-foe-tag{background:rgba(176,71,58,.14);border:1px solid var(--ember);color:var(--ember-bright);font-size:10px;border-radius:6px;padding:2px 6px;display:inline-flex;align-items:center;gap:3px;}
-.adv-live-dot{width:7px;height:7px;border-radius:50%;background:var(--arcane-bright);display:inline-block;box-shadow:0 0 6px var(--arcane-bright);animation:pulse 2s infinite ease-in-out;}
-
-/* ---------- XP & Level Progression Chart / Timeline ---------- */
-.adv-prog-box{background:var(--void-3);border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.25);}
-.adv-prog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
-.adv-prog-head h3{font-family:var(--font-display);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brass-bright);margin:0;display:flex;align-items:center;gap:6px;}
-.adv-prog-tabs{display:flex;gap:3px;background:var(--void-4);padding:2px;border-radius:6px;border:1px solid var(--line-soft);}
-.adv-prog-tab{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:none;background:transparent;color:var(--text-faint);cursor:pointer;transition:all .15s ease;}
-.adv-prog-tab.active{background:var(--brass-dim);color:var(--text-hi);font-weight:700;}
-.adv-prog-tab:hover:not(.active){color:var(--text-lo);}
-
-.adv-level-bar-wrap{background:var(--void-4);border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;margin-bottom:10px;}
-.adv-level-bar-info{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-bottom:5px;}
-.adv-level-bar-info .lvl-badge{font-family:var(--font-display);font-weight:700;color:var(--brass-bright);display:flex;align-items:center;gap:4px;}
-.adv-level-bar-info .xp-counter{font-family:var(--font-mono);color:var(--text-lo);font-size:10.5px;}
-.adv-level-progress-bg{height:6px;background:var(--void-2);border-radius:999px;overflow:hidden;position:relative;border:1px solid var(--line-soft);}
-.adv-level-progress-fill{height:100%;background:linear-gradient(90deg,var(--brass-dim),var(--brass-bright));border-radius:999px;transition:width .4s ease;}
-
-.adv-chart-area{width:100%;height:115px;margin:6px 0 2px;position:relative;background:linear-gradient(180deg,rgba(16,14,23,.6),rgba(8,7,12,.8));border-radius:8px;border:1px solid var(--line-soft);padding:6px;}
-.adv-chart-svg{width:100%;height:100%;overflow:visible;display:block;}
-.adv-chart-grid{stroke:var(--line-soft);stroke-dasharray:2 2;stroke-width:1;}
-.adv-chart-path-area{fill:url(#adv-xp-gradient);opacity:.55;}
-.adv-chart-path-line{fill:none;stroke:var(--brass-bright);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
-.adv-chart-dot{fill:var(--void-2);stroke:var(--brass-bright);stroke-width:2;cursor:pointer;transition:transform .15s, fill .15s;}
-.adv-chart-dot:hover{transform:scale(1.4);stroke:var(--text-hi);fill:var(--brass-bright);}
-.adv-chart-dot.levelup{stroke:var(--arcane-bright);fill:var(--arcane);}
-.adv-chart-axis-label{font-family:var(--font-mono);font-size:8px;fill:var(--text-faint);}
-.adv-chart-tooltip{position:absolute;background:var(--void);border:1px solid var(--brass);color:var(--text-hi);font-size:9.5px;padding:4px 7px;border-radius:5px;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.6);z-index:15;transform:translate(-50%, -125%);transition:opacity .15s;}
-
-.adv-timeline-wrap{max-height:165px;overflow-y:auto;padding-right:4px;margin-top:6px;}
-.adv-timeline-wrap::-webkit-scrollbar{width:4px;}
-.adv-timeline-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
-.adv-tl-item{display:flex;gap:9px;position:relative;padding-bottom:10px;}
-.adv-tl-item:last-child{padding-bottom:2px;}
-.adv-tl-item::before{content:"";position:absolute;left:9px;top:18px;bottom:0;width:1.5px;background:var(--line-soft);}
-.adv-tl-item:last-child::before{display:none;}
-.adv-tl-node{width:19px;height:19px;border-radius:50%;background:var(--void-4);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9.5px;flex-shrink:0;z-index:1;}
-.adv-tl-node.xp{border-color:var(--brass);color:var(--brass-bright);background:rgba(193,154,91,.15);}
-.adv-tl-node.levelup{border-color:var(--arcane-bright);color:var(--arcane-bright);background:rgba(79,143,124,.22);}
-.adv-tl-node.start{border-color:var(--line);color:var(--text-faint);}
-.adv-tl-body{flex:1;min-width:0;}
-.adv-tl-top{display:flex;align-items:center;justify-content:space-between;gap:4px;line-height:1.2;}
-.adv-tl-title{font-size:11px;font-weight:600;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.adv-tl-badge{font-family:var(--font-mono);font-size:9.5px;font-weight:700;color:var(--brass-bright);flex-shrink:0;}
-.adv-tl-badge.levelup{color:var(--arcane-bright);}
-.adv-tl-sub{font-size:9.5px;color:var(--text-faint);margin-top:2px;display:flex;justify-content:space-between;gap:6px;}
-.adv-tl-empty{font-size:11px;color:var(--text-faint);text-align:center;padding:12px 6px;line-height:1.5;}
-
+#dice-scroll{padding:6px 16px 16px;}
 .log-title{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin:18px 0 6px;}
 .roll-entry{display:flex;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px solid var(--line-soft);}
 .roll-entry .re-formula{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
@@ -698,72 +568,64 @@ a{color:var(--arcane-bright);}
  <!-- ============ AUTH VIEW ============ -->
  <div id="view-auth" class="view centered-screen active">
  <div class="card" id="auth-card">
- <div class="mark-row" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-   <div style="display:flex;align-items:center;gap:10px;">
-     <div class="brand-mark">M</div>
-     <div><p class="card-title" id="auth-title" data-i18n="loginTitle">Entrar</p><p class="card-sub" data-i18n="appSubtitle">Aventuras de RPG narradas por IA</p></div>
-   </div>
-   <div class="lang-picker">
-     <button type="button" class="lang-btn" data-lang="pt" title="Português">🇧🇷 PT</button>
-     <button type="button" class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
-     <button type="button" class="lang-btn" data-lang="es" title="Español">🇪🇸 ES</button>
-   </div>
+ <div class="mark-row"><div class="brand-mark">M</div>
+ <div><p class="card-title" id="auth-title">Entrar</p><p class="card-sub">Aventuras de RPG narradas por IA</p></div>
  </div>
- <p class="card-lede" id="auth-lede" data-i18n="authLedeEmail">Informe seu e-mail para continuar.</p>
+ <p class="card-lede" id="auth-lede">Informe seu e-mail para continuar.</p>
 
- <div class="field" id="auth-email-field"><label for="auth-email" data-i18n="emailLabel">E-mail</label>
+ <div class="field" id="auth-email-field"><label for="auth-email">E-mail</label>
  <input id="auth-email" class="text-input" type="email" placeholder="voce@gmail.com" autocomplete="email">
  </div>
 
  <div id="auth-extra" class="hidden">
- <div class="field" id="auth-name-field"><label for="auth-name" data-i18n="nameLabel">Nome</label>
+ <div class="field" id="auth-name-field"><label for="auth-name">Nome</label>
  <input id="auth-name" class="text-input" type="text" placeholder="Como podemos te chamar" autocomplete="name">
  </div>
- <div class="field"><label for="auth-pass" data-i18n="passLabel">Senha</label>
+ <div class="field"><label for="auth-pass">Senha</label>
  <div class="input-with-btn">
  <input id="auth-pass" class="text-input" type="password" autocomplete="new-password">
- <button type="button" class="ghost-btn" id="auth-pass-toggle" data-i18n="show">Mostrar</button>
+ <button type="button" class="ghost-btn" id="auth-pass-toggle">Mostrar</button>
  </div>
  </div>
- <div class="field hidden" id="auth-key-field"><label for="auth-key" data-i18n="apiKeyLabel">Chave de API do Gemini</label>
+ <div class="field hidden" id="auth-key-field"><label for="auth-key">Chave de API do Gemini</label>
  <div class="input-with-btn">
  <input id="auth-key" class="text-input" type="password" placeholder="AIzaSy…" autocomplete="off">
- <button type="button" class="ghost-btn" id="auth-key-toggle" data-i18n="show">Mostrar</button>
+ <button type="button" class="ghost-btn" id="auth-key-toggle">Mostrar</button>
  </div>
- <p class="hint"><span data-i18n="needKey">Não tem uma?</span> <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" data-i18n="apiKeyFreeLink">Crie uma chave gratuita ↗</a>. <span data-i18n="apiKeyHint">Fica só neste dispositivo — nunca é compartilhada com outros jogadores.</span></p>
+ <p class="hint">Não tem uma? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Crie uma chave gratuita ↗</a>. Fica só neste dispositivo — nunca é compartilhada com outros jogadores.</p>
  </div>
  </div>
 
  <div class="backend-badge" id="backend-badge"></div>
- <div class="security-note" data-i18n="secNote">🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.</div>
+ <div class="security-note">🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.</div>
 
      <!-- Passo da chave: aparece DEPOIS do login Google, sem pedir nova autenticação -->
       <div class="key-step hidden" id="key-step">
         <div class="ks-user"><span class="ks-avatar" id="ks-avatar">?</span>
           <div class="ks-info"><b id="ks-name">—</b><span id="ks-email">—</span></div>
         </div>
-        <div class="field"><label for="ks-key" data-i18n="apiKeyLabel">Chave de API do Gemini</label>
+        <div class="field"><label for="ks-key">Chave de API do Gemini</label>
           <div class="input-with-btn">
             <input id="ks-key" class="text-input" type="password" placeholder="AIzaSy…" autocomplete="off">
-            <button type="button" class="ghost-btn" id="ks-key-toggle" data-i18n="show">Mostrar</button>
+            <button type="button" class="ghost-btn" id="ks-key-toggle">Mostrar</button>
           </div>
-          <p class="hint" data-i18n="keyStepHint">Só nesta primeira vez neste dispositivo. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Criar chave gratuita ↗</a></p>
+          <p class="hint">Só nesta primeira vez neste dispositivo. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Criar chave gratuita ↗</a></p>
         </div>
-        <div class="card-actions"><button class="primary-btn" id="ks-start" data-i18n="startGame">Começar a jogar</button></div>
-        <p class="card-switch"><a id="ks-cancel" data-i18n="changeAccount">Entrar com outra conta</a></p>
+        <div class="card-actions"><button class="primary-btn" id="ks-start">Começar a jogar</button></div>
+        <p class="card-switch"><a id="ks-cancel">Entrar com outra conta</a></p>
       </div>
 
  <div class="google-auth hidden" id="google-auth">
         <button type="button" class="google-btn" id="google-signin">
-          <span class="g-logo">G</span> <span data-i18n="googleSignIn">Entrar com a conta Google</span>
+          <span class="g-logo">G</span> Entrar com a conta Google
         </button>
-        <p class="hint" data-i18n="googleSecureHint">Login seguro pelo Google — o app nunca vê nem guarda sua senha.</p>
-        <div class="divider dark"><span data-i18n="orEmailPass">ou use e-mail e senha</span></div>
+        <p class="hint">Login seguro pelo Google — o app nunca vê nem guarda sua senha.</p>
+        <div class="divider dark"><span>ou use e-mail e senha</span></div>
       </div>
- <div class="card-actions"><button class="primary-btn" id="auth-continue" data-i18n="continue">Continuar</button></div>
+ <div class="card-actions"><button class="primary-btn" id="auth-continue">Continuar</button></div>
  <p id="auth-error" class="card-error hidden"></p>
  <p class="card-switch" id="auth-switch"></p>
- <button type="button" class="info-link" id="open-info-auth" data-i18n="infoLinkAuth">📖 Como conseguir uma chave gratuita do Gemini · guia rápido de regras</button>
+ <button type="button" class="info-link" id="open-info-auth">📖 Como conseguir uma chave gratuita do Gemini · guia rápido de regras</button>
  </div>
  </div>
 
@@ -773,82 +635,71 @@ a{color:var(--arcane-bright);}
  <!-- ============ HUB VIEW ============ -->
  <div id="view-hub" class="view">
  <header id="top-bar">
- <div class="brand"><div class="brand-mark">M</div><div class="brand-text"><b data-i18n="appName">Mestre Solo</b><span data-i18n="appSubtitle">RPG de fantasia</span></div></div>
- <button type="button" class="turn-alert-pill hidden" id="hub-turn-alert" title="Aventuras em grupo aguardando sua vez de agir!">
-   <span class="turn-alert-icon">
-     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-   </span>
-   <span class="turn-alert-text" data-i18n="yourTurn">Sua vez</span>
- </button>
+ <div class="brand"><div class="brand-mark">M</div><div class="brand-text"><b>Mestre Solo</b><span>RPG de fantasia</span></div></div>
  <div class="topbar-actions">
- <div class="lang-picker">
-   <button type="button" class="lang-btn" data-lang="pt" title="Português">🇧🇷 PT</button>
-   <button type="button" class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
-   <button type="button" class="lang-btn" data-lang="es" title="Español">🇪🇸 ES</button>
- </div>
- <button class="icon-btn hidden" id="hub-info" title="Guia rápido" data-i18n-title="quickGuide" aria-label="Guia rápido">
+ <button class="icon-btn hidden" id="hub-info" title="Guia rápido" aria-label="Guia rápido">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
  </button>
- <button class="icon-btn" id="hub-market" title="Mercado de artesãos" data-i18n-title="marketTitle" aria-label="Mercado de artesãos">
+ <button class="icon-btn" id="hub-market" title="Mercado de artesãos" aria-label="Mercado de artesãos">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M3 9l2-5h14l2 5"/><path d="M9 13a3 3 0 0 0 6 0"/></svg>
  </button>
- <button class="icon-btn hidden" id="hub-event" title="Criar evento global" data-i18n-title="createGlobalEvent" aria-label="Criar evento global">
+ <button class="icon-btn hidden" id="hub-event" title="Criar evento global" aria-label="Criar evento global">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V5a2 2 0 0 1 2-2h7l-1 3 1 3H6"/><path d="M4 21h6"/><path d="M17 3v18"/><path d="M14 21h6"/></svg>
  </button>
- <button class="icon-btn hidden" id="hub-admin" title="Painel Admin" data-i18n-title="adminPanel" aria-label="Painel Admin">
+ <button class="icon-btn hidden" id="hub-admin" title="Painel Admin" aria-label="Painel Admin">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
  </button>
- <button class="icon-btn" id="hub-key" title="Trocar chave do Gemini" data-i18n-title="changeApiKey" aria-label="Trocar chave do Gemini">
+ <button class="icon-btn" id="hub-key" title="Trocar chave do Gemini" aria-label="Trocar chave do Gemini">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 19 4"/><path d="m16 7 3 3"/><path d="m19 4 2 2"/></svg>
  </button>
- <button class="icon-btn" id="hub-delete-char" title="Excluir personagem" data-i18n-title="deleteChar" aria-label="Excluir personagem">
+ <button class="icon-btn" id="hub-delete-char" title="Excluir personagem" aria-label="Excluir personagem">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
  </button>
- <button class="icon-btn" id="hub-logout" title="Sair" data-i18n-title="logout" aria-label="Sair">
+ <button class="icon-btn" id="hub-logout" title="Sair" aria-label="Sair">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
  </button>
  </div>
  </header>
  <div class="hub-scroll">
- <div class="hub-header"><div class="info"><h1 id="hub-greeting">Olá</h1><p data-i18n="hubSubGreeting">Escolha uma aventura ou comece uma nova</p></div></div>
+ <div class="hub-header"><div class="info"><h1 id="hub-greeting">Olá</h1><p>Escolha uma aventura ou comece uma nova</p></div></div>
  <div class="char-card" id="hub-char-card"></div>
  <div class="action-grid">
- <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b data-i18n="newSoloAdv">Nova aventura solo</b><span data-i18n="newSoloDesc">Só você e o Mestre. Pode anexar o livro de regras.</span></div>
- <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b data-i18n="newGroupAdv">Nova aventura em grupo</b><span data-i18n="newGroupDesc">Convide outros jogadores cadastrados pelo e-mail.</span></div>
+ <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b>Nova aventura solo</b><span>Só você e o Mestre. Pode anexar o livro de regras.</span></div>
+ <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b>Nova aventura em grupo</b><span>Convide outros jogadores cadastrados pelo e-mail.</span></div>
  </div>
 <div class="events-box hidden" id="events-box">
-        <p class="adv-list-title" data-i18n="openEvents">Eventos abertos</p>
+        <p class="adv-list-title">Eventos abertos</p>
         <div id="events-list"></div>
       </div>
 
- <p class="adv-list-title" data-i18n="yourAdventures">Suas aventuras</p>
+ <p class="adv-list-title">Suas aventuras</p>
  <div id="hub-adv-list"></div>
 
  <div class="support-box hidden" id="support-box">
  <div class="support-main">
  <div class="support-glyph">🕯️</div>
  <div class="support-text">
- <b data-i18n="supportTitle">Gostando das suas aventuras?</b>
- <span data-i18n="supportDesc">O app é gratuito e não cobra por partida. Se quiser ajudar a mantê-lo no ar, qualquer valor é bem-vindo — e nada muda no jogo se você não puder.</span>
+ <b>Gostando das suas aventuras?</b>
+ <span>O app é gratuito e não cobra por partida. Se quiser ajudar a mantê-lo no ar, qualquer valor é bem-vindo — e nada muda no jogo se você não puder.</span>
  </div>
  </div>
  <div class="support-actions">
- <a class="support-btn" id="support-link" href="#" target="_blank" rel="noopener" data-i18n="supportBtn">Apoiar o projeto</a>
- <button type="button" class="support-dismiss" id="support-dismiss" data-i18n="supportDismiss">Agora não</button>
+ <a class="support-btn" id="support-link" href="#" target="_blank" rel="noopener">Apoiar o projeto</a>
+ <button type="button" class="support-dismiss" id="support-dismiss">Agora não</button>
  </div>
  </div>
 
  <div class="gear-box hidden" id="gear-box">
- <p class="gear-title" data-i18n="gearTitle">Para levar à mesa de verdade</p>
- <p class="gear-sub" data-i18n="gearSub">Sugestões para quem também joga fora da tela. São links de afiliado: o preço para você é o mesmo, e uma parte ajuda a manter o app.</p>
+ <p class="gear-title">Para levar à mesa de verdade</p>
+ <p class="gear-sub">Sugestões para quem também joga fora da tela. São links de afiliado: o preço para você é o mesmo, e uma parte ajuda a manter o app.</p>
  <div class="gear-grid" id="gear-grid"></div>
  </div>
  <div class="ad-slot" id="ad-hub">
- <div class="ad-label" data-i18n="advertising">Publicidade</div>
+ <div class="ad-label">Publicidade</div>
  <ins class="adsbygoogle"
  style="display:block"
  data-ad-client="ca-pub-5483062241581736"
- data-ad-slot="7714693524"
+ data-ad-slot=""
  data-ad-format="auto"
  data-full-width-responsive="true"></ins>
  </div>
@@ -858,29 +709,22 @@ a{color:var(--arcane-bright);}
  <!-- ============ LOBBY VIEW ============ -->
  <div id="view-lobby" class="view">
  <header id="top-bar-lobby" class="lobby-topbar" style="display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181920,#141419);flex-shrink:0;">
- <button class="icon-btn" id="lobby-back" title="Voltar" data-i18n-title="back" aria-label="Voltar">
+ <button class="icon-btn" id="lobby-back" title="Voltar" aria-label="Voltar">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
  </button>
- <div class="brand-text"><b id="lobby-adv-name">Aventura</b><span data-i18n="waitingRoom">Sala de espera</span></div>
- <div class="topbar-actions" style="margin-left:auto;">
-   <div class="lang-picker">
-     <button type="button" class="lang-btn" data-lang="pt" title="Português">🇧🇷 PT</button>
-     <button type="button" class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
-     <button type="button" class="lang-btn" data-lang="es" title="Español">🇪🇸 ES</button>
-   </div>
- </div>
+ <div class="brand-text"><b id="lobby-adv-name">Aventura</b><span>Sala de espera</span></div>
  </header>
  <div class="hub-scroll">
- <div class="lobby-timer"><div class="big" id="lobby-countdown">3:00</div><div class="lbl" data-i18n="lobbyTimerLabel">para os convidados entrarem</div></div>
- <p class="adv-list-title" data-i18n="participants">Participantes</p>
+ <div class="lobby-timer"><div class="big" id="lobby-countdown">3:00</div><div class="lbl">para os convidados entrarem</div></div>
+ <p class="adv-list-title">Participantes</p>
  <div id="lobby-roster"></div>
  <div class="lobby-actions" id="lobby-join-actions"></div>
  <div class="ad-slot" id="ad-lobby">
- <div class="ad-label" data-i18n="advertising">Publicidade</div>
+ <div class="ad-label">Publicidade</div>
  <ins class="adsbygoogle"
  style="display:block"
  data-ad-client="ca-pub-5483062241581736"
- data-ad-slot="7714693524"
+ data-ad-slot=""
  data-ad-format="auto"
  data-full-width-responsive="true"></ins>
  </div>
@@ -890,184 +734,80 @@ a{color:var(--arcane-bright);}
  <!-- ============ GAME VIEW (creation + play share this shell) ============ -->
  <div id="view-game" class="view">
  <header id="top-bar-game" style="display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181920,#141419);flex-shrink:0;z-index:20;">
- <button class="icon-btn" id="game-back" title="Voltar ao início" data-i18n-title="backToHub" aria-label="Voltar">
+ <button class="icon-btn" id="game-back" title="Voltar ao início" aria-label="Voltar">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
  </button>
- <div class="brand-text"><b id="game-title" data-i18n="charCreation">Criação de Personagem</b><span id="game-subtitle" data-i18n="appSubtitle">RPG de fantasia</span></div>
+ <div class="brand-text"><b id="game-title">Criação de Personagem</b><span id="game-subtitle">RPG de fantasia</span></div>
  <div id="char-chip" class="hidden"><span class="dot"></span><span id="char-chip-text"></span></div>
- <button type="button" class="turn-alert-pill hidden" id="game-turn-alert" title="É a sua vez de agir! Clique para abrir o chat e responder">
-   <span class="turn-alert-icon">
-     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-   </span>
-   <span class="turn-alert-text" data-i18n="yourTurn">Sua vez</span>
- </button>
  <div class="tabbar" id="tabbar">
- <button data-tab="sheet" data-i18n="sheetTab">Ficha</button>
- <button data-tab="chat" class="active" data-i18n="gmTab">Mestre</button>
- <button data-tab="dice" data-i18n="diceTab">Dados</button>
+ <button data-tab="sheet">Ficha</button>
+ <button data-tab="chat" class="active">Mestre</button>
+ <button data-tab="dice">Dados</button>
  </div>
  <div class="topbar-actions">
- <div class="lang-picker">
-   <button type="button" class="lang-btn" data-lang="pt" title="Português">🇧🇷 PT</button>
-   <button type="button" class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
-   <button type="button" class="lang-btn" data-lang="es" title="Español">🇪🇸 ES</button>
- </div>
- <button class="icon-btn hidden" id="btn-stats" title="Estatísticas da aventura" data-i18n-title="advStats" aria-label="Estatísticas da aventura">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
- </button>
- <button class="icon-btn hidden" id="btn-export" title="Exportar roteiro" data-i18n-title="exportLog" aria-label="Exportar roteiro">
+ <button class="icon-btn hidden" id="btn-export" title="Exportar roteiro" aria-label="Exportar roteiro">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
  </button>
- <button class="icon-btn hidden" id="btn-pause" title="Pausar aventura" data-i18n-title="pauseAdv" aria-label="Pausar aventura">
+ <button class="icon-btn hidden" id="btn-pause" title="Pausar aventura" aria-label="Pausar aventura">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
  </button>
- <button class="icon-btn hidden" id="btn-finish" title="Concluir aventura" data-i18n-title="finishAdv" aria-label="Concluir aventura">
+ <button class="icon-btn hidden" id="btn-finish" title="Concluir aventura" aria-label="Concluir aventura">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>
  </button>
  </div>
  </header>
  <main id="layout">
  <aside id="sheet-panel" class="panel tab-active">
- <div class="panel-head"><h2 data-i18n="sheetTab">Ficha</h2><div class="spacer"></div>
- <button class="icon-btn" id="btn-sheet-pdf" title="Exportar ficha em PDF" data-i18n-title="exportPdf" aria-label="Exportar ficha em PDF">
+ <div class="panel-head"><h2>Ficha</h2><div class="spacer"></div>
+ <button class="icon-btn" id="btn-sheet-pdf" title="Exportar ficha em PDF" aria-label="Exportar ficha em PDF">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h2"/></svg>
  </button>
- <button class="icon-btn" id="btn-edit-sheet" title="Editar ficha manualmente" data-i18n-title="editSheet" aria-label="Editar ficha">
+ <button class="icon-btn" id="btn-edit-sheet" title="Editar ficha manualmente" aria-label="Editar ficha">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
  </button>
  </div>
  <div id="sheet-scroll" class="panel-scroll"></div>
  </aside>
  <section id="chat-panel" class="panel tab-active">
- <div class="panel-head">
-  <h2 id="chat-panel-title" data-i18n="gmTab">O Mestre</h2>
-  <div class="spacer"></div>
-  <button class="icon-btn" id="btn-chat-tips" title="Comandos rápidos & Dicas" data-i18n-title="chatTipsTitle" aria-label="Comandos rápidos & Dicas">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6"/><path d="M12 17v-4"/></svg>
-  </button>
-</div>
+ <div class="panel-head"><h2 id="chat-panel-title">O Mestre</h2></div>
  <div class="turno-pill hidden" id="turno-pill"></div>
  <div id="timer-pill" class="timer-pill hidden">
- </div>
+</div>
  <div id="skill-check-box" class="skill-check hidden">
  <div class="sc-head">
- <div class="sc-title" id="sc-title" data-i18n="checkRequested">Teste solicitado</div>
+ <div class="sc-title" id="sc-title">Teste solicitado</div>
  <div class="sc-mode" id="sc-mode">
- <button type="button" data-mode="auto" class="active" data-i18n="autoMode">Automático</button>
- <button type="button" data-mode="manual" data-i18n="manualMode">Manual</button>
+ <button type="button" data-mode="auto" class="active">Automático</button>
+ <button type="button" data-mode="manual">Manual</button>
  </div>
  </div>
  <div class="sc-row">
  <select id="sc-select" class="sc-select"></select>
  <span class="sc-mod" id="sc-mod">+0</span>
- <input type="text" id="sc-manual" class="sc-manual hidden" inputmode="numeric" autocomplete="off" placeholder="resultado do dado" data-i18n-ph="diceResultPh">
- <button type="button" class="sc-roll" id="sc-roll" data-i18n="rollBtn">🎲 Rolar</button>
+ <input type="text" id="sc-manual" class="sc-manual hidden" inputmode="numeric" autocomplete="off" placeholder="resultado do dado">
+ <button type="button" class="sc-roll" id="sc-roll">🎲 Rolar</button>
  </div>
  <div class="sc-hint" id="sc-hint"></div>
  <div class="sc-error hidden" id="sc-error"></div>
  </div>
  <div id="chat-scroll"></div>
- <button type="button" id="new-msg-pill" class="new-msg-pill hidden" data-i18n="newMsgs">↓ Novas mensagens</button>
+ <button type="button" id="new-msg-pill" class="new-msg-pill hidden">↓ Novas mensagens</button>
  <div id="scene-wait-block" class="scene-wait hidden">
  <div class="glyph">🕯️</div>
- <h3 data-i18n="waitingSceneTitle">Aguardando em outra cena…</h3>
- <p id="scene-wait-text" data-i18n="waitingSceneText">O Mestre está com a atenção em outro grupo agora. Você volta para a história assim que a cena mudar.</p>
+ <h3>Aguardando em outra cena…</h3>
+ <p id="scene-wait-text">O Mestre está com a atenção em outro grupo agora. Você volta para a história assim que a cena mudar.</p>
  </div>
  <form id="chat-form">
- <textarea id="chat-input" placeholder="Diga o que seu personagem faz…" data-i18n-ph="chatPlaceholder" rows="1"></textarea>
- <button type="submit" class="send-btn" id="chat-send" data-i18n="send">Enviar</button>
+ <textarea id="chat-input" placeholder="Diga o que seu personagem faz…" rows="1"></textarea>
+ <button type="submit" class="send-btn" id="chat-send">Enviar</button>
  </form>
  </section>
  <aside id="dice-panel" class="panel">
- <div class="panel-head">
-   <h2 data-i18n="diceStatsHead">Dados & Estatísticas</h2>
-   <div class="spacer"></div>
-   <span class="adv-live-dot" title="Sessão ativa"></span>
- </div>
+ <div class="panel-head"><h2>Rolagens</h2></div>
  <div id="dice-scroll" class="panel-scroll">
-   <!-- PAINEL DE ESTATÍSTICAS DA AVENTURA -->
-   <div id="adv-stats-panel" class="adv-stats-box">
-     <div class="adv-stats-head">
-       <h3>
-         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-         <span data-i18n="advStats">Estatísticas da Aventura</span>
-       </h3>
-       <span id="adv-stat-status" class="adv-stat-badge ativa" data-i18n="ongoingStatus">Em andamento</span>
-     </div>
-     <div class="adv-stats-grid">
-       <div class="adv-stat-tile" title="Total de turnos narrados e jogados">
-         <span class="val highlight" id="adv-stat-turns">0</span>
-         <span class="lbl" data-i18n="totalTurns">Total de turnos</span>
-       </div>
-       <div class="adv-stat-tile" title="Inimigos e monstros derrotados no combate">
-         <span class="val ember" id="adv-stat-foes">0</span>
-         <span class="lbl" data-i18n="defeatedFoes">Inimigos derrotados</span>
-       </div>
-       <div class="adv-stat-tile" title="Tempo decorrido na sessão atual">
-         <span class="val arcane" id="adv-stat-time">00:00</span>
-         <span class="lbl" data-i18n="sessionTime">Tempo de sessão</span>
-       </div>
-     </div>
-     <div id="adv-stat-extra" class="adv-stats-sub">
-       <span>🎲 <span data-i18n="totalRolls">Rolagens</span>: <b id="adv-stat-rolls" style="color:var(--text-hi)">0</b></span>
-       <span>📜 <span data-i18n="totalMsgs">Mensagens</span>: <b id="adv-stat-msgs" style="color:var(--text-hi)">0</b></span>
-     </div>
-     <div id="adv-foes-summary" class="adv-foes-wrapper hidden">
-       <div class="adv-foes-title" data-i18n="foesDefeatedTitle">Inimigos abatidos:</div>
-       <div id="adv-foes-list" class="adv-foe-list"></div>
-     </div>
-   </div>
-
-   <!-- PAINEL DE EVOLUÇÃO DE NÍVEL & LINHA DO TEMPO / GRÁFICO DE XP -->
-   <div id="adv-progression-box" class="adv-prog-box">
-     <div class="adv-prog-head">
-       <h3>
-         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-         <span data-i18n="evolutionXpTitle">Evolução &amp; XP</span>
-       </h3>
-       <div class="adv-prog-tabs">
-         <button type="button" class="adv-prog-tab active" id="tab-prog-chart" title="Ver gráfico de curva de XP" data-i18n="chartTab">Gráfico</button>
-         <button type="button" class="adv-prog-tab" id="tab-prog-timeline" title="Ver linha do tempo de ganhos" data-i18n="timelineTab">Linha do Tempo</button>
-       </div>
-     </div>
-     <div class="adv-level-bar-wrap">
-       <div class="adv-level-bar-info">
-         <span class="lvl-badge">
-           <span id="adv-current-lvl-badge">⭐ Nível 1</span>
-         </span>
-         <span class="xp-counter" id="adv-current-xp-counter">0 / 1000 XP (0%)</span>
-       </div>
-       <div class="adv-level-progress-bg">
-         <div id="adv-level-progress-fill" class="adv-level-progress-fill" style="width: 0%;"></div>
-       </div>
-     </div>
-     
-     <!-- Visualizador: Gráfico -->
-     <div id="adv-prog-chart-view" class="adv-chart-area">
-       <div id="adv-chart-tooltip" class="adv-chart-tooltip hidden"></div>
-       <svg id="adv-xp-svg" class="adv-chart-svg" viewBox="0 0 260 100" preserveAspectRatio="none">
-         <defs>
-           <linearGradient id="adv-xp-gradient" x1="0" y1="0" x2="0" y2="1">
-             <stop offset="0%" stop-color="var(--brass-bright)" stop-opacity="0.45"/>
-             <stop offset="100%" stop-color="var(--brass-dim)" stop-opacity="0.0"/>
-           </linearGradient>
-         </defs>
-         <g id="adv-svg-grid"></g>
-         <path id="adv-svg-area" class="adv-chart-path-area" d=""></path>
-         <path id="adv-svg-line" class="adv-chart-path-line" d=""></path>
-         <g id="adv-svg-points"></g>
-       </svg>
-     </div>
-
-     <!-- Visualizador: Linha do Tempo -->
-     <div id="adv-prog-timeline-view" class="adv-timeline-wrap hidden">
-       <div id="adv-timeline-list"></div>
-     </div>
-   </div>
-
-   <p class="roll-intro" data-i18n="rollIntro">O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.</p>
-   <div class="log-title" data-i18n="rollHistoryTitle">Histórico de Rolagens</div>
-   <div id="roll-log"></div>
+ <p class="roll-intro">O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.</p>
+ <div class="log-title">Histórico</div>
+ <div id="roll-log"></div>
  </div>
  </aside>
  </main>
@@ -1077,37 +817,37 @@ a{color:var(--arcane-bright);}
 <!-- NEW GROUP ADVENTURE MODAL -->
 <div class="modal-overlay hidden" id="newadv-overlay">
  <div class="modal-box">
- <div class="modal-head"><h3 id="newadv-title" data-i18n="newAdvModalTitle">Nova aventura</h3><button class="icon-btn" id="newadv-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+ <div class="modal-head"><h3 id="newadv-title">Nova aventura</h3><button class="icon-btn" id="newadv-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
  <div class="modal-body">
- <div class="field"><label for="newadv-name" data-i18n="advNameLabel">Nome da aventura</label><input id="newadv-name" class="text-input" placeholder="Ex: Os Ecos de Kaer Maga" data-i18n-ph="advNamePh"></div>
+ <div class="field"><label for="newadv-name">Nome da aventura</label><input id="newadv-name" class="text-input" placeholder="Ex: Os Ecos de Kaer Maga"></div>
  <div class="field" id="newadv-invite-field">
- <label data-i18n="inviteEmailLabel">Convidar por e-mail (precisa já ter cadastro no app)</label>
+ <label>Convidar por e-mail (precisa já ter cadastro no app)</label>
  <div id="newadv-invites"></div>
- <button type="button" class="add-invite-btn" id="newadv-add-invite" data-i18n="addEmailBtn">+ adicionar e-mail</button>
+ <button type="button" class="add-invite-btn" id="newadv-add-invite">+ adicionar e-mail</button>
  </div>
  <p id="newadv-error" class="card-error hidden"></p>
  </div>
- <div class="modal-actions"><button class="primary-btn" id="newadv-create" data-i18n="createAdvBtn">Criar aventura</button></div>
+ <div class="modal-actions"><button class="primary-btn" id="newadv-create">Criar aventura</button></div>
  </div>
 </div>
 
 <!-- SHEET EDITOR MODAL -->
 <div class="modal-overlay hidden" id="sheet-editor-modal">
  <div class="modal-box">
- <div class="modal-head"><h3 data-i18n="editSheetTitle">Editar ficha</h3><button class="icon-btn" id="editor-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+ <div class="modal-head"><h3>Editar ficha</h3><button class="icon-btn" id="editor-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
  <div class="modal-body">
- <p class="modal-note" data-i18n="editSheetNote">Ajuste os dados da sua ficha (formato JSON). O Mestre será avisado da mudança.</p>
+ <p class="modal-note">Ajuste os dados da sua ficha (formato JSON). O Mestre será avisado da mudança.</p>
  <textarea id="editor-textarea" spellcheck="false"></textarea>
  <p id="editor-error" class="card-error hidden"></p>
  </div>
- <div class="modal-actions"><button class="secondary-btn" id="editor-cancel" data-i18n="cancel">Cancelar</button><button class="primary-btn" id="editor-save" data-i18n="saveSheet">Salvar ficha</button></div>
+ <div class="modal-actions"><button class="secondary-btn" id="editor-cancel">Cancelar</button><button class="primary-btn" id="editor-save">Salvar ficha</button></div>
  </div>
 </div>
 
 <!-- INFO MODAL -->
 <div class="modal-overlay hidden" id="info-overlay">
   <div class="modal-box" style="max-width:680px;">
-    <div class="modal-head"><h3 data-i18n="playerGuideTitle">Guia do jogador</h3><button class="icon-btn" id="info-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-head"><h3>Guia do jogador</h3><button class="icon-btn" id="info-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
       <div class="guia-nav" id="guia-nav"></div>
       <div id="guia-conteudo"></div>
@@ -1118,33 +858,33 @@ a{color:var(--arcane-bright);}
 <!-- DETALHE DO ITEM -->
 <div class="modal-overlay hidden" id="item-overlay">
   <div class="modal-box" style="max-width:460px;">
-    <div class="modal-head"><h3 id="item-titulo" data-i18n="itemModalTitle">Item</h3><button class="icon-btn" id="item-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
-    <div class="modal-body" id="item-body"><p class="modal-note" data-i18n="consultingText">Consultando…</p></div>
+    <div class="modal-head"><h3 id="item-titulo">Item</h3><button class="icon-btn" id="item-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" id="item-body"><p class="modal-note">Consultando…</p></div>
   </div>
 </div>
 
 <!-- MERCADO -->
 <div class="modal-overlay hidden" id="market-overlay">
   <div class="modal-box" style="max-width:640px;">
-    <div class="modal-head"><h3 data-i18n="marketTitle">Mercado de artesãos</h3><button class="icon-btn" id="market-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
-    <div class="modal-body" id="market-body"><p class="modal-note" data-i18n="loadingText">Carregando…</p></div>
+    <div class="modal-head"><h3>Mercado de artesãos</h3><button class="icon-btn" id="market-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" id="market-body"><p class="modal-note">Carregando…</p></div>
   </div>
 </div>
 
 <!-- OFICINA (produção de itens) -->
 <div class="modal-overlay hidden" id="forge-overlay">
   <div class="modal-box" style="max-width:620px;height:82vh;">
-    <div class="modal-head"><h3 data-i18n="workshopTitle">Oficina</h3>
+    <div class="modal-head"><h3>Oficina</h3>
       <span class="fg-cap" id="fg-cap"></span>
       <button class="icon-btn" id="forge-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
     </div>
     <div id="forge-chat" class="forge-chat"></div>
     <form id="forge-form" class="forge-form">
-      <textarea id="forge-input" rows="1" placeholder="O que você quer produzir?" data-i18n-ph="workshopInputPh"></textarea>
-      <button type="submit" class="send-btn" id="forge-send" data-i18n="send">Enviar</button>
+      <textarea id="forge-input" rows="1" placeholder="O que você quer produzir?"></textarea>
+      <button type="submit" class="send-btn" id="forge-send">Enviar</button>
     </form>
     <div class="forge-foot">
-      <button type="button" class="mk-btn sec" id="forge-reset" data-i18n="retryBtn">Recomeçar</button>
+      <button type="button" class="mk-btn sec" id="forge-reset">Recomeçar</button>
       <span class="mk-saldo" id="fg-ouro"></span>
     </div>
   </div>
@@ -1153,571 +893,56 @@ a{color:var(--arcane-bright);}
 <!-- EVENT MODAL (admin) -->
 <div class="modal-overlay hidden" id="event-overlay">
   <div class="modal-box" style="max-width:600px;">
-    <div class="modal-head"><h3 data-i18n="newEventTitle">Novo evento global</h3><button class="icon-btn" id="event-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-head"><h3>Novo evento global</h3><button class="icon-btn" id="event-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <p class="modal-note" data-i18n="eventModalNote">O Mestre monta a aventura a partir da ambientação e do objetivo. Requisitos em branco significam que qualquer personagem pode participar.</p>
-      <div class="field"><label for="ev-nome" data-i18n="advNameLabel">Nome da aventura</label>
+      <p class="modal-note">O Mestre monta a aventura a partir da ambientação e do objetivo. Requisitos em branco significam que qualquer personagem pode participar.</p>
+      <div class="field"><label for="ev-nome">Nome da aventura</label>
         <input id="ev-nome" class="text-input" placeholder="Ex: O Cerco à Torre de Vidro"></div>
-      <div class="field"><label for="ev-amb" data-i18n="initialSettingLabel">Ambientação inicial</label>
+      <div class="field"><label for="ev-amb">Ambientação inicial</label>
         <textarea id="ev-amb" class="text-input" rows="3" placeholder="Onde a história começa e que clima tem a cena de abertura."></textarea></div>
-      <div class="field"><label for="ev-obj" data-i18n="finalGoalLabel">Objetivo final</label>
+      <div class="field"><label for="ev-obj">Objetivo final</label>
         <textarea id="ev-obj" class="text-input" rows="2" placeholder="O que os grupos precisam alcançar."></textarea></div>
-      <div class="divider dark"><span data-i18n="reqOptional">requisitos (opcionais)</span></div>
+      <div class="divider dark"><span>requisitos (opcionais)</span></div>
       <div class="ev-row">
-        <div class="field" style="flex:1"><label for="ev-nmin" data-i18n="minLevel">Nível mínimo</label>
+        <div class="field" style="flex:1"><label for="ev-nmin">Nível mínimo</label>
           <input id="ev-nmin" class="text-input" type="number" min="1" max="20" placeholder="qualquer"></div>
-        <div class="field" style="flex:1"><label for="ev-nmax" data-i18n="maxLevel">Nível máximo</label>
+        <div class="field" style="flex:1"><label for="ev-nmax">Nível máximo</label>
           <input id="ev-nmax" class="text-input" type="number" min="1" max="20" placeholder="qualquer"></div>
       </div>
-      <div class="field"><label for="ev-anc" data-i18n="acceptedAncestries">Ancestralidades aceitas</label>
+      <div class="field"><label for="ev-anc">Ancestralidades aceitas</label>
         <input id="ev-anc" class="text-input" placeholder="Elfo, Anão, Humano (vazio = todas)">
-        <p class="hint" data-i18n="commaSeparated">Separe por vírgula.</p></div>
-      <div class="field"><label for="ev-cls" data-i18n="acceptedClasses">Classes aceitas</label>
+        <p class="hint">Separe por vírgula.</p></div>
+      <div class="field"><label for="ev-cls">Classes aceitas</label>
         <input id="ev-cls" class="text-input" placeholder="Mago, Guerreiro (vazio = todas)">
-        <p class="hint" data-i18n="commaSeparated">Separe por vírgula.</p></div>
-      <div class="divider dark"><span data-i18n="datesDivider">datas</span></div>
+        <p class="hint">Separe por vírgula.</p></div>
+      <div class="divider dark"><span>datas</span></div>
       <div class="ev-row">
-        <div class="field" style="flex:1"><label for="ev-inicio" data-i18n="advStart">Início da aventura</label>
+        <div class="field" style="flex:1"><label for="ev-inicio">Início da aventura</label>
           <input id="ev-inicio" class="text-input" type="datetime-local"></div>
-        <div class="field" style="flex:1"><label for="ev-ate" data-i18n="regUntil">Inscrições até</label>
+        <div class="field" style="flex:1"><label for="ev-ate">Inscrições até</label>
           <input id="ev-ate" class="text-input" type="datetime-local"></div>
       </div>
-      <p class="hint" data-i18n="eventJoinHint">Após o início, os inscritos têm 5 minutos para ingressar. Grupos de até 4 personagens.</p>
+      <p class="hint">Após o início, os inscritos têm 5 minutos para ingressar. Grupos de até 4 personagens.</p>
       <p id="event-error" class="card-error hidden"></p>
     </div>
-    <div class="modal-actions"><button class="secondary-btn" id="event-cancel" data-i18n="cancel">Cancelar</button><button class="primary-btn" id="event-save" data-i18n="publishEventBtn">Publicar evento</button></div>
+    <div class="modal-actions"><button class="secondary-btn" id="event-cancel">Cancelar</button><button class="primary-btn" id="event-save">Publicar evento</button></div>
   </div>
 </div>
 
 <!-- ADMIN MODAL -->
 <div class="modal-overlay hidden" id="admin-overlay">
  <div class="modal-box" style="max-width:760px;">
- <div class="modal-head"><h3 data-i18n="adminPanelTitle">Painel Admin</h3><button class="icon-btn" id="admin-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+ <div class="modal-head"><h3>Painel Admin</h3><button class="icon-btn" id="admin-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
  <div class="modal-body" id="admin-body">
- <p class="modal-note" data-i18n="loadingText">Carregando…</p>
+ <p class="modal-note">Carregando…</p>
  </div>
  </div>
-</div>
-
-<!-- CHAT TIPS MODAL -->
-<div class="modal-overlay hidden" id="chat-tips-overlay">
-  <div class="modal-box" style="max-width:680px;max-height:86vh;display:flex;flex-direction:column;">
-    <div class="modal-head">
-      <h3 style="display:flex;align-items:center;gap:8px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20" style="color:var(--brass-bright)"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6"/><path d="M12 17v-4"/></svg>
-        <span data-i18n="chatTipsTitle">Comandos Rápidos & Dicas</span>
-      </h3>
-      <button class="icon-btn" id="chat-tips-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
-    </div>
-    <div class="modal-body" style="overflow-y:auto;padding-right:8px;">
-      <p class="modal-note" data-i18n="chatTipsSubtitle">Comandos úteis para digitar no chat ou usar em suas ações com o Mestre. Clique em qualquer comando para utilizá-lo:</p>
-      
-      <div class="chat-tips-grid">
-        <div class="chat-tips-card" data-cmd="/rolar 1d20">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/rolar [fórmula]</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipRollDesc">Rola dados diretamente (ex: /rolar 1d20+4 ou /r 2d6) e registra o resultado na mesa.</div>
-          <div class="chat-cmd-example">/rolar 1d20+3 · /r 2d6+2 · /dado d100</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/inventario">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/inventario</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipInvDesc">Abre a aba da ficha com seus itens, armas, poções, moedas e pergaminhos.</div>
-          <div class="chat-cmd-example">/inventario · /itens · /mochila</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/ficha">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/ficha</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipSheetDesc">Visualiza seus atributos, pontos de vida, perícias treinadas e resistências.</div>
-          <div class="chat-cmd-example">/ficha · /status · /pericias</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/mestre ">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/mestre [dúvida]</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipMasterDesc">Pergunta em OFF (fora do personagem) para tirar dúvidas diretamente com o Mestre.</div>
-          <div class="chat-cmd-example">/mestre como funciona a iluminação da sala?</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/examinar ">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/examinar [alvo]</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipExamineDesc">Pede ao Mestre uma inspeção minuciosa de um objeto, criatura ou detalhe do cenário.</div>
-          <div class="chat-cmd-example">/examinar o sarcófago de pedra antigo</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/descanso">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/descanso</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipRestDesc">Propõe ao Mestre um descanso para recuperar PV, magias e recursos gastos.</div>
-          <div class="chat-cmd-example">/descanso · /descansar · /acampamento</div>
-        </div>
-
-        <div class="chat-tips-card" data-cmd="/ajuda">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span class="chat-cmd-badge">/ajuda</span>
-            <button type="button" class="mk-btn sec" style="padding:3px 8px;font-size:11px;" data-i18n="useCommand">Usar</button>
-          </div>
-          <div class="chat-cmd-desc" data-i18n="tipHelpDesc">Mostra regras de testes, combate e orientações sobre como narrar para a IA.</div>
-          <div class="chat-cmd-example">/ajuda · /guia · /regras</div>
-        </div>
-      </div>
-
-      <div style="margin-top:14px;padding:12px;background:var(--void-4);border-radius:9px;border:1px solid var(--line-soft);">
-        <p class="hint" style="margin:0;font-size:12px;color:var(--brass-bright);line-height:1.6;" data-i18n="tipInteractionHint">💡 <b>Dica de interpretação:</b> Descreva intenção e método na sua mensagem (ex: <i>"Tento forçar a fechadura usando meu pé de cabra com cuidado"</i>). O Mestre responderá com a narrativa e pedirá os testes apropriados.</p>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
 (function(){
 "use strict";
 
-/* =========================================================
-   INTERNATIONALIZATION (i18n)
-   ========================================================= */
-var I18N = {
-  pt: {
-    appName: "Mestre Solo",
-    appSubtitle: "RPG de fantasia narrado por IA",
-    loginTitle: "Entrar",
-    authLedeEmail: "Informe seu e-mail para continuar.",
-    emailLabel: "E-mail",
-    nameLabel: "Nome",
-    passLabel: "Senha",
-    apiKeyLabel: "Chave de API do Gemini",
-    show: "Mostrar",
-    hide: "Ocultar",
-    needKey: "Não tem uma?",
-    apiKeyFreeLink: "Crie uma chave gratuita ↗",
-    apiKeyHint: "Fica só neste dispositivo — nunca é compartilhada com outros jogadores.",
-    secNote: "🔒 Sem servidor por trás: sua chave de API nunca sai deste dispositivo. A senha é só uma trava simples dentro do app — não use uma senha que você reutiliza em outro lugar.",
-    keyStepHint: "Só nesta primeira vez neste dispositivo.",
-    startGame: "Começar a jogar",
-    changeAccount: "Entrar com outra conta",
-    googleSignIn: "Entrar com a conta Google",
-    googleSecureHint: "Login seguro pelo Google — o app nunca vê nem guarda sua senha.",
-    orEmailPass: "ou use e-mail e senha",
-    continue: "Continuar",
-    infoLinkAuth: "📖 Como conseguir uma chave gratuita do Gemini · guia rápido de regras",
-    yourTurn: "Sua vez",
-    quickGuide: "Guia rápido",
-    marketTitle: "Mercado de artesãos",
-    createGlobalEvent: "Criar evento global",
-    adminPanel: "Painel Admin",
-    adminPanelTitle: "Painel Admin",
-    changeApiKey: "Trocar chave do Gemini",
-    deleteChar: "Excluir personagem",
-    logout: "Sair",
-    hubSubGreeting: "Escolha uma aventura ou comece uma nova",
-    newSoloAdv: "Nova aventura solo",
-    newSoloDesc: "Só você e o Mestre. Pode anexar o livro de regras.",
-    newGroupAdv: "Nova aventura em grupo",
-    newGroupDesc: "Convide outros jogadores cadastrados pelo e-mail.",
-    openEvents: "Eventos abertos",
-    yourAdventures: "Suas aventuras",
-    supportTitle: "Gostando das suas aventuras?",
-    supportDesc: "O app é gratuito e não cobra por partida. Se quiser ajudar a mantê-lo no ar, qualquer valor é bem-vindo — e nada muda no jogo se você não puder.",
-    supportBtn: "Apoiar o projeto",
-    supportDismiss: "Agora não",
-    gearTitle: "Para levar à mesa de verdade",
-    gearSub: "Sugestões para quem também joga fora da tela. São links de afiliado: o preço para você é o mesmo, e uma parte ajuda a manter o app.",
-    advertising: "Publicidade",
-    waitingRoom: "Sala de espera",
-    back: "Voltar",
-    backToHub: "Voltar ao início",
-    charCreation: "Criação de Personagem",
-    sheetTab: "Ficha",
-    gmTab: "Mestre",
-    diceTab: "Dados",
-    advStats: "Estatísticas da aventura",
-    exportLog: "Exportar roteiro",
-    pauseAdv: "Pausar aventura",
-    finishAdv: "Concluir aventura",
-    exportPdf: "Exportar ficha em PDF",
-    editSheet: "Editar ficha manualmente",
-    checkRequested: "Teste solicitado",
-    autoMode: "Automático",
-    manualMode: "Manual",
-    diceResultPh: "resultado do dado",
-    rollBtn: "🎲 Rolar",
-    newMsgs: "↓ Novas mensagens",
-    waitingSceneTitle: "Aguardando em outra cena…",
-    waitingSceneText: "O Mestre está com a atenção em outro grupo agora. Você volta para a história assim que a cena mudar.",
-    chatPlaceholder: "Diga o que seu personagem faz…",
-    send: "Enviar",
-    diceStatsHead: "Dados & Estatísticas",
-    ongoingStatus: "Em andamento",
-    totalTurns: "Total de turnos",
-    defeatedFoes: "Inimigos derrotados",
-    sessionTime: "Tempo de sessão",
-    totalRolls: "Rolagens",
-    totalMsgs: "Mensagens",
-    foesDefeatedTitle: "Inimigos abatidos:",
-    evolutionXpTitle: "Evolução & XP",
-    chartTab: "Gráfico",
-    timelineTab: "Linha do Tempo",
-    rollIntro: "O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.",
-    rollHistoryTitle: "Histórico de Rolagens",
-    newAdvModalTitle: "Nova aventura",
-    advNameLabel: "Nome da aventura",
-    advNamePh: "Ex: Os Ecos de Kaer Maga",
-    inviteEmailLabel: "Convidar por e-mail (precisa já ter cadastro no app)",
-    addEmailBtn: "+ adicionar e-mail",
-    createAdvBtn: "Criar aventura",
-    editSheetTitle: "Editar ficha",
-    editSheetNote: "Ajuste os dados da sua ficha (formato JSON). O Mestre será avisado da mudança.",
-    cancel: "Cancelar",
-    saveSheet: "Salvar ficha",
-    playerGuideTitle: "Guia do jogador",
-    itemModalTitle: "Item",
-    consultingText: "Consultando…",
-    loadingText: "Carregando…",
-    workshopTitle: "Oficina",
-    workshopInputPh: "O que você quer produzir?",
-    retryBtn: "Recomeçar",
-    newEventTitle: "Novo evento global",
-    eventModalNote: "O Mestre monta a aventura a partir da ambientação e do objetivo. Requisitos em branco significam que qualquer personagem pode participar.",
-    initialSettingLabel: "Ambientação inicial",
-    finalGoalLabel: "Objetivo final",
-    reqOptional: "requisitos (opcionais)",
-    minLevel: "Nível mínimo",
-    maxLevel: "Nível máximo",
-    acceptedAncestries: "Ancestralidades aceitas",
-    acceptedClasses: "Classes aceitas",
-    commaSeparated: "Separe por vírgula.",
-    datesDivider: "datas",
-    advStart: "Início da aventura",
-    regUntil: "Inscrições até",
-    eventJoinHint: "Após o início, os inscritos têm 5 minutos para ingressar. Grupos de até 4 personagens.",
-    publishEventBtn: "Publicar evento",
-    itemPotion: "Poção",
-    itemWeapon: "Arma",
-    itemScroll: "Pergaminho",
-    itemArmor: "Armadura",
-    itemAccessory: "Acessório",
-    itemMisc: "Diverso"
-  },
-  en: {
-    appName: "Solo Master",
-    appSubtitle: "AI-narrated fantasy RPG",
-    loginTitle: "Sign In",
-    authLedeEmail: "Enter your email to continue.",
-    emailLabel: "Email",
-    nameLabel: "Name",
-    passLabel: "Password",
-    apiKeyLabel: "Gemini API Key",
-    show: "Show",
-    hide: "Hide",
-    needKey: "Don't have one?",
-    apiKeyFreeLink: "Get a free API key ↗",
-    apiKeyHint: "Stored only on this device — never shared with other players.",
-    secNote: "🔒 Serverless: your API key never leaves this device. The password is just a local lock inside the app — do not reuse an important password.",
-    keyStepHint: "Only needed the first time on this device.",
-    startGame: "Start Playing",
-    changeAccount: "Sign in with another account",
-    googleSignIn: "Sign in with Google",
-    googleSecureHint: "Secure sign-in via Google — the app never sees or stores your password.",
-    orEmailPass: "or use email and password",
-    continue: "Continue",
-    infoLinkAuth: "📖 How to get a free Gemini API key · Quick rules guide",
-    yourTurn: "Your Turn",
-    quickGuide: "Quick Guide",
-    marketTitle: "Artisan Market",
-    createGlobalEvent: "Create Global Event",
-    adminPanel: "Admin Panel",
-    adminPanelTitle: "Admin Panel",
-    changeApiKey: "Change Gemini Key",
-    deleteChar: "Delete Character",
-    logout: "Log Out",
-    hubSubGreeting: "Choose an adventure or start a new one",
-    newSoloAdv: "New Solo Adventure",
-    newSoloDesc: "Just you and the GM. You can attach a rulebook.",
-    newGroupAdv: "New Group Adventure",
-    newGroupDesc: "Invite registered players by email.",
-    openEvents: "Open Events",
-    yourAdventures: "Your Adventures",
-    supportTitle: "Enjoying your adventures?",
-    supportDesc: "This app is free and does not charge per session. If you'd like to support keeping it alive, any contribution is welcome.",
-    supportBtn: "Support Project",
-    supportDismiss: "Not now",
-    gearTitle: "For the Physical Tabletop",
-    gearSub: "Hand-picked suggestions for playing offline. Affiliate links support the project at no extra cost to you.",
-    advertising: "Advertisement",
-    waitingRoom: "Waiting Room",
-    back: "Back",
-    backToHub: "Back to Hub",
-    charCreation: "Character Creation",
-    sheetTab: "Sheet",
-    gmTab: "Game Master",
-    diceTab: "Dice",
-    advStats: "Adventure Stats",
-    exportLog: "Export Journal",
-    pauseAdv: "Pause Adventure",
-    finishAdv: "Complete Adventure",
-    exportPdf: "Export Sheet to PDF",
-    editSheet: "Edit Sheet Manually",
-    checkRequested: "Check Requested",
-    autoMode: "Auto",
-    manualMode: "Manual",
-    diceResultPh: "dice roll result",
-    rollBtn: "🎲 Roll",
-    newMsgs: "↓ New Messages",
-    waitingSceneTitle: "Waiting in another scene…",
-    waitingSceneText: "The GM is currently with another party group. You'll return to the story as soon as the scene shifts.",
-    chatPlaceholder: "Describe what your character does…",
-    send: "Send",
-    diceStatsHead: "Dice & Statistics",
-    ongoingStatus: "In Progress",
-    totalTurns: "Total Turns",
-    defeatedFoes: "Defeated Foes",
-    sessionTime: "Session Time",
-    totalRolls: "Rolls",
-    totalMsgs: "Messages",
-    foesDefeatedTitle: "Defeated Foes:",
-    evolutionXpTitle: "Progression & XP",
-    chartTab: "Chart",
-    timelineTab: "Timeline",
-    rollIntro: "The GM requests rolls during the adventure, and modifiers from your character sheet are applied automatically. Your history is recorded here.",
-    rollHistoryTitle: "Roll History",
-    newAdvModalTitle: "New Adventure",
-    advNameLabel: "Adventure Name",
-    advNamePh: "e.g., Echoes of Kaer Maga",
-    inviteEmailLabel: "Invite by email (must already be registered in the app)",
-    addEmailBtn: "+ add email",
-    createAdvBtn: "Create Adventure",
-    editSheetTitle: "Edit Character Sheet",
-    editSheetNote: "Adjust your character data (JSON format). The GM will be notified of changes.",
-    cancel: "Cancel",
-    saveSheet: "Save Sheet",
-    playerGuideTitle: "Player Guide",
-    itemModalTitle: "Item",
-    consultingText: "Fetching…",
-    loadingText: "Loading…",
-    workshopTitle: "Workshop",
-    workshopInputPh: "What would you like to craft?",
-    retryBtn: "Restart",
-    newEventTitle: "New Global Event",
-    eventModalNote: "The GM builds the adventure from the setting and goal. Blank requirements mean any character can join.",
-    initialSettingLabel: "Initial Setting",
-    finalGoalLabel: "Final Objective",
-    reqOptional: "requirements (optional)",
-    minLevel: "Minimum Level",
-    maxLevel: "Maximum Level",
-    acceptedAncestries: "Accepted Ancestries",
-    acceptedClasses: "Accepted Classes",
-    commaSeparated: "Separate with commas.",
-    datesDivider: "dates",
-    advStart: "Adventure Start",
-    regUntil: "Registration Until",
-    eventJoinHint: "Once started, registered players have 5 minutes to enter. Groups of up to 4 characters.",
-    publishEventBtn: "Publish Event",
-    itemPotion: "Potion",
-    itemWeapon: "Weapon",
-    itemScroll: "Scroll",
-    itemArmor: "Armor",
-    itemAccessory: "Accessory",
-    itemMisc: "Miscellaneous"
-  },
-  es: {
-    appName: "Mestre Solo",
-    appSubtitle: "RPG de fantasía narrado por IA",
-    loginTitle: "Iniciar Sesión",
-    authLedeEmail: "Introduce tu correo para continuar.",
-    emailLabel: "Correo electrónico",
-    nameLabel: "Nombre",
-    passLabel: "Contraseña",
-    apiKeyLabel: "Clave de API de Gemini",
-    show: "Mostrar",
-    hide: "Ocultar",
-    needKey: "¿No tienes una?",
-    apiKeyFreeLink: "Obtén una clave gratuita ↗",
-    apiKeyHint: "Se almacena solo en este dispositivo — nunca se comparte con otros jugadores.",
-    secNote: "🔒 Sin servidor: tu clave de API nunca sale de este dispositivo. La contraseña es solo un bloqueo local en la app.",
-    keyStepHint: "Solo en el primer inicio en este dispositivo.",
-    startGame: "Comenzar a jugar",
-    changeAccount: "Iniciar con otra cuenta",
-    googleSignIn: "Iniciar con cuenta de Google",
-    googleSecureHint: "Inicio seguro por Google — la aplicación nunca ve ni almacena tu contraseña.",
-    orEmailPass: "o usa correo y contraseña",
-    continue: "Continuar",
-    infoLinkAuth: "📖 Cómo obtener una clave gratuita de Gemini · Guía rápida de reglas",
-    yourTurn: "Tu turno",
-    quickGuide: "Guía rápida",
-    marketTitle: "Mercado de artesanos",
-    createGlobalEvent: "Crear evento global",
-    adminPanel: "Panel de administración",
-    adminPanelTitle: "Panel de administración",
-    changeApiKey: "Cambiar clave de Gemini",
-    deleteChar: "Eliminar personaje",
-    logout: "Cerrar sesión",
-    hubSubGreeting: "Elige una aventura o comienza una nueva",
-    newSoloAdv: "Nueva aventura en solitario",
-    newSoloDesc: "Solo tú y el Máster. Puedes adjuntar un libro de reglas.",
-    newGroupAdv: "Nueva aventura en grupo",
-    newGroupDesc: "Invita a otros jugadores registrados por correo.",
-    openEvents: "Eventos abiertos",
-    yourAdventures: "Tus aventuras",
-    supportTitle: "¿Disfrutando de tus aventuras?",
-    supportDesc: "La app es gratuita y no cobra por partida. Si deseas ayudar a mantenerla activa, cualquier aporte es bienvenido.",
-    supportBtn: "Apoyar el proyecto",
-    supportDismiss: "Ahora no",
-    gearTitle: "Para llevar a la mesa real",
-    gearSub: "Sugerencias para quienes también juegan fuera de la pantalla. Enlaces de afiliado para apoyar la app sin costo adicional.",
-    advertising: "Publicidad",
-    waitingRoom: "Sala de espera",
-    back: "Volver",
-    backToHub: "Volver al inicio",
-    charCreation: "Creación de Personaje",
-    sheetTab: "Ficha",
-    gmTab: "Máster",
-    diceTab: "Dados",
-    advStats: "Estadísticas de la aventura",
-    exportLog: "Exportar bitácora",
-    pauseAdv: "Pausar aventura",
-    finishAdv: "Completar aventura",
-    exportPdf: "Exportar ficha a PDF",
-    editSheet: "Editar ficha manualmente",
-    checkRequested: "Prueba solicitada",
-    autoMode: "Automático",
-    manualMode: "Manual",
-    diceResultPh: "resultado del dado",
-    rollBtn: "🎲 Tirar",
-    newMsgs: "↓ Nuevos mensajes",
-    waitingSceneTitle: "Esperando en otra escena…",
-    waitingSceneText: "El Máster está atendiendo a otro grupo ahora. Regresarás a la historia en cuanto cambie la escena.",
-    chatPlaceholder: "Describe qué hace tu personaje…",
-    send: "Enviar",
-    diceStatsHead: "Dados y Estadísticas",
-    ongoingStatus: "En curso",
-    totalTurns: "Total de turnos",
-    defeatedFoes: "Enemigos derrotados",
-    sessionTime: "Tiempo de sesión",
-    totalRolls: "Tiradas",
-    totalMsgs: "Mensajes",
-    foesDefeatedTitle: "Enemigos derrotados:",
-    evolutionXpTitle: "Evolución y XP",
-    chartTab: "Gráfico",
-    timelineTab: "Línea de Tiempo",
-    rollIntro: "El Máster solicita las tiradas durante la aventura y el modificador de tu ficha se aplica automáticamente. Tu historial queda registrado aquí.",
-    rollHistoryTitle: "Historial de Tiradas",
-    newAdvModalTitle: "Nueva aventura",
-    advNameLabel: "Nombre de la aventura",
-    advNamePh: "Ej: Los Ecos de Kaer Maga",
-    inviteEmailLabel: "Invitar por correo (debe estar ya registrado)",
-    addEmailBtn: "+ añadir correo",
-    createAdvBtn: "Crear aventura",
-    editSheetTitle: "Editar ficha",
-    editSheetNote: "Ajusta los datos de tu ficha (formato JSON). El Máster será notificado de los cambios.",
-    cancel: "Cancelar",
-    saveSheet: "Guardar ficha",
-    playerGuideTitle: "Guía del jugador",
-    itemModalTitle: "Ítem",
-    consultingText: "Consultando…",
-    loadingText: "Cargando…",
-    workshopTitle: "Taller de artesanía",
-    workshopInputPh: "¿Qué deseas fabricar?",
-    retryBtn: "Reiniciar",
-    newEventTitle: "Nuevo evento global",
-    eventModalNote: "El Máster crea la aventura a partir de la ambientación y el objetivo. Los requisitos en blanco permiten la participación de cualquier personaje.",
-    initialSettingLabel: "Ambientación inicial",
-    finalGoalLabel: "Objetivo final",
-    reqOptional: "requisitos (opcionais)",
-    minLevel: "Nivel mínimo",
-    maxLevel: "Nivel máximo",
-    acceptedAncestries: "Ancestros aceptados",
-    acceptedClasses: "Clases aceptadas",
-    commaSeparated: "Separa por comas.",
-    datesDivider: "fechas",
-    advStart: "Inicio de la aventura",
-    regUntil: "Inscripciones hasta",
-    eventJoinHint: "Tras el inicio, los inscritos tienen 5 minutos para ingresar. Grupos de hasta 4 personajes.",
-    publishEventBtn: "Publicar evento",
-    itemPotion: "Poción",
-    itemWeapon: "Arma",
-    itemScroll: "Pergamino",
-    itemArmor: "Armadura",
-    itemAccessory: "Accesorio",
-    itemMisc: "Varios"
-  }
-};
-
-var currentLang = "pt";
-try {
-  var savedL = localStorage.getItem("mestre-solo-lang");
-  if(savedL && I18N[savedL]) currentLang = savedL;
-  else if(navigator.language && navigator.language.startsWith("es")) currentLang = "es";
-  else if(navigator.language && navigator.language.startsWith("en")) currentLang = "en";
-} catch(e){}
-
-function t(key, fallback){
-  var dict = I18N[currentLang] || I18N.pt;
-  if(dict && dict[key] !== undefined) return dict[key];
-  var ptDict = I18N.pt;
-  if(ptDict && ptDict[key] !== undefined) return ptDict[key];
-  return fallback !== undefined ? fallback : key;
-}
-
-function applyLanguage(lang){
-  if(!I18N[lang]) lang = "pt";
-  currentLang = lang;
-  try { localStorage.setItem("mestre-solo-lang", lang); } catch(e){}
-
-  // Update active state in all language picker buttons
-  document.querySelectorAll(".lang-picker .lang-btn").forEach(function(b){
-    b.classList.toggle("active", b.getAttribute("data-lang") === lang);
-  });
-
-  // Update textContent for [data-i18n]
-  document.querySelectorAll("[data-i18n]").forEach(function(node){
-    var k = node.getAttribute("data-i18n");
-    var trans = t(k, null);
-    if(trans !== null) node.textContent = trans;
-  });
-
-  // Update placeholders for [data-i18n-ph]
-  document.querySelectorAll("[data-i18n-ph]").forEach(function(node){
-    var k = node.getAttribute("data-i18n-ph");
-    var trans = t(k, null);
-    if(trans !== null) node.placeholder = trans;
-  });
-
-  // Update titles & aria-labels for [data-i18n-title]
-  document.querySelectorAll("[data-i18n-title]").forEach(function(node){
-    var k = node.getAttribute("data-i18n-title");
-    var trans = t(k, null);
-    if(trans !== null){
-      node.title = trans;
-      node.setAttribute("aria-label", trans);
-    }
-  });
-}
-
-function initLangPickers(){
-  document.addEventListener("click", function(e){
-    var btn = e.target.closest(".lang-btn");
-    if(btn && btn.dataset.lang){
-      applyLanguage(btn.dataset.lang);
-    }
-  });
-}
-initLangPickers();
-applyLanguage(currentLang);
 
 /* =========================================================
  CONSTANTS
@@ -2929,113 +2154,76 @@ function showView(name){
 /* =========================================================
  CHARACTER SHEET RENDER (reusable)
  ========================================================= */
-var CATEGORIAS_ITENS = {
-  pocao: { id: "pocao", label: "Poção", icon: "🧪", cor: "var(--arcane-bright)" },
-  arma: { id: "arma", label: "Arma", icon: "⚔️", cor: "var(--ember-bright)" },
-  pergaminho: { id: "pergaminho", label: "Pergaminho", icon: "📜", cor: "var(--brass-bright)" },
-  armadura: { id: "armadura", label: "Armadura", icon: "🛡️", cor: "var(--violet-bright)" },
-  acessorio: { id: "acessorio", label: "Acessório", icon: "💍", cor: "var(--brass)" },
-  ferramenta: { id: "ferramenta", label: "Ferramenta", icon: "⚒️", cor: "var(--text-lo)" },
-  outro: { id: "outro", label: "Item Geral", icon: "🎒", cor: "var(--text-lo)" }
-};
-
-function inferirCategoriaItem(nome){
-  var n = normaliza(nome||"");
-  if(/pocao|poção|elixir|extrato|filtro|oleo|óleo|antidoto|antídoto|balsamo|bálsamo|unguento|ungüento|frasco|gota/.test(n)) return "pocao";
-  if(/pergaminho|papiro|tomo|grimorio|grimório|livro|manuscrito|mapa|carta|relatorio|relatório|tratado|escrito|mensagem/.test(n)) return "pergaminho";
-  if(/espada|arco|adaga|machado|lanca|lança|maca|maça|martelo|cimitarra|besta|rapieira|bordao|bordão|alabarda|chicote|punhal|foice|clava|tridente|cajado|mangual|zarabatana|flecha|dardo|virote|arma/.test(n)) return "arma";
-  if(/armadura|escudo|cota|elmo|gibao|gibão|placas|peitoral|bracadeira|braçadeira|greva|perneira|camisao|camisão|loriga|armacao|armação/.test(n)) return "armadura";
-  if(/anel|amuleto|colar|pingente|talisma|talismã|cinto|botas|manto|capa|tiara|brinco|coroa|broche|bracelete|luvas|faixa|gema|joia|jóia/.test(n)) return "acessorio";
-  if(/kit|gazua|ferramenta|instrumento|pederneira|tocha|corda|mochila|reagente|erva|componente|vela|odre|saco|pá|marreta|prego|arame|tinta|pena|gazuas/.test(n)) return "ferramenta";
-  return "outro";
-}
-
-function obterCategoriaItem(nome, ficha){
-  if(!nome) return "outro";
-  var k = normaliza(nome);
-  if(ficha && ficha.categoriasItens && ficha.categoriasItens[k]) return ficha.categoriasItens[k];
-  if(ficha && ficha.categorias && ficha.categorias[k]) return ficha.categorias[k];
-  return inferirCategoriaItem(nome);
-}
-
-function definirCategoriaItem(nome, cat, ficha){
-  if(!ficha || !nome) return;
-  if(!ficha.categoriasItens) ficha.categoriasItens = {};
-  ficha.categoriasItens[normaliza(nome)] = cat;
-}
-
 var sheetCollapsed = {};
 function sectionHtml(key, title, bodyHtml){
-  var collapsed = !!sheetCollapsed[key];
-  return '<div class="sheet-section'+(collapsed?' collapsed':'')+'" data-key="'+key+'"><div class="sheet-section-title" data-toggle="'+key+'"><span class="car">▾</span>'+esc(title)+'</div><div class="sheet-section-body">'+bodyHtml+'</div></div>';
+ var collapsed = !!sheetCollapsed[key];
+ return '<div class="sheet-section'+(collapsed?' collapsed':'')+'" data-key="'+key+'"><div class="sheet-section-title" data-toggle="'+key+'"><span class="car">▾</span>'+esc(title)+'</div><div class="sheet-section-body">'+bodyHtml+'</div></div>';
 }
 function renderCharacterSheet(c, rootId){
-  var root = el(rootId);
-  var hasAnything = c && (c.nome || c.ancestralidade || c.classe || (c.pericias&&c.pericias.length));
-  if(!hasAnything){
-    root.innerHTML = '<div class="sheet-empty"><div class="glyph">✦</div><p>A ficha vai aparecer aqui conforme você cria seu personagem com o Mestre.</p></div>';
-    return;
-  }
-  var html = "";
-  html += '<p class="sheet-name">'+esc(c.nome||"Sem nome")+'</p>';
-  var subBits=[];
-  if(c.ancestralidade) subBits.push(esc(c.ancestralidade)+(c.linhagem?" ("+esc(c.linhagem)+")":""));
-  if(c.antecedente) subBits.push(esc(c.antecedente));
-  if(c.classe) subBits.push("<b>"+esc(c.classe)+"</b>"+(c.nivel?" nv. "+esc(c.nivel):""));
-  html += '<p class="sheet-sub">'+subBits.join(" · ")+'</p>';
-  if(c.pontosVida && (c.pontosVida.atual!==null||c.pontosVida.maximo!==null)){
-    var atual=c.pontosVida.atual===null?"—":c.pontosVida.atual, max=c.pontosVida.maximo===null?"—":c.pontosVida.maximo;
-    var pct=(c.pontosVida.atual!==null&&c.pontosVida.maximo)?Math.max(0,Math.min(100,(c.pontosVida.atual/c.pontosVida.maximo)*100)):100;
-    html += '<div class="hp-block"><div class="hp-row"><span class="l">Pontos de Vida</span><span class="v">'+atual+' / '+max+'</span></div><div class="hp-bar"><div class="hp-bar-fill" style="width:'+pct+'%"></div></div></div>';
-  }
-  var xp = (typeof c.experiencia==="number" && !isNaN(c.experiencia)) ? c.experiencia : 0;
-  var xpInLevel = ((xp % XP_PER_LEVEL) + XP_PER_LEVEL) % XP_PER_LEVEL;
-  var xpPct = Math.max(0, Math.min(100, (xpInLevel/XP_PER_LEVEL)*100));
-  var xpToNext = XP_PER_LEVEL - xpInLevel;
-  html += '<div class="hp-block xp-block"><div class="hp-row"><span class="l">Experiência</span><span class="v">'+xpInLevel+' / '+XP_PER_LEVEL+'</span></div>'+
-    '<div class="hp-bar"><div class="hp-bar-fill xp-fill" style="width:'+xpPct+'%"></div></div>'+
-    '<p class="xp-note">'+xpToNext+' XP para o nível '+((c.nivel||1)+1)+' · total acumulado: '+xp+'</p></div>';
-  html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.ca===null?"—":c.ca)+'</div><div class="l">CA</div></div><div class="stat-box"><div class="v">'+(c.cdClasse===null?"—":c.cdClasse)+'</div><div class="l">CD Classe</div></div><div class="stat-box"><div class="v">'+(c.percepcao===null?"—":fmtMod(c.percepcao))+'</div><div class="l">Percepção</div></div></div>';
-  if(c.deslocamento || (c.resistencia && c.resistencia.fortitude!==null)){
-    html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.fortitude!==null?fmtMod(c.resistencia.fortitude):"—")+'</div><div class="l">Fortitude</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.reflexos!==null?fmtMod(c.resistencia.reflexos):"—")+'</div><div class="l">Reflexos</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.vontade!==null?fmtMod(c.resistencia.vontade):"—")+'</div><div class="l">Vontade</div></div></div>';
-    if(c.deslocamento) html += '<p class="sheet-sub" style="margin-top:8px;text-align:center;">Deslocamento: <b>'+esc(c.deslocamento)+'</b></p>';
-  }
-  if(c.atributos){
-    var labels=[["for","FOR"],["des","DES"],["con","CON"],["int","INT"],["sab","SAB"],["car","CAR"]];
-    html += '<div class="attr-grid">';
-    labels.forEach(function(pair){ var v=c.atributos[pair[0]]; html += '<div class="attr-box"><div class="v">'+(v===null||v===undefined?"—":fmtMod(v))+'</div><div class="l">'+pair[1]+'</div></div>'; });
-    html += '</div>';
-  }
-  if(c.condicoes && c.condicoes.length) html += sectionHtml("condicoes","Condições",'<div class="chip-list">'+c.condicoes.map(function(x){return '<span class="chip cond">'+esc(x)+'</span>';}).join("")+'</div>');
-  if(c.pericias && c.pericias.length){
-    var sorted = c.pericias.slice().sort(function(x,y){ return (x.nome||"").localeCompare(y.nome||"","pt-BR"); });
-    html += sectionHtml("pericias","Perícias", sorted.map(function(p){
-      var rank=(p.posto||"treinado").toLowerCase();
-      var uso = (c.usoPericias && c.usoPericias[normalizeSkillName(p.nome)]) || 0;
-      var idx = rankIndex(rank);
-      var nextRank = RANK_ORDER[idx+1];
-      var canGrow = nextRank && (c.nivel||1) >= (RANK_MIN_LEVEL[nextRank]||99);
-      var pratica = uso>0 ? '<span class="skill-use" title="'+uso+' uso(s) em jogo'+(canGrow?" — conta para a próxima maestria":"")+'">'+uso+'×</span>' : '';
-      return '<div class="skill-row"><span class="skill-dot '+esc(rank)+'" title="'+esc(rank)+'"></span><span class="name">'+esc(p.nome)+'</span>'+pratica+'<span class="mod">'+fmtMod(computeSkillMod(c,p))+'</span></div>';
-    }).join(""));
-  }
-  if(c.talentos && c.talentos.length) html += sectionHtml("talentos","Talentos",'<ul class="list-plain">'+c.talentos.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
-  if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
-  if((c.equipamento&&c.equipamento.length)||c.dinheiro){
-    var eqBody=""; if(c.dinheiro) eqBody+='<p class="gold-line">'+esc(c.dinheiro)+'</p>';
-    if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){
-      var catId = obterCategoriaItem(x, c);
-      var catInfo = CATEGORIAS_ITENS[catId] || CATEGORIAS_ITENS.outro;
-      var vendavel = (c.itensVendaveis||[]).some(function(n){ return normaliza(n)===normaliza(x); });
-      var comprado = (c.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(x); });
-      var tag = vendavel ? '<span class="tag-item vend" title="Produzido pelo personagem — pode ser vendido no mercado">vendável</span>'
-        : comprado ? '<span class="tag-item comp" title="Comprado de outro jogador — não pode ser revendido">comprado</span>' : '';
-      var u = (c.usos||{})[normaliza(x)];
-      var cont = u ? '<span class="uso-cont"'+(u.atual===0?' data-zero="1"':'')+'>'+u.atual+'/'+u.maximo+'</span>' : '';
-      return '<li class="item-row"><span class="item-cat-badge cat-'+esc(catId)+'" title="'+esc(catInfo.label)+'">'+catInfo.icon+'</span><span class="item-name">'+esc(x)+'</span>'+cont+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="Ver detalhes de '+esc(x)+'">?</button></li>';
-    }).join("")+'</ul>';
-    html += sectionHtml("equip","Equipamento", eqBody);
-  }
+ var root = el(rootId);
+ var hasAnything = c && (c.nome || c.ancestralidade || c.classe || (c.pericias&&c.pericias.length));
+ if(!hasAnything){
+ root.innerHTML = '<div class="sheet-empty"><div class="glyph">✦</div><p>A ficha vai aparecer aqui conforme você cria seu personagem com o Mestre.</p></div>';
+ return;
+ }
+ var html = "";
+ html += '<p class="sheet-name">'+esc(c.nome||"Sem nome")+'</p>';
+ var subBits=[];
+ if(c.ancestralidade) subBits.push(esc(c.ancestralidade)+(c.linhagem?" ("+esc(c.linhagem)+")":""));
+ if(c.antecedente) subBits.push(esc(c.antecedente));
+ if(c.classe) subBits.push("<b>"+esc(c.classe)+"</b>"+(c.nivel?" nv. "+esc(c.nivel):""));
+ html += '<p class="sheet-sub">'+subBits.join(" · ")+'</p>';
+ if(c.pontosVida && (c.pontosVida.atual!==null||c.pontosVida.maximo!==null)){
+ var atual=c.pontosVida.atual===null?"—":c.pontosVida.atual, max=c.pontosVida.maximo===null?"—":c.pontosVida.maximo;
+ var pct=(c.pontosVida.atual!==null&&c.pontosVida.maximo)?Math.max(0,Math.min(100,(c.pontosVida.atual/c.pontosVida.maximo)*100)):100;
+ html += '<div class="hp-block"><div class="hp-row"><span class="l">Pontos de Vida</span><span class="v">'+atual+' / '+max+'</span></div><div class="hp-bar"><div class="hp-bar-fill" style="width:'+pct+'%"></div></div></div>';
+ }
+ var xp = (typeof c.experiencia==="number" && !isNaN(c.experiencia)) ? c.experiencia : 0;
+ var xpInLevel = ((xp % XP_PER_LEVEL) + XP_PER_LEVEL) % XP_PER_LEVEL;
+ var xpPct = Math.max(0, Math.min(100, (xpInLevel/XP_PER_LEVEL)*100));
+ var xpToNext = XP_PER_LEVEL - xpInLevel;
+ html += '<div class="hp-block xp-block"><div class="hp-row"><span class="l">Experiência</span><span class="v">'+xpInLevel+' / '+XP_PER_LEVEL+'</span></div>'+
+ '<div class="hp-bar"><div class="hp-bar-fill xp-fill" style="width:'+xpPct+'%"></div></div>'+
+ '<p class="xp-note">'+xpToNext+' XP para o nível '+((c.nivel||1)+1)+' · total acumulado: '+xp+'</p></div>';
+ html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.ca===null?"—":c.ca)+'</div><div class="l">CA</div></div><div class="stat-box"><div class="v">'+(c.cdClasse===null?"—":c.cdClasse)+'</div><div class="l">CD Classe</div></div><div class="stat-box"><div class="v">'+(c.percepcao===null?"—":fmtMod(c.percepcao))+'</div><div class="l">Percepção</div></div></div>';
+ if(c.deslocamento || (c.resistencia && c.resistencia.fortitude!==null)){
+ html += '<div class="stat-strip"><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.fortitude!==null?fmtMod(c.resistencia.fortitude):"—")+'</div><div class="l">Fortitude</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.reflexos!==null?fmtMod(c.resistencia.reflexos):"—")+'</div><div class="l">Reflexos</div></div><div class="stat-box"><div class="v">'+(c.resistencia&&c.resistencia.vontade!==null?fmtMod(c.resistencia.vontade):"—")+'</div><div class="l">Vontade</div></div></div>';
+ if(c.deslocamento) html += '<p class="sheet-sub" style="margin-top:8px;text-align:center;">Deslocamento: <b>'+esc(c.deslocamento)+'</b></p>';
+ }
+ if(c.atributos){
+ var labels=[["for","FOR"],["des","DES"],["con","CON"],["int","INT"],["sab","SAB"],["car","CAR"]];
+ html += '<div class="attr-grid">';
+ labels.forEach(function(pair){ var v=c.atributos[pair[0]]; html += '<div class="attr-box"><div class="v">'+(v===null||v===undefined?"—":fmtMod(v))+'</div><div class="l">'+pair[1]+'</div></div>'; });
+ html += '</div>';
+ }
+ if(c.condicoes && c.condicoes.length) html += sectionHtml("condicoes","Condições",'<div class="chip-list">'+c.condicoes.map(function(x){return '<span class="chip cond">'+esc(x)+'</span>';}).join("")+'</div>');
+ if(c.pericias && c.pericias.length){
+ var sorted = c.pericias.slice().sort(function(x,y){ return (x.nome||"").localeCompare(y.nome||"","pt-BR"); });
+ html += sectionHtml("pericias","Perícias", sorted.map(function(p){
+ var rank=(p.posto||"treinado").toLowerCase();
+ var uso = (c.usoPericias && c.usoPericias[normalizeSkillName(p.nome)]) || 0;
+ var idx = rankIndex(rank);
+ var nextRank = RANK_ORDER[idx+1];
+ var canGrow = nextRank && (c.nivel||1) >= (RANK_MIN_LEVEL[nextRank]||99);
+ var pratica = uso>0 ? '<span class="skill-use" title="'+uso+' uso(s) em jogo'+(canGrow?" — conta para a próxima maestria":"")+'">'+uso+'×</span>' : '';
+ return '<div class="skill-row"><span class="skill-dot '+esc(rank)+'" title="'+esc(rank)+'"></span><span class="name">'+esc(p.nome)+'</span>'+pratica+'<span class="mod">'+fmtMod(computeSkillMod(c,p))+'</span></div>';
+ }).join(""));
+ }
+ if(c.talentos && c.talentos.length) html += sectionHtml("talentos","Talentos",'<ul class="list-plain">'+c.talentos.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
+ if(c.magias && c.magias.length) html += sectionHtml("magias","Magias",'<ul class="list-plain">'+c.magias.map(function(x){return '<li>'+esc(x)+((c.usos||{})[normaliza(x)] ? '<span class="uso-cont"'+(((c.usos||{})[normaliza(x)].atual===0)?' data-zero="1"':'')+'>'+(c.usos||{})[normaliza(x)].atual+'/'+(c.usos||{})[normaliza(x)].maximo+'</span>' : '')+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e isto?">?</button></li>';}).join("")+'</ul>');
+ if((c.equipamento&&c.equipamento.length)||c.dinheiro){
+ var eqBody=""; if(c.dinheiro) eqBody+='<p class="gold-line">'+esc(c.dinheiro)+'</p>';
+ if(c.equipamento&&c.equipamento.length) eqBody+='<ul class="list-plain">'+c.equipamento.map(function(x){
+ var vendavel = (c.itensVendaveis||[]).some(function(n){ return normaliza(n)===normaliza(x); });
+ var comprado = (c.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(x); });
+ var tag = vendavel ? '<span class="tag-item vend" title="Produzido pelo personagem — pode ser vendido no mercado">vendável</span>'
+ : comprado ? '<span class="tag-item comp" title="Comprado de outro jogador — não pode ser revendido">comprado</span>' : '';
+ var u = (c.usos||{})[normaliza(x)];
+ var cont = u ? '<span class="uso-cont"'+(u.atual===0?' data-zero="1"':'')+'>'+u.atual+'/'+u.maximo+'</span>' : '';
+ return '<li>'+esc(x)+cont+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e este item?">?</button></li>';
+ }).join("")+'</ul>';
+ html += sectionHtml("equip","Equipamento", eqBody);
+ }
  if(c.aparencia||c.personalidade||c.notas){
  var noteBody="";
  if(c.aparencia) noteBody+='<p class="sheet-note"><b style="color:var(--ink)">Aparência —</b> '+esc(c.aparencia)+'</p>';
@@ -3236,87 +2424,53 @@ el("hub-new-solo").addEventListener("click", async function(){
  card.style.opacity=""; card.style.pointerEvents=""; delete card.dataset.busy;
  }
 });
-el("hub-new-group").addEventListener("click", async function(){
-  var bloq = await bloqueadoPorProducao();
-  if(bloq){ alert(bloq); return; }
-  openNewAdvModal();
-});
+el("hub-new-group").addEventListener("click", function(){ openNewAdvModal(); });
 
 async function refreshHubAdventures(){
-  var ids = await sGet("member-adv:"+session.email, true) || [];
-  var list = [];
-  for(var i=0;i<ids.length;i++){
-  var adv = await sGet("adv:"+ids[i], true);
-  if(adv) list.push(adv);
-  }
-  // maybe-activate any lobby adventures we're part of
-  var changed=false;
-  for(var j=0;j<list.length;j++){
-  var res = maybeActivateAdventure(list[j]);
-  if(res){ await sSet("adv:"+list[j].id, res, true); list[j]=res; changed=true; }
-  }
-  list.sort(function(a,b){ return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0); });
-  var emCurso = list.filter(function(a){ return a.status!=="encerrada"; });
-  var concluidas = list.filter(function(a){ return a.status==="encerrada"; });
-  var arquivoLimitado = !podeArquivoCompleto(session.email) && concluidas.length > LIMITE_ARQUIVO_GRATUITO;
-  list = emCurso.concat(arquivoLimitado ? concluidas.slice(0, LIMITE_ARQUIVO_GRATUITO) : concluidas);
-  var box = el("hub-adv-list");
-  if(!list.length){ box.innerHTML = '<p class="empty-hint">Você ainda não tem aventuras. Crie uma acima.</p>'; return; }
-  box.innerHTML = list.map(function(adv){
-  var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
-  var isPendingInvite = adv.status==="lobby" && mine && mine.status==="convidado";
-  var badgeCls = isPendingInvite ? "convite" : adv.status;
-  var badgeText = isPendingInvite ? "Convite" : (adv.status==="lobby"?"Aguardando":adv.status==="ativa"?"Em andamento":adv.status==="pausada"?"Pausada":"Concluída");
-  var icon = adv.mode==="grupo" ? "👥" : "🗡️";
-  return '<div class="adv-card" data-adv="'+adv.id+'"><div class="ac-icon">'+icon+'</div><div class="ac-info"><b>'+esc(adv.name)+'</b><span>'+(adv.mode==="grupo"?"Em grupo":"Solo")+' · anfitrião: '+esc(adv.hostName||"")+'</span></div><span class="status-badge '+badgeCls+'">'+badgeText+'</span></div>';
-  }).join("");
-  box.querySelectorAll("[data-adv]").forEach(function(elm){
-  elm.addEventListener("click", async function(){
-  var bloq = await bloqueadoPorProducao();
-  if(bloq){ alert(bloq); return; }
-  var id = elm.getAttribute("data-adv");
-  var adv = await sGet("adv:"+id, true);
-  if(!adv) return;
-  if(adv.status==="lobby") enterLobby(id, adv);
-  else if(adv.status==="pausada"){
-  adv.status="ativa"; adv.updatedAt=Date.now();
-  await sSet("adv:"+id, adv, true);
-  logAdminEvent("adventure_resumed", {id:id, name:adv.name, byEmail:session.email});
-  enterPlay(id, adv);
-  }
-  else if(adv.status==="ativa" || adv.status==="encerrada") enterPlay(id, adv);
-  else refreshHubAdventures();
-  });
-  });
-
-  // Highlight turn alert if any active group adventure is waiting for player
-  var myTurnAdv = null;
-  for(var k=0; k<emCurso.length; k++){
-    if(emCurso[k].mode==="grupo" && emCurso[k].status==="ativa"){
-      var scId = emCurso[k].activeSceneId || "principal";
-      var t = await sGet("turno:"+emCurso[k].id+":"+scId, true);
-      if(t && t.email && normEmail(t.email)===normEmail(session.email)){
-        myTurnAdv = emCurso[k];
-        break;
-      }
-    }
-  }
-  var hubAlert = el("hub-turn-alert");
-  if(hubAlert){
-    if(myTurnAdv){
-      hubAlert.classList.remove("hidden");
-      hubAlert.onclick = async function(){
-        var bloq = await bloqueadoPorProducao();
-        if(bloq){ alert(bloq); return; }
-        enterPlay(myTurnAdv.id, myTurnAdv);
-      };
-    } else {
-      hubAlert.classList.add("hidden");
-      hubAlert.onclick = null;
-    }
-  }
-
- return list.length;
+ var ids = await sGet("member-adv:"+session.email, true) || [];
+ var list = [];
+ for(var i=0;i<ids.length;i++){
+ var adv = await sGet("adv:"+ids[i], true);
+ if(adv) list.push(adv);
+ }
+ // maybe-activate any lobby adventures we're part of
+ var changed=false;
+ for(var j=0;j<list.length;j++){
+ var res = maybeActivateAdventure(list[j]);
+ if(res){ await sSet("adv:"+list[j].id, res, true); list[j]=res; changed=true; }
+ }
+ list.sort(function(a,b){ return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0); });
+ var emCurso = list.filter(function(a){ return a.status!=="encerrada"; });
+ var concluidas = list.filter(function(a){ return a.status==="encerrada"; });
+ var arquivoLimitado = !podeArquivoCompleto(session.email) && concluidas.length > LIMITE_ARQUIVO_GRATUITO;
+ list = emCurso.concat(arquivoLimitado ? concluidas.slice(0, LIMITE_ARQUIVO_GRATUITO) : concluidas);
+ var box = el("hub-adv-list");
+ if(!list.length){ box.innerHTML = '<p class="empty-hint">Você ainda não tem aventuras. Crie uma acima.</p>'; return; }
+ box.innerHTML = list.map(function(adv){
+ var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
+ var isPendingInvite = adv.status==="lobby" && mine && mine.status==="convidado";
+ var badgeCls = isPendingInvite ? "convite" : adv.status;
+ var badgeText = isPendingInvite ? "Convite" : (adv.status==="lobby"?"Aguardando":adv.status==="ativa"?"Em andamento":adv.status==="pausada"?"Pausada":"Concluída");
+ var icon = adv.mode==="grupo" ? "👥" : "🗡️";
+ return '<div class="adv-card" data-adv="'+adv.id+'"><div class="ac-icon">'+icon+'</div><div class="ac-info"><b>'+esc(adv.name)+'</b><span>'+(adv.mode==="grupo"?"Em grupo":"Solo")+' · anfitrião: '+esc(adv.hostName||"")+'</span></div><span class="status-badge '+badgeCls+'">'+badgeText+'</span></div>';
+ }).join("");
+ box.querySelectorAll("[data-adv]").forEach(function(elm){
+ elm.addEventListener("click", async function(){
+ var id = elm.getAttribute("data-adv");
+ var adv = await sGet("adv:"+id, true);
+ if(!adv) return;
+ if(adv.status==="lobby") enterLobby(id, adv);
+ else if(adv.status==="pausada"){
+ adv.status="ativa"; adv.updatedAt=Date.now();
+ await sSet("adv:"+id, adv, true);
+ logAdminEvent("adventure_resumed", {id:id, name:adv.name, byEmail:session.email});
+ enterPlay(id, adv);
+ }
+ else if(adv.status==="ativa" || adv.status==="encerrada") enterPlay(id, adv);
+ else refreshHubAdventures();
+ });
+ });
+  return list.length;
 }
 
 function maybeActivateAdventure(adv){
@@ -3402,51 +2556,47 @@ el("newadv-create").addEventListener("click", async function(){
  ========================================================= */
 var lobbyTickTimer=null;
 async function enterLobby(advId, preloaded){
-  var bloq = await bloqueadoPorProducao();
-  if(bloq){ alert(bloq); return; }
-  currentAdvId = advId;
-  showView("lobby");
-  await refreshLobby(preloaded);
-  if(lobbyTickTimer) clearInterval(lobbyTickTimer);
-  lobbyTickTimer = setInterval(tickLobbyCountdown, 1000);
-  setTimeout(function(){ initAdSlot("ad-lobby"); }, 300);
+ currentAdvId = advId;
+ showView("lobby");
+ await refreshLobby(preloaded);
+ if(lobbyTickTimer) clearInterval(lobbyTickTimer);
+ lobbyTickTimer = setInterval(tickLobbyCountdown, 1000);
+ setTimeout(function(){ initAdSlot("ad-lobby"); }, 300);
 }
 el("lobby-back").addEventListener("click", function(){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); currentAdv=null; enterHub(); });
 
 function tickLobbyCountdown(){
-  if(view!=="lobby" || !currentAdv || currentAdv.status!=="lobby") return;
-  var remain = (currentAdv.joinDeadline||Date.now()) - Date.now();
-  el("lobby-countdown").textContent = fmtClock(remain);
-  if(remain<=0) refreshLobby();
+ if(view!=="lobby" || !currentAdv || currentAdv.status!=="lobby") return;
+ var remain = (currentAdv.joinDeadline||Date.now()) - Date.now();
+ el("lobby-countdown").textContent = fmtClock(remain);
+ if(remain<=0) refreshLobby();
 }
 
 async function refreshLobby(preloaded){
-  var adv = preloaded || await sGet("adv:"+currentAdvId, true);
-  if(!adv){ return; }
-  var res = maybeActivateAdventure(adv);
-  if(res){ await sSet("adv:"+currentAdvId, res, true); adv = res; }
-  if(adv.status==="ativa"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterPlay(currentAdvId); return; }
-  if(adv.status==="encerrada"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterHub(); return; }
+ var adv = preloaded || await sGet("adv:"+currentAdvId, true);
+ if(!adv){ return; }
+ var res = maybeActivateAdventure(adv);
+ if(res){ await sSet("adv:"+currentAdvId, res, true); adv = res; }
+ if(adv.status==="ativa"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterPlay(currentAdvId); return; }
+ if(adv.status==="encerrada"){ if(lobbyTickTimer) clearInterval(lobbyTickTimer); enterHub(); return; }
 
-  currentAdv = adv;
-  el("lobby-adv-name").textContent = adv.name;
-  var remain = (adv.joinDeadline||Date.now()) - Date.now();
-  el("lobby-countdown").textContent = fmtClock(remain);
-  el("lobby-roster").innerHTML = (adv.members||[]).map(function(m){
-  return '<div class="roster-row"><div class="rr-av">'+initialsOf(m.name)+'</div><div class="rr-name">'+esc(m.name||m.email)+(m.email===adv.hostEmail?" (anfitrião)":"")+'</div><span class="rr-status '+m.status+'">'+ (m.status==="confirmado"?"Confirmado":m.status==="desistente"?"Desistiu":"Aguardando") +'</span></div>';
-  }).join("");
-  var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
-  var actions = el("lobby-join-actions");
-  if(mine && mine.status==="convidado"){
-  actions.innerHTML = '<button class="primary-btn" id="lobby-join-btn">Entrar na aventura</button><button class="decline-btn" id="lobby-decline-btn">Recusar</button>';
-  el("lobby-join-btn").addEventListener("click", async function(){
-  var bloq = await bloqueadoPorProducao();
-  if(bloq){ alert(bloq); return; }
-  var fresh = await sGet("adv:"+currentAdvId, true);
-  var m = (fresh.members||[]).filter(function(x){ return x.email===session.email; })[0];
-  if(m){ m.status="confirmado"; m.respondedAt=Date.now(); fresh.updatedAt=Date.now(); await sSet("adv:"+currentAdvId, fresh, true); }
-  refreshLobby();
-  });
+ currentAdv = adv;
+ el("lobby-adv-name").textContent = adv.name;
+ var remain = (adv.joinDeadline||Date.now()) - Date.now();
+ el("lobby-countdown").textContent = fmtClock(remain);
+ el("lobby-roster").innerHTML = (adv.members||[]).map(function(m){
+ return '<div class="roster-row"><div class="rr-av">'+initialsOf(m.name)+'</div><div class="rr-name">'+esc(m.name||m.email)+(m.email===adv.hostEmail?" (anfitrião)":"")+'</div><span class="rr-status '+m.status+'">'+ (m.status==="confirmado"?"Confirmado":m.status==="desistente"?"Desistiu":"Aguardando") +'</span></div>';
+ }).join("");
+ var mine = (adv.members||[]).filter(function(m){ return m.email===session.email; })[0];
+ var actions = el("lobby-join-actions");
+ if(mine && mine.status==="convidado"){
+ actions.innerHTML = '<button class="primary-btn" id="lobby-join-btn">Entrar na aventura</button><button class="decline-btn" id="lobby-decline-btn">Recusar</button>';
+ el("lobby-join-btn").addEventListener("click", async function(){
+ var fresh = await sGet("adv:"+currentAdvId, true);
+ var m = (fresh.members||[]).filter(function(x){ return x.email===session.email; })[0];
+ if(m){ m.status="confirmado"; m.respondedAt=Date.now(); fresh.updatedAt=Date.now(); await sSet("adv:"+currentAdvId, fresh, true); }
+ refreshLobby();
+ });
  el("lobby-decline-btn").addEventListener("click", async function(){
  var fresh = await sGet("adv:"+currentAdvId, true);
  var m = (fresh.members||[]).filter(function(x){ return x.email===session.email; })[0];
@@ -3476,9 +2626,6 @@ async function enterPlay(advId, preloaded){
  await loadPartyCache();
  currentSceneId = mySceneId(adv);
  lastSeenMsgCount = 0;
- gameSessionStartMs = Date.now();
- if(gameSessionTimerId) clearInterval(gameSessionTimerId);
- gameSessionTimerId = setInterval(updateSessionTimerUI, 1000);
  showView("game");
  renderRollLog();
  renderCharacterSheet(character, "sheet-scroll");
@@ -3529,9 +2676,8 @@ function ligarListenersDaAventura(){
 }
 el("game-back").addEventListener("click", function(){
   pararTodosListeners();
-  if(gameSessionTimerId){ clearInterval(gameSessionTimerId); gameSessionTimerId = null; }
-  if(gameMode==="creation"){ /* stay, creation must finish first */ return; }
-  gameMode=null; currentAdvId=null; currentAdv=null; enterHub();
+ if(gameMode==="creation"){ /* stay, creation must finish first */ return; }
+ gameMode=null; currentAdvId=null; currentAdv=null; enterHub();
 });
 
 function mySceneId(adv){
@@ -3644,48 +2790,21 @@ function ehMinhaVez(){
 }
 function renderVezPill(){
   var box = el("turno-pill");
-  var gameAlert = el("game-turn-alert");
+  if(!box) return;
   if(!currentAdv || currentAdv.mode!=="grupo" || !currentTurno || !currentTurno.email){
-    if(box) box.classList.add("hidden");
-    if(gameAlert) gameAlert.classList.add("hidden");
+    box.classList.add("hidden");
     el("chat-input").disabled = false;
     el("chat-input").placeholder = "O que você faz?";
     return;
   }
   var meu = ehMinhaVez();
   var nome = meu ? "você" : nomeDoMembro(currentTurno.email);
-  if(box){
-    box.classList.remove("hidden");
-    box.className = "turno-pill" + (meu ? " minha" : "");
-    box.textContent = meu ? "É a sua vez de agir" : "Vez de "+nome+" — aguarde";
-  }
-  if(gameAlert){
-    if(meu){
-      gameAlert.classList.remove("hidden");
-    } else {
-      gameAlert.classList.add("hidden");
-    }
-  }
+  box.classList.remove("hidden");
+  box.className = "turno-pill" + (meu ? " minha" : "");
+  box.textContent = meu ? "É a sua vez de agir" : "Vez de "+nome+" — aguarde";
   el("chat-input").disabled = !meu;
   el("chat-input").placeholder = meu ? "O que você faz?" : "Aguardando "+nome+"…";
 }
-
-var gameTurnAlertBound = false;
-function initTurnAlertListeners(){
-  if(gameTurnAlertBound) return;
-  var gameAlert = el("game-turn-alert");
-  if(gameAlert){
-    gameTurnAlertBound = true;
-    gameAlert.addEventListener("click", function(){
-      setActiveTab("chat");
-      var input = el("chat-input");
-      if(input && !input.disabled){
-        input.focus();
-      }
-    });
-  }
-}
-initTurnAlertListeners();
 function nomeDoMembro(email){
   var m = ((currentAdv && currentAdv.members) || []).filter(function(x){ return normEmail(x.email)===normEmail(email); })[0];
   return (m && m.name) || String(email||"").split("@")[0];
@@ -3795,7 +2914,6 @@ function renderPlayChat(msgs, opts){
  showNewMsgPill();
  }
  }
- updateAdventureStats(msgs);
 }
 function showNewMsgPill(){
  var pill = el("new-msg-pill");
@@ -4604,476 +3722,13 @@ function rollOne(sides){ var arr=new Uint32Array(1); crypto.getRandomValues(arr)
 var localDiceHistory=[];
 function renderRollLog(){
  var box=el("roll-log");
- if(!localDiceHistory.length){ box.innerHTML='<div class="empty-log">Nenhuma rolagem ainda. Elas aparecem aqui quando o Mestre pedir um teste.</div>'; updateAdventureStats(lastAdventureMsgs); return; }
+ if(!localDiceHistory.length){ box.innerHTML='<div class="empty-log">Nenhuma rolagem ainda. Elas aparecem aqui quando o Mestre pedir um teste.</div>'; return; }
  box.innerHTML = localDiceHistory.map(function(entry){
  var modStr = entry.modifier===0?"":(entry.modifier>0?" +"+entry.modifier:" "+entry.modifier);
  var formula = entry.qty+"d"+entry.sides+modStr;
  var mark = entry.manual ? '<span class="re-manual" title="Dado físico">✋</span>' : '';
  return '<div class="roll-entry"><span class="re-formula">'+formula+'</span><span class="re-label">'+(entry.label?esc(entry.label):"")+'</span>'+mark+'<span class="re-total">'+entry.total+'</span></div>';
  }).join("");
- updateAdventureStats(lastAdventureMsgs);
-}
-
-/* =========================================================
- ADVENTURE STATS TRACKER (Total de turnos, Inimigos derrotados, Tempo de sessão)
- ========================================================= */
-var lastAdventureMsgs = [];
-var gameSessionStartMs = 0;
-var gameSessionTimerId = null;
-
-function formatDuration(ms){
- var totalSec = Math.max(0, Math.floor(ms / 1000));
- var h = Math.floor(totalSec / 3600);
- var m = Math.floor((totalSec % 3600) / 60);
- var s = totalSec % 60;
- if(h > 0){
-   return (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
- }
- return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-}
-
-function updateSessionTimerUI(){
- var timeEl = el("adv-stat-time");
- if(!timeEl) return;
- if(!gameSessionStartMs || view !== "game" || gameMode !== "play"){
-   timeEl.textContent = "00:00";
-   return;
- }
- var elapsed = Date.now() - gameSessionStartMs;
- timeEl.textContent = formatDuration(elapsed);
-}
-
-function extractDefeatedFoes(msgs){
- var foes = [];
- var totalCount = 0;
- var seenSignatures = {};
-
- var patterns = [
-   /(?:derrotou|derrotaram|abateu|abateram|eliminou|eliminaram|venceu|venceram|destruiu|destruíram|aniquilou|aniquilaram|abater|eliminar|derrotar)\s+(?:o|a|os|as|um|uma|uns|umas|o temível|a terrível|o terrível|o líder|o bando de)?\s*([A-Za-zÀ-ÿ0-9\s\-]{3,35}?)(?=\.|\,|\!|\;|\:|\n|\s+e\s+|\s+com\s+|\s+em\s+|<\/|$)/gi,
-   /(?:o|a|os|as|um|uma|dois|duas|três|tres|quatro|cinco|\d+)?\s*([A-Za-zÀ-ÿ0-9\s\-]{3,30}?)\s+(?:foi derrotad[oa]|foram derrotad[oa]s|caiu desacordad[oa]|caíram desacordad[oa]s|caiu sem vida|caíram sem vida|tombou|tombaram|jaz morto|jazem mortos|sucumbiu|sucumbiram)/gi,
-   /(?:vitória|triunfo)\s+(?:sobre|contra)\s+(?:o|a|os|as|um|uma)?\s*([A-Za-zÀ-ÿ0-9\s\-]{3,35}?)(?=\.|\,|\!|\;|\:|\n|$)/gi,
-   /(?:por derrotar|ao derrotar|derrota d[eoa]s?)\s+(?:o|a|os|as|um|uma)?\s*([A-Za-zÀ-ÿ0-9\s\-]{3,35}?)(?=\.|\,|\!|\;|\:|\n|\s+e\s+|$)/gi
- ];
-
- var ignoreWords = /^(você|voce|jogador|mestre|personagem|grupo|sucesso|teste|combate|dano|arma|ataque|turno|cena|ação|acao|rodada|defesa|iniciativa|dados|sala|porta|armadilha|obstáculo|obstaculo|desafio|pontos|vida|iniciativa|sala|corredor)$/i;
-
- (msgs || []).forEach(function(m, idx){
-   if(m.role !== "model" || !m.text) return;
-   var txt = m.text;
-
-   patterns.forEach(function(regex){
-     var match;
-     while((match = regex.exec(txt)) !== null){
-       var rawName = (match[1] || "").trim().replace(/^d[eoa]s?\s+/i, '').replace(/^(o|a|os|as|um|uma)\s+/i, '');
-       if(!rawName || rawName.length < 3 || rawName.length > 35) continue;
-       if(ignoreWords.test(rawName)) continue;
-       
-       rawName = rawName.replace(/[\.\,\:\;\!\?]+$/, '').trim();
-       if(!rawName || ignoreWords.test(rawName)) continue;
-
-       var count = 1;
-       var numMatch = match[0].match(/(\d+)|(dois|duas|três|tres|quatro|cinco)/i);
-       if(numMatch){
-         if(numMatch[1]) count = parseInt(numMatch[1], 10) || 1;
-         else if(/dois|duas/i.test(numMatch[2])) count = 2;
-         else if(/três|tres/i.test(numMatch[2])) count = 3;
-         else if(/quatro/i.test(numMatch[2])) count = 4;
-         else if(/cinco/i.test(numMatch[2])) count = 5;
-       }
-
-       var sig = idx + ":" + rawName.toLowerCase();
-       if(!seenSignatures[sig]){
-         seenSignatures[sig] = true;
-         totalCount += count;
-         foes.push({
-           name: rawName.charAt(0).toUpperCase() + rawName.slice(1),
-           count: count
-         });
-       }
-     }
-   });
- });
-
- return { total: totalCount, list: foes };
-}
-
-/* =========================================================
-   XP & LEVEL PROGRESSION / TIMELINE / CHART
-   ========================================================= */
-var progTabsInitialized = false;
-
-function initProgressionTabs(){
-  if(progTabsInitialized) return;
-  var tabChart = el("tab-prog-chart");
-  var tabTimeline = el("tab-prog-timeline");
-  var chartView = el("adv-prog-chart-view");
-  var timelineView = el("adv-prog-timeline-view");
-
-  if(tabChart && tabTimeline && chartView && timelineView){
-    progTabsInitialized = true;
-    tabChart.addEventListener("click", function(){
-      tabChart.classList.add("active");
-      tabTimeline.classList.remove("active");
-      chartView.classList.remove("hidden");
-      timelineView.classList.add("hidden");
-    });
-
-    tabTimeline.addEventListener("click", function(){
-      tabTimeline.classList.add("active");
-      tabChart.classList.remove("active");
-      timelineView.classList.remove("hidden");
-      chartView.classList.add("hidden");
-    });
-  }
-}
-
-function extractXpAndLevelProgression(msgs, charObj){
-  msgs = msgs || lastAdventureMsgs || [];
-  charObj = charObj || currentSheet || {};
-  
-  var currentXp = (typeof charObj.experiencia === "number") ? charObj.experiencia : 0;
-  var currentLvl = (typeof charObj.nivel === "number" && charObj.nivel > 0) ? charObj.nivel : (Math.floor(currentXp / 1000) + 1);
-
-  var events = [];
-  events.push({
-    id: "start",
-    turn: 0,
-    gain: 0,
-    totalXp: 0,
-    level: 1,
-    isLevelUp: false,
-    label: "Início da Jornada",
-    reason: "Ponto de partida da aventura",
-    ts: null
-  });
-
-  var runningXp = 0;
-  var runningLvl = 1;
-  var seenSignatures = {};
-
-  var xpRegexes = [
-    /(?:ganh(?:a|ou)|receb(?:e|eu)|\+)\s*(\d+)\s*XP(?:\s*[\:\-\(]?\s*([^\.\n\!]{0,60}))?/gi,
-    /(\d+)\s*XP\s*(?:concedid[oa]s?|ganh[oa]s?|pela|por|de bônus)?(?:\s*[\:\-\(]?\s*([^\.\n\!]{0,60}))?/gi,
-    /recompensa:\s*(\d+)\s*XP(?:\s*[\:\-\(]?\s*([^\.\n\!]{0,60}))?/gi
-  ];
-
-  var lvlRegex = /(?:subiu|avançou|alcançou|atingiu|promovid[oa])\s+(?:para o\s+)?nível\s+(\d+)/i;
-
-  var userTurnCount = 0;
-
-  msgs.forEach(function(m, idx){
-    if(m.display === false) return;
-    if(m.role === "user"){
-      if(m.kind !== "system") userTurnCount++;
-      return;
-    }
-    if(m.role !== "model" || !m.text) return;
-    var txt = m.text;
-
-    var gainedInMsg = 0;
-    var reasonInMsg = "";
-
-    xpRegexes.forEach(function(rx){
-      var match;
-      while((match = rx.exec(txt)) !== null){
-        var val = parseInt(match[1], 10);
-        if(val > 0 && val <= 10000){
-          var sig = idx + ":" + val;
-          if(!seenSignatures[sig]){
-            seenSignatures[sig] = true;
-            gainedInMsg += val;
-            if(!reasonInMsg && match[2]){
-              reasonInMsg = match[2].replace(/^[\s\:\-\(\)]+/, '').trim();
-            }
-          }
-        }
-      }
-    });
-
-    var lvlMatch = txt.match(lvlRegex);
-    var explicitLvl = lvlMatch ? parseInt(lvlMatch[1], 10) : null;
-
-    if(gainedInMsg > 0 || explicitLvl){
-      runningXp += gainedInMsg;
-      var calcLvl = Math.floor(runningXp / 1000) + 1;
-      var newLvl = explicitLvl ? Math.max(explicitLvl, calcLvl) : calcLvl;
-      var isLvlUp = newLvl > runningLvl;
-      runningLvl = Math.max(runningLvl, newLvl);
-
-      var eventLabel = isLvlUp ? ("⭐ Nível " + runningLvl) : ("+" + gainedInMsg + " XP");
-      var eventReason = reasonInMsg || (isLvlUp ? "Evolução de personagem conquistada" : "Narrativa do Mestre");
-
-      events.push({
-        id: "msg_" + idx,
-        turn: Math.max(1, userTurnCount),
-        gain: gainedInMsg,
-        totalXp: runningXp,
-        level: runningLvl,
-        isLevelUp: isLvlUp,
-        label: eventLabel,
-        reason: eventReason,
-        ts: m.ts || null
-      });
-    }
-  });
-
-  // Reconcile with current character sheet if sheet has more XP
-  if(currentXp > runningXp){
-    var diff = currentXp - runningXp;
-    runningXp = currentXp;
-    var isSheetLvlUp = currentLvl > runningLvl;
-    runningLvl = currentLvl;
-
-    events.push({
-      id: "latest_sync",
-      turn: Math.max(1, userTurnCount),
-      gain: diff,
-      totalXp: runningXp,
-      level: runningLvl,
-      isLevelUp: isSheetLvlUp,
-      label: isSheetLvlUp ? ("⭐ Nível " + runningLvl) : ("+" + diff + " XP"),
-      reason: "Experiência acumulada na ficha",
-      ts: Date.now()
-    });
-  }
-
-  return {
-    currentXp: runningXp,
-    currentLevel: runningLvl,
-    events: events
-  };
-}
-
-function renderProgressionUI(progData){
-  if(!progData) return;
-  var curXp = progData.currentXp || 0;
-  var curLvl = progData.currentLevel || 1;
-  var events = progData.events || [];
-
-  // 1) Update Level gauge & badges
-  var lvlBadge = el("adv-current-lvl-badge");
-  var xpCounter = el("adv-current-xp-counter");
-  var progressFill = el("adv-level-progress-fill");
-
-  var xpInLvl = curXp % 1000;
-  var pct = Math.min(100, Math.max(0, Math.round((xpInLvl / 1000) * 100)));
-
-  if(lvlBadge) lvlBadge.textContent = "⭐ Nível " + curLvl;
-  if(xpCounter) xpCounter.textContent = xpInLvl + " / 1000 XP (" + pct + "%)";
-  if(progressFill) progressFill.style.width = pct + "%";
-
-  // 2) Render SVG Chart
-  renderProgressionSvgChart(events, curXp);
-
-  // 3) Render Timeline List
-  renderProgressionTimeline(events);
-}
-
-function renderProgressionSvgChart(events, curXp){
-  var svgGrid = el("adv-svg-grid");
-  var svgArea = el("adv-svg-area");
-  var svgLine = el("adv-svg-line");
-  var svgPoints = el("adv-svg-points");
-  var tooltip = el("adv-chart-tooltip");
-
-  if(!svgGrid || !svgArea || !svgLine || !svgPoints) return;
-
-  var svgW = 260;
-  var svgH = 100;
-  var padLeft = 28;
-  var padRight = 14;
-  var padTop = 14;
-  var padBottom = 22;
-
-  var plotW = svgW - padLeft - padRight;
-  var plotH = svgH - padTop - padBottom;
-
-  var maxVal = Math.max(1000, curXp);
-  maxVal = Math.ceil(maxVal / 500) * 500;
-
-  // Grid Lines & Labels
-  var gridHtml = "";
-  var gridSteps = [0, 0.5, 1];
-  gridSteps.forEach(function(step){
-    var yVal = padTop + plotH - (step * plotH);
-    var labelVal = Math.round(step * maxVal);
-    gridHtml += '<line x1="' + padLeft + '" y1="' + yVal + '" x2="' + (svgW - padRight) + '" y2="' + yVal + '" class="adv-chart-grid"/>';
-    gridHtml += '<text x="' + (padLeft - 4) + '" y="' + (yVal + 3) + '" text-anchor="end" class="adv-chart-axis-label">' + labelVal + '</text>';
-  });
-
-  // Level thresholds if visible in range
-  var lvlThreshold = 1000;
-  while(lvlThreshold < maxVal){
-    var yLvl = padTop + plotH - ((lvlThreshold / maxVal) * plotH);
-    gridHtml += '<line x1="' + padLeft + '" y1="' + yLvl + '" x2="' + (svgW - padRight) + '" y2="' + yLvl + '" stroke="rgba(79,143,124,.4)" stroke-dasharray="3 3" stroke-width="1"/>';
-    lvlThreshold += 1000;
-  }
-
-  svgGrid.innerHTML = gridHtml;
-
-  if(!events || events.length === 0){
-    svgArea.setAttribute("d", "");
-    svgLine.setAttribute("d", "");
-    svgPoints.innerHTML = "";
-    return;
-  }
-
-  // Calculate coordinates
-  var pts = [];
-  var totalCount = Math.max(1, events.length - 1);
-  events.forEach(function(ev, idx){
-    var x = padLeft + (idx / totalCount) * plotW;
-    var y = padTop + plotH - ((ev.totalXp / maxVal) * plotH);
-    pts.push({ x: x, y: y, ev: ev, idx: idx });
-  });
-
-  // Construct Line & Area path strings
-  var lineD = "M " + pts[0].x + " " + pts[0].y;
-  for(var i = 1; i < pts.length; i++){
-    lineD += " L " + pts[i].x + " " + pts[i].y;
-  }
-  svgLine.setAttribute("d", lineD);
-
-  var areaD = lineD + " L " + pts[pts.length - 1].x + " " + (padTop + plotH) + " L " + pts[0].x + " " + (padTop + plotH) + " Z";
-  svgArea.setAttribute("d", areaD);
-
-  // SVG Points & Interaction
-  var ptsHtml = "";
-  pts.forEach(function(p){
-    var isLvl = p.ev.isLevelUp;
-    var r = isLvl ? 4.5 : (p.idx === pts.length - 1 ? 4 : 3);
-    var cls = "adv-chart-dot" + (isLvl ? " levelup" : "");
-    ptsHtml += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + r + '" class="' + cls + '" data-idx="' + p.idx + '"></circle>';
-  });
-  svgPoints.innerHTML = ptsHtml;
-
-  // Add Hover listener to points
-  var dots = svgPoints.querySelectorAll(".adv-chart-dot");
-  dots.forEach(function(dot){
-    var idx = parseInt(dot.getAttribute("data-idx"), 10);
-    var p = pts[idx];
-    if(!p) return;
-
-    dot.addEventListener("mouseenter", function(e){
-      if(!tooltip) return;
-      var ev = p.ev;
-      var title = ev.isLevelUp ? ("⭐ Avançou para Nível " + ev.level) : (ev.gain > 0 ? ("+" + ev.gain + " XP (" + ev.totalXp + " total)") : "Início (0 XP)");
-      var reason = ev.reason ? ("<br><span style='color:var(--text-faint)'>" + esc(ev.reason.slice(0, 35)) + "</span>") : "";
-      var turnTxt = ev.turn > 0 ? (" · Turno " + ev.turn) : "";
-      tooltip.innerHTML = "<b>" + esc(title) + "</b>" + turnTxt + reason;
-      tooltip.classList.remove("hidden");
-
-      var rect = dot.getBoundingClientRect();
-      var containerRect = el("adv-prog-chart-view").getBoundingClientRect();
-      var leftOffset = rect.left - containerRect.left + (rect.width / 2);
-      var topOffset = rect.top - containerRect.top;
-      tooltip.style.left = leftOffset + "px";
-      tooltip.style.top = topOffset + "px";
-    });
-
-    dot.addEventListener("mouseleave", function(){
-      if(tooltip) tooltip.classList.add("hidden");
-    });
-  });
-}
-
-function renderProgressionTimeline(events){
-  var listEl = el("adv-timeline-list");
-  if(!listEl) return;
-
-  if(!events || events.length <= 1){
-    listEl.innerHTML = '<div class="adv-tl-empty">Nenhum ganho de XP registrado ainda nesta aventura.<br><span style="font-size:10px;opacity:.75;">Os pontos de experiência e níveis concedidos pelo Mestre aparecerão aqui ao longo da história.</span></div>';
-    return;
-  }
-
-  var reversed = events.slice().reverse();
-  var html = "";
-
-  reversed.forEach(function(ev){
-    var isStart = ev.id === "start";
-    var isLvl = ev.isLevelUp;
-    var nodeCls = isLvl ? "levelup" : (isStart ? "start" : "xp");
-    var icon = isLvl ? "⭐" : (isStart ? "🛡️" : "⚡");
-    var badgeCls = isLvl ? "adv-tl-badge levelup" : "adv-tl-badge";
-    var badgeTxt = isLvl ? ("NÍVEL " + ev.level) : (ev.gain > 0 ? ("+" + ev.gain + " XP") : "INÍCIO");
-    var turnTxt = ev.turn > 0 ? ("Turno " + ev.turn) : "Início";
-
-    html += '<div class="adv-tl-item">' +
-      '<div class="adv-tl-node ' + nodeCls + '">' + icon + '</div>' +
-      '<div class="adv-tl-body">' +
-        '<div class="adv-tl-top">' +
-          '<span class="adv-tl-title" title="' + esc(ev.label) + '">' + esc(ev.label) + '</span>' +
-          '<span class="' + badgeCls + '">' + badgeTxt + '</span>' +
-        '</div>' +
-        '<div class="adv-tl-sub">' +
-          '<span>' + esc(ev.reason || "Avanço narrativo") + '</span>' +
-          '<span style="font-family:var(--font-mono);">' + turnTxt + ' · ' + ev.totalXp + ' XP</span>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  });
-
-  listEl.innerHTML = html;
-}
-
-function updateAdventureStats(msgs){
- msgs = msgs || lastAdventureMsgs || [];
- lastAdventureMsgs = msgs;
-
- initProgressionTabs();
-
- var panel = el("adv-stats-panel");
- if(!panel) return;
-
- var userActions = msgs.filter(function(m){
-   return m.role === "user" && m.display !== false && m.kind !== "system";
- });
- var gmReplies = msgs.filter(function(m){
-   return m.role === "model" && m.display !== false;
- });
- var totalTurns = Math.max(userActions.length, gmReplies.length > 0 ? 1 : 0);
-
- var foesData = extractDefeatedFoes(msgs);
- 
- var turnsEl = el("adv-stat-turns");
- var foesEl = el("adv-stat-foes");
- var rollsEl = el("adv-stat-rolls");
- var msgsEl = el("adv-stat-msgs");
- var statusEl = el("adv-stat-status");
- var foesListEl = el("adv-foes-list");
- var foesSummaryEl = el("adv-foes-summary");
-
- if(turnsEl) turnsEl.textContent = totalTurns;
- if(foesEl) foesEl.textContent = foesData.total;
- if(rollsEl) rollsEl.textContent = localDiceHistory.length;
- if(msgsEl) msgsEl.textContent = msgs.filter(function(m){ return m.display !== false; }).length;
-
- if(statusEl && currentAdv){
-   statusEl.textContent = currentAdv.status === "encerrada" ? "Concluída" : (currentAdv.status === "pausada" ? "Pausada" : "Em andamento");
-   statusEl.className = "adv-stat-badge " + (currentAdv.status === "encerrada" ? "concluida" : (currentAdv.status === "pausada" ? "pausada" : "ativa"));
- }
-
- if(foesSummaryEl && foesListEl){
-   if(foesData.list.length > 0){
-     foesSummaryEl.classList.remove("hidden");
-     var counts = {};
-     foesData.list.forEach(function(f){
-       counts[f.name] = (counts[f.name] || 0) + f.count;
-     });
-     foesListEl.innerHTML = Object.keys(counts).map(function(name){
-       var q = counts[name] > 1 ? " (" + counts[name] + ")" : "";
-       return '<span class="adv-foe-tag">⚔️ ' + esc(name) + q + '</span>';
-     }).join("");
-   } else {
-     foesSummaryEl.classList.add("hidden");
-     foesListEl.innerHTML = "";
-   }
- }
-
- var progData = extractXpAndLevelProgression(msgs, currentSheet);
- renderProgressionUI(progData);
-
- updateSessionTimerUI();
 }
 
 /* =========================================================
@@ -5180,8 +3835,6 @@ async function minhasAventuras(){
 /* Verifica se o jogador pode abrir mais uma aventura. Eventos globais não
    contam: são atividade da comunidade, não campanha pessoal. */
 async function podeCriarAventura(modo){
-  var bloq = await bloqueadoPorProducao();
-  if(bloq) return {ok:false, motivo:bloq};
   if(temPlanoPago(session.email)) return {ok:true};
   var minhas = (await minhasAventuras()).filter(function(a){ return !a.eventoId; });
   var ativas = minhas.filter(ocupaVaga);
@@ -5760,19 +4413,17 @@ async function producaoEmCurso(email){
 }
 function tempoRestante(p){ return Math.max(0, (p.terminaEm||0) - Date.now()); }
 function fmtRestante(ms){
-  var sec = Math.ceil(ms/1000);
-  if(sec < 60) return sec+"s";
   var min = Math.ceil(ms/60000);
   if(min < 60) return min+" min";
   var h = Math.floor(min/60), m = min%60;
   return h+"h"+(m?" "+m+"min":"");
 }
-/* Enquanto produz, o personagem não entra em aventura nem produz outro item — está na oficina. */
+/* Enquanto produz, o personagem não entra em aventura — está na oficina. */
 async function bloqueadoPorProducao(){
   var p = await producaoEmCurso(session.email);
   if(p && !p.pronto){
-    return "Seu personagem está na oficina produzindo "+p.item+". Penalidade de tempo ativa: faltam "+
-           fmtRestante(tempoRestante(p))+" de bancada — você está impedido de ingressar em nova aventura ou produzir outro item.";
+    return "Seu personagem está na oficina produzindo "+p.item+". Faltam "+
+           fmtRestante(tempoRestante(p))+" — volte à oficina para acompanhar.";
   }
   return null;
 }
@@ -5783,37 +4434,32 @@ function buildForgeSystemPrompt(c){
   var cap = capacidadeOficina(c);
   var permitidas = RARIDADES.slice(0, RARIDADES.indexOf(cap.raridadeMax)+1)
                    .map(function(r){ return LABEL_RARIDADE[r]; }).join(", ");
-  return "Você é o MESTRE ARTESÃO da oficina mágica e forja. Responda sempre em português do Brasil com tom acolhedor e experiente de bancada de trabalho.\n\n"+
-  "DADOS DO ARTESÃO:\n"+
-  "- Nome: "+(c.nome||"Aventureiro")+", "+(c.ancestralidade||"")+" "+(c.classe||"")+", nível "+(c.nivel||1)+".\n"+
-  "- Ofício principal: "+cap.pericia+" ("+cap.posto+", modificador "+fmtMod(cap.mod)+").\n"+
-  "- Talentos: "+((c.talentos||[]).join(", ")||"nenhum")+".\n"+
-  "- Magias: "+((c.magias||[]).join(", ")||"nenhuma")+".\n"+
-  "- Ouro disponível: "+fmtMoeda(cap.ouro)+".\n"+
-  "- INVENTÁRIO (única fonte de matérias-primas): "+((c.equipamento||[]).join(", ")||"vazio")+".\n\n"+
+  return "Você é um mestre artesão que orienta um aventureiro na oficina. Responda em português do Brasil, no máximo 2 parágrafos curtos, com tom de bancada de trabalho.\n\n"+
+  "ARTESÃO: "+(c.nome||"—")+", "+(c.ancestralidade||"")+" "+(c.classe||"")+", nível "+(c.nivel||1)+".\n"+
+  "Ofício principal: "+cap.pericia+" ("+cap.posto+", modificador "+fmtMod(cap.mod)+").\n"+
+  "Talentos: "+((c.talentos||[]).join(", ")||"nenhum")+".\n"+
+  "Magias: "+((c.magias||[]).join(", ")||"nenhuma")+".\n"+
+  "Ouro: "+fmtMoeda(cap.ouro)+".\n"+
+  "INVENTÁRIO COMPLETO (única fonte de materiais): "+((c.equipamento||[]).join(", ")||"vazio")+".\n\n"+
   "LIMITES RÍGIDOS:\n"+
-  "- Raridade máxima permitida: "+LABEL_RARIDADE[cap.raridadeMax]+" (possíveis: "+permitidas+").\n"+
+  "- Raridade máxima: "+LABEL_RARIDADE[cap.raridadeMax]+" (possíveis: "+permitidas+").\n"+
   "- Nível máximo do item: "+cap.nivelMax+".\n"+
   "- O item precisa combinar com o ofício, os talentos e as magias do personagem.\n"+
-  "- Cada item exige CONSUMÍVEIS que precisam estar exatamente no inventário acima. Nunca invente materiais ausentes.\n\n"+
-  "SUA DINÂMICA NA OFICINA:\n"+
-  "1. Saúde calorosamente o aventureiro pelo nome em 1 ou 2 frases curtas.\n"+
-  "2. Apresente no texto e OBRIGATORIAMENTE no catálogo JSON o que ele pode produzir com seus materiais.\n"+
-  "3. Para cada item listado no catálogo, informe seus atributos e a penalidade de tempo de produção necessária na bancada.\n"+
-  "4. Explique que durante a penalidade de tempo o personagem ficará totalmente ocupado na oficina, ficando impedido de ingressar em nova aventura ou produzir outro item até a conclusão.\n\n"+
-  "FORMATO OBRIGATÓRIO: ao final de TODA resposta inclua o bloco oculto:\n\n"+
+  "- Cada item exige CONSUMÍVEIS que precisam estar no inventário acima. Nunca invente material que ele não tenha.\n\n"+
+  "SUA TAREFA: apresente um CATÁLOGO do que ele consegue produzir agora. Para cada item liste os consumíveis exigidos (apenas nomes que aparecem no inventário, exatamente como escritos). O aplicativo esconde automaticamente o que ele não puder fazer, calcula a dificuldade, o tempo e o custo — não invente esses números.\n\n"+
+  "FORMATO OBRIGATÓRIO: ao final de TODA resposta inclua o bloco oculto (o jogador não o vê):\n\n"+
   FICHA_START+"\n{ ...JSON... }\n"+FICHA_END+"\n\n"+
-  "Esquema: {\"catalogo\": [{\"nome\": string, \"categoria\": \"pocao\"|\"arma\"|\"pergaminho\"|\"armadura\"|\"acessorio\"|\"ferramenta\"|\"outro\", \"raridade\": \"comum\"|\"incomum\"|\"raro\"|\"lendario\", \"nivelItem\": number, \"descricao\": string, \"consumiveis\": [string]}]}\n"+
+  "Esquema: {\"catalogo\": [{\"nome\": string, \"raridade\": \"comum\"|\"incomum\"|\"raro\"|\"lendario\", \"nivelItem\": number, \"descricao\": string, \"consumiveis\": [string]}]}\n"+
   "REGRAS DO CATÁLOGO:\n"+
-  "- O campo \"catalogo\" é OBRIGATÓRIO em toda resposta, inclusive na primeira.\n"+
-  "- Ofereça de 3 a 6 opções variadas que utilizem os itens do inventário.\n"+
-  "- Classifique a \"categoria\" corretamente entre pocao, arma, pergaminho, armadura, acessorio, ferramenta ou outro.\n"+
-  "- Se não houver nenhum material utilizável no inventário, informe \"catalogo\": [] e oriente com simpatia quais materiais o aventureiro deve buscar em aventura.";
+  "- O campo \"catalogo\" é OBRIGATÓRIO em toda resposta, inclusive na primeira. Nunca responda só cumprimentando ou perguntando o que ele quer.\n"+
+  "- Ofereça de 3 a 6 opções variadas sempre que possível.\n"+
+  "- Em \"consumiveis\" use APENAS nomes copiados literalmente do inventário acima. Se um item exigir algo que ele não tem, não inclua esse item no catálogo.\n"+
+  "- Muitos itens simples podem ser feitos com poucos materiais: prefira opções viáveis a opções ambiciosas.\n"+
+  "- Se realmente não houver nada possível, devolva \"catalogo\": [] e diga em uma frase quais materiais ele precisaria conseguir.";
 }
 
 var forgeMessages = [];
 var forgeLoading = false;
-var producaoTicker = null;
 
 function renderForgeChat(){
   var box = el("forge-chat");
@@ -5821,17 +4467,12 @@ function renderForgeChat(){
     if(m.kind==="rolagem"){
       return '<div class="fg-item" style="background:rgba(193,154,91,.14);border-color:var(--brass-dim);color:var(--brass-bright)">'+esc(m.texto)+'</div>';
     }
-    if(m.kind==="bloqueio"){
-      return '<div class="fg-item" style="background:rgba(217,99,74,.15);border-color:var(--ember-dim);color:var(--ember-bright)">⏳ <b>Penalidade de Tempo Ativa:</b> '+esc(m.texto)+'</div>';
-    }
     if(m.kind==="item"){
-      var catInfo = CATEGORIAS_ITENS[m.categoria] || CATEGORIAS_ITENS.outro;
-      return '<div class="fg-item"><span>'+catInfo.icon+'</span> ⚒️ <b>'+esc(m.nome)+'</b> — '+esc(LABEL_RARIDADE[m.raridade]||m.raridade)+
+      return '<div class="fg-item">⚒ <b>'+esc(m.nome)+'</b> — '+esc(LABEL_RARIDADE[m.raridade]||m.raridade)+
              ' nível '+m.nivelItem+'. Custou '+esc(m.custo)+' e vale '+esc(m.valor)+' no mercado.</div>';
     }
     var cls = m.role==="user" ? "msg player" : "msg gm";
-    var nomeAutor = m.role==="user" ? "Você" : "Mestre Artesão";
-    return '<div class="'+cls+'" style="max-width:88%"><span class="who">'+nomeAutor+
+    return '<div class="'+cls+'" style="max-width:88%"><span class="who">'+(m.role==="user"?"Você":"Artesão")+
            '</span><div class="bubble">'+esc(m.text)+'</div></div>';
   }).join("");
   if(forgeLoading){
@@ -5840,68 +4481,19 @@ function renderForgeChat(){
   box.scrollTop = box.scrollHeight;
 }
 
-function startProducaoTimer(){
-  if(producaoTicker) clearInterval(producaoTicker);
-  producaoTicker = setInterval(async function(){
-    var p = await producaoEmCurso(session.email);
-    if(!p){
-      clearInterval(producaoTicker);
-      producaoTicker = null;
-      return;
-    }
-    var cEl = el("prod-live-clock");
-    var pEl = el("prod-live-progress");
-    var rest = tempoRestante(p);
-    if(cEl) cEl.textContent = fmtClock(rest);
-    if(pEl && p.iniciadoEm && p.terminaEm){
-      var total = Math.max(1, p.terminaEm - p.iniciadoEm);
-      var transcorrido = Math.max(0, Date.now() - p.iniciadoEm);
-      var pct = Math.min(100, Math.round((transcorrido/total)*100));
-      pEl.style.width = pct+"%";
-    }
-    if(rest <= 0 || p.pronto){
-      clearInterval(producaoTicker);
-      producaoTicker = null;
-      await concluirProducao(null);
-    }
-  }, 1000);
-}
-
 async function renderProducaoEmCurso(){
   var p = await producaoEmCurso(session.email);
-  if(!p){
-    if(producaoTicker){ clearInterval(producaoTicker); producaoTicker = null; }
-    return false;
-  }
-  if(p.pronto){
-    if(producaoTicker){ clearInterval(producaoTicker); producaoTicker = null; }
-    await concluirProducao(null);
-    return false;
-  }
+  if(!p) return false;
+  if(p.pronto){ await concluirProducao(null); return false; }
   var box = el("forge-chat");
-  var catId = p.categoria || inferirCategoriaItem(p.item);
-  var catInfo = CATEGORIAS_ITENS[catId] || CATEGORIAS_ITENS.outro;
-  var restMs = tempoRestante(p);
-  var totalMs = Math.max(1, (p.terminaEm||0) - (p.iniciadoEm||Date.now()));
-  var transcorrido = Math.max(0, Date.now() - (p.iniciadoEm||Date.now()));
-  var pct = Math.min(100, Math.round((transcorrido/totalMs)*100));
-
   var d = document.createElement("div");
-  d.className = "cat-box prod-active-card";
-  d.innerHTML = '<div class="cat-t">⚒️ Trabalho em Andamento na Bancada</div>'+
-    '<div class="cat-item">'+
-      '<div class="ci-h"><span class="item-cat-badge cat-'+esc(catId)+'" title="'+esc(catInfo.label)+'">'+catInfo.icon+'</span><b>'+esc(p.item)+'</b>'+
-      '<span class="rar '+esc(p.raridade||"comum")+'">'+esc(LABEL_RARIDADE[p.raridade]||"Comum")+'</span></div>'+
-      '<div class="ci-d">'+esc(p.descricao||"Item em forja e confecção artesanal.")+'</div>'+
-      '<div class="ci-penalidade active-prod">'+
-        '<div class="pen-header"><span class="pen-icon">⏳</span><b>Penalidade de tempo ativa:</b> <span id="prod-live-clock" style="font-family:var(--font-mono);font-size:1.15em;font-weight:700;color:var(--ember-bright)">'+fmtClock(restMs)+'</span></div>'+
-        '<div class="pen-bar"><div id="prod-live-progress" class="pen-fill" style="width:'+pct+'%"></div></div>'+
-        '<div class="pen-info">Seu personagem está ocupado na bancada da oficina. Enquanto durar a penalidade, você está <b>impedido de ingressar em nova aventura ou produzir outro item</b>.</div>'+
-      '</div>'+
-    '</div>';
+  d.className = "cat-box";
+  d.innerHTML = '<div class="cat-t">Trabalho em andamento</div>'+
+    '<div class="cat-item"><div class="ci-h"><b>'+esc(p.item)+'</b></div>'+
+    '<div class="ci-s">Faltam '+esc(fmtRestante(tempoRestante(p)))+' de trabalho na bancada.</div>'+
+    '<div class="ci-m">Enquanto produz, seu personagem nao entra em aventuras.</div></div>';
   box.appendChild(d);
   box.scrollTop = box.scrollHeight;
-  startProducaoTimer();
   return true;
 }
 
@@ -5935,7 +4527,7 @@ async function abrirOficina(){
     return;
   }
   if(!forgeMessages.length){
-    enviarMensagemOficina("[O aventureiro chega à oficina. Mestre artesão: saúde-o cordialmente pelo nome e liste de imediato o que ele pode produzir com seus materiais no inventário, detalhando seus atributos e penalidade de tempo de produção. Preencha o bloco JSON com o catálogo.]", {display:false});
+    enviarMensagemOficina("[O aventureiro chega à oficina. Cumprimente-o em UMA frase e, na mesma resposta, apresente JÁ o catálogo do que ele consegue produzir agora com os materiais do inventário — preencha o campo \"catalogo\" do bloco. Não pergunte o que ele quer antes de mostrar as opções.]", {display:false});
   }
 }
 
@@ -5966,43 +4558,33 @@ function renderCatalogo(cat){
     return true;
   });
   if(!viaveis.length){
+    // silêncio aqui era o pior resultado: o jogador não sabia se falhou ou se
+    // simplesmente não havia opção. Agora dizemos exatamente o que faltou.
     var d0 = document.createElement("div");
     d0.className = "cat-box";
     d0.innerHTML = '<div class="cat-t">Nada disponível agora</div>'+
-      '<div class="ci-d">Com os materiais que você carrega na mochila, nenhuma receita pode ser produzida no momento.</div>'+
+      '<div class="ci-d">Com os materiais que você carrega, nenhuma das opções pode ser feita.</div>'+
       (recusados.length ? '<div class="ci-m" style="margin-top:8px">'+
          recusados.map(function(r){ return "• "+esc(r); }).join("<br>")+'</div>' : '')+
-      '<div class="ci-s" style="margin-top:8px">Colete os reagentes e consumíveis em aventuras e retorne à oficina.</div>';
+      '<div class="ci-s" style="margin-top:8px">Consiga os materiais em aventura e volte à bancada.</div>';
     box.appendChild(d0);
     box.scrollTop = box.scrollHeight;
     return;
   }
-  var html = '<div class="cat-box"><div class="cat-t">⚒️ O que você pode produzir agora</div>';
+  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>';
   viaveis.forEach(function(it, idx){
     var nivel = parseInt(it.nivelItem,10)||1;
     var rar = String(it.raridade||"comum").toLowerCase();
-    var catId = it.categoria || inferirCategoriaItem(it.nome);
-    var catInfo = CATEGORIAS_ITENS[catId] || CATEGORIAS_ITENS.outro;
     var cd = cdDeProducao(nivel, rar), horas = horasDeProducao(nivel, rar), custo = custoDeProducao(nivel, rar);
-    var precoMercado = precoDoItem(nivel, rar);
-    catalogoAtual[idx] = {nome:it.nome, categoria:catId, raridade:rar, nivelItem:nivel, descricao:it.descricao||"",
-                          consumiveis:it.consumiveis||[], cd:cd, horas:horas, custo:custo, precoMercado:precoMercado};
-    html += '<div class="cat-item">'+
-      '<div class="ci-h">'+
-        '<span class="item-cat-badge cat-'+esc(catId)+'" title="'+esc(catInfo.label)+'">'+catInfo.icon+'</span>'+
-        '<b>'+esc(it.nome)+'</b>'+
-        '<span class="rar '+esc(rar)+'">'+esc(LABEL_RARIDADE[rar])+'</span>'+
-        '<span class="item-cat-tag cat-'+esc(catId)+'">'+esc(catInfo.label)+'</span>'+
-      '</div>'+
+    catalogoAtual[idx] = {nome:it.nome, raridade:rar, nivelItem:nivel, descricao:it.descricao||"",
+                          consumiveis:it.consumiveis||[], cd:cd, horas:horas, custo:custo};
+    html += '<div class="cat-item"><div class="ci-h"><b>'+esc(it.nome)+
+      '</b><span class="rar '+esc(rar)+'">'+esc(LABEL_RARIDADE[rar])+'</span></div>'+
       '<div class="ci-d">'+esc(it.descricao||"")+'</div>'+
-      '<div class="ci-m"><b>Materiais consumidos:</b> '+esc((it.consumiveis||[]).join(", ")||"nenhum")+'</div>'+
-      '<div class="ci-s"><b>Atributos:</b> nível '+nivel+' · Teste de Ofício CD '+cd+' · Custo: '+fmtMoeda(custo)+
-      ' · Valor estimado: '+fmtMoeda(precoMercado)+'</div>'+
-      '<div class="ci-penalidade">'+
-        '<span class="pen-icon">⏳</span> <b>Penalidade de tempo:</b> '+fmtDuracao(horas)+' de bancada ('+horas+' min reais). '+
-        '<span class="pen-warn">Durante a produção, você fica impedido de entrar em nova aventura ou produzir outro item.</span>'+
-      '</div>'+
-      '<button class="mk-btn" data-produzir="'+idx+'">⚒️ Produzir este item</button></div>';
+      '<div class="ci-m">Materiais: '+esc((it.consumiveis||[]).join(", ")||"nenhum")+'</div>'+
+      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · '+fmtDuracao(horas)+' · '+fmtMoeda(custo)+
+      ' · vale '+fmtMoeda(precoDoItem(nivel,rar))+'</div>'+
+      '<button class="mk-btn" data-produzir="'+idx+'">Produzir</button></div>';
   });
   html += '</div>';
   var d = document.createElement("div");
@@ -6021,30 +4603,27 @@ async function iniciarProducao(item){
   if(!item) return;
   var bloqueio = await bloqueadoPorProducao();
   if(bloqueio) return alert(bloqueio);
-  if(!temConsumiveis(character, item.consumiveis)) return alert("Você não tem mais os materiais necessários no inventário.");
+  if(!temConsumiveis(character, item.consumiveis)) return alert("Você não tem mais os materiais necessários.");
   var ouro = parseMoeda(character.dinheiro);
   if(ouro < item.custo) return alert("Ouro insuficiente: a produção custa "+fmtMoeda(item.custo)+".");
 
   var cap = capacidadeOficina(character);
   var livre = produzLivremente(session.email);
-  var catId = item.categoria || inferirCategoriaItem(item.nome);
-  var catInfo = CATEGORIAS_ITENS[catId] || CATEGORIAS_ITENS.outro;
-  var msg = "Confirmar produção de "+item.nome+" ("+catInfo.label+")?\n\n"+
-    "• Materiais consumidos: "+(item.consumiveis.join(", ")||"nenhum")+"\n"+
-    "• Custo em ouro: "+fmtMoeda(item.custo)+"\n"+
-    (livre ? "• Modo Administrador: sem teste e sem espera.\n"
-           : "• Teste de "+cap.pericia+" "+fmtMod(cap.mod)+" contra CD "+item.cd+"\n"+
-             "• Penalidade de tempo: "+fmtDuracao(item.horas)+" de bancada ("+item.horas+" min reais)\n\n"+
-             "⚠️ PENALIDADE: Enquanto durar a produção, você ficará impedido de iniciar ou ingressar em qualquer aventura e de produzir outro item.")
+  var msg = "Produzir "+item.nome+"?\n\n"+
+    "Materiais consumidos: "+(item.consumiveis.join(", ")||"nenhum")+"\n"+
+    "Custo: "+fmtMoeda(item.custo)+"\n"+
+    (livre ? "Produção livre (administrador): sem teste e sem espera.\n"
+           : "Teste de "+cap.pericia+" "+fmtMod(cap.mod)+" contra CD "+item.cd+"\n"+
+             "Tempo de trabalho: "+fmtDuracao(item.horas)+"\n\n"+
+             "Os materiais são consumidos mesmo se o trabalho falhar, e você não poderá entrar em aventuras enquanto produz.")
     ;
   if(!confirm(msg)) return;
 
-  // consome materiais e ouro de imediato
+  // consome materiais e ouro de imediato — sucesso ou fracasso
   character.dinheiro = fmtMoeda(ouro - item.custo);
   (item.consumiveis||[]).forEach(function(m){
     character.equipamento = applyListDelta(character.equipamento, [], [m]);
   });
-  definirCategoriaItem(item.nome, catId, character);
   await sSet("character:"+session.email, character, true);
   renderCharacterSheet(character, "sheet-scroll");
 
@@ -6060,51 +4639,39 @@ async function iniciarProducao(item){
   var terminaEm = Date.now() + item.horas*60*1000;   // 1h de jogo = 1 min real
 
   forgeMessages.push({kind:"rolagem", display:true,
-    texto:"🎲 Teste de "+cap.pericia+": 1d20 ("+dado+") "+fmtMod(cap.mod)+" = "+total+" contra CD "+item.cd+
-          " — "+(critico?"Sucesso Crítico!":sucesso?"Sucesso!":"Fracasso na bancada!")});
-
-  forgeMessages.push({kind:"bloqueio", display:true,
-    texto:"Produção iniciada para '"+item.nome+"'. Penalidade de tempo aplicada: "+fmtDuracao(item.horas)+
-          " ("+item.horas+" min). Você está impedido de entrar em aventuras ou produzir outro item até o término."});
-
+    texto:"🎲 "+cap.pericia+": 1d20 ("+dado+") "+fmtMod(cap.mod)+" = "+total+" contra CD "+item.cd+
+          " — "+(critico?"sucesso crítico!":sucesso?"sucesso":"fracasso")});
   await sSet("producao:"+session.email, {
-    item:item.nome, categoria:catId, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao,
+    item:item.nome, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao,
     sucesso:sucesso, critico:critico, rolagem:total, cd:item.cd,
     iniciadoEm:Date.now(), terminaEm:terminaEm, horas:item.horas
   }, true);
-
-  await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
   renderForgeChat();
   atualizarCabecalhoOficina();
-  await renderProducaoEmCurso();
+  await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
 }
 
 async function concluirProducao(res){
-  if(producaoTicker){ clearInterval(producaoTicker); producaoTicker = null; }
   var p = res || await producaoEmCurso(session.email);
   if(!p) return;
-  var catId = (res && res.item && res.item.categoria) || p.categoria || inferirCategoriaItem(p.item);
-  var item = res ? res.item : {nome:p.item, categoria:catId, raridade:p.raridade, nivelItem:p.nivelItem, descricao:p.descricao};
+  var item = res ? res.item : {nome:p.item, raridade:p.raridade, nivelItem:p.nivelItem, descricao:p.descricao};
   var sucesso = res ? res.sucesso : p.sucesso;
   if(sucesso){
     character.equipamento = applyListDelta(character.equipamento, [item.nome], []);
-    definirCategoriaItem(item.nome, catId, character);
     await sSet("character:"+session.email, character, true);
     var criados = await registrarItensFabricados(session.email, [{
-      nome:item.nome, categoria:catId, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao||""
+      nome:item.nome, raridade:item.raridade, nivelItem:item.nivelItem, descricao:item.descricao||""
     }]);
     cacheInvalidate("character:"+session.email);
     character = await sGet("character:"+session.email, true) || character;
     renderCharacterSheet(character, "sheet-scroll");
-    forgeMessages.push({kind:"item", nome:item.nome, categoria:catId, raridade:item.raridade, nivelItem:item.nivelItem,
+    forgeMessages.push({kind:"item", nome:item.nome, raridade:item.raridade, nivelItem:item.nivelItem,
       custo:fmtMoeda(custoDeProducao(item.nivelItem,item.raridade)),
       valor:fmtMoeda(criados[0] ? criados[0].preco : precoDoItem(item.nivelItem,item.raridade)), display:true});
-    forgeMessages.push({role:"model", display:true,
-      text:"O trabalho em "+item.nome+" foi concluído com maestria! O item foi guardado na sua mochila e a penalidade de tempo encerrou-se. Você está livre para novas aventuras ou projetos na bancada."});
-    logAdminEvent("item_forged", {nome:item.nome, categoria:catId, raridade:item.raridade, por:session.email});
+    logAdminEvent("item_forged", {nome:item.nome, raridade:item.raridade, por:session.email});
   } else {
     forgeMessages.push({role:"model", display:true,
-      text:"O trabalho não deu certo desta vez. Os materiais se perderam na tentativa, mas a experiência foi adquirida. A penalidade de tempo encerrou-se."});
+      text:"O trabalho não deu certo. Os materiais se perderam na tentativa — acontece até com os melhores artesãos."});
   }
   await sDel("producao:"+session.email, true);
   await sSet("forge-chat:"+session.email, {messages:forgeMessages}, true);
@@ -6126,17 +4693,18 @@ async function enviarMensagemOficina(texto, opts){
                                 .map(function(m){ return {role:m.role, parts:[{text:m.text}]}; });
     var raw = await callGeminiRaw(buildForgeSystemPrompt(character), contents);
     var ext = extractBlock(raw);
-    forgeMessages.push({role:"model", text: ext.clean || "(o mestre artesão analisa a bancada…)", display:true});
+    forgeMessages.push({role:"model", text: ext.clean || "(o artesão fica em silêncio…)", display:true});
     renderForgeChat();
     if(ext.data && ext.data.catalogo){
       catalogoAtual = {};
       renderCatalogo(ext.data.catalogo);
       pediuCatalogo = false;
     } else if(!pediuCatalogo){
+      // o artesão respondeu sem listar nada: pede o catálogo uma única vez
       pediuCatalogo = true;
       forgeLoading = false;
       el("forge-send").disabled = false;
-      await enviarMensagemOficina("[Mestre artesão: liste agora o catálogo no campo \"catalogo\" do bloco JSON com os itens que ele consegue produzir e suas penalidades de tempo.]", {display:false});
+      await enviarMensagemOficina("[Liste agora o catálogo no campo \"catalogo\" do bloco, com os itens que ele consegue produzir com os materiais do inventário. Se não houver nenhum, devolva catalogo vazio e diga o que falta.]", {display:false});
       return;
     }
   }catch(err){
@@ -6171,77 +4739,44 @@ el("forge-input").addEventListener("keydown", function(e){
 
 /* ---- Detalhe do item ----
    Usa primeiro o que o app já sabe (registro de produção, anúncio do mercado);
-   adiciona ícones e seletor de categoria na ficha;
-   só consulta a IA quando o item é desconhecido, e guarda a resposta em cache. */
+   só consulta a IA quando o item é desconhecido, e guarda a resposta para não
+   gastar cota repetindo a mesma pergunta. */
 async function mostrarDetalheItem(nome){
   el("item-overlay").classList.remove("hidden");
   el("item-overlay").classList.toggle("acima", !el("market-overlay").classList.contains("hidden"));
-  
-  var catId = obterCategoriaItem(nome, character);
-  var catInfo = CATEGORIAS_ITENS[catId] || CATEGORIAS_ITENS.outro;
-  el("item-titulo").innerHTML = '<span style="margin-right:8px">'+catInfo.icon+'</span>'+esc(nome);
+  el("item-titulo").textContent = nome;
   var body = el("item-body");
-  body.innerHTML = '<p class="modal-note">Consultando detalhes do item…</p>';
+  body.innerHTML = '<p class="modal-note">Consultando…</p>';
 
   var vendavel = (character.itensVendaveis||[]).some(function(n){ return normaliza(n)===normaliza(nome); });
   var comprado = (character.itensComprados||[]).some(function(n){ return normaliza(n)===normaliza(nome); });
 
+  // 1) já produzimos este item? temos raridade, nível e descrição
   var meus = await itensFabricadosDe(session.email);
   var reg = meus.filter(function(x){ return normaliza(x.nome)===normaliza(nome); })[0];
 
-  function renderModalBody(descricao){
-    var catAtual = obterCategoriaItem(nome, character);
-    var cInfo = CATEGORIAS_ITENS[catAtual] || CATEGORIAS_ITENS.outro;
-    var tags = '<span class="item-cat-tag cat-'+esc(catAtual)+'">'+cInfo.icon+' '+esc(cInfo.label)+'</span>';
-    if(reg){
-      tags += '<span class="rar '+esc(reg.raridade)+'">'+esc(LABEL_RARIDADE[reg.raridade])+'</span>'+
-              '<span class="chip">nível '+reg.nivelItem+'</span>'+
-              '<span class="chip">vale '+esc(fmtMoeda(reg.preco))+'</span>';
-    }
-    if(vendavel) tags += '<span class="tag-item vend">vendável</span>';
-    if(comprado) tags += '<span class="tag-item comp">comprado</span>';
+  var tags = "";
+  if(reg) tags += '<span class="rar '+esc(reg.raridade)+'">'+esc(LABEL_RARIDADE[reg.raridade])+'</span>'+
+                  '<span class="chip">nível '+reg.nivelItem+'</span>'+
+                  '<span class="chip">vale '+esc(fmtMoeda(reg.preco))+'</span>';
+  if(vendavel) tags += '<span class="tag-item vend">vendável</span>';
+  if(comprado) tags += '<span class="tag-item comp">comprado</span>';
 
-    var catOptions = Object.keys(CATEGORIAS_ITENS).map(function(k){
-      var opt = CATEGORIAS_ITENS[k];
-      return '<option value="'+esc(opt.id)+'"'+(opt.id===catAtual?' selected':'')+'>'+opt.icon+' '+esc(opt.label)+'</option>';
-    }).join("");
-
-    var catSelectorHtml = '<div style="margin:12px 0 8px 0;padding:8px 12px;background:var(--panel-2);border-radius:var(--radius-sm);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.85rem;">'+
-      '<span style="color:var(--text-lo);font-weight:600;">Categoria na ficha:</span>'+
-      '<select id="modal-cat-select" class="text-input" style="width:auto;padding:4px 8px;font-size:.85rem;background:var(--panel);border-color:var(--line);">'+catOptions+'</select>'+
-    '</div>';
-
-    body.innerHTML = '<div class="item-tags">'+tags+'</div>'+catSelectorHtml+'<p class="item-det" style="margin-top:12px;line-height:1.6;">'+esc(descricao)+'</p>';
-
-    var sel = el("modal-cat-select");
-    if(sel){
-      sel.addEventListener("change", async function(){
-        var novaCat = sel.value;
-        definirCategoriaItem(nome, novaCat, character);
-        await sSet("character:"+session.email, character, true);
-        renderCharacterSheet(character, "sheet-scroll");
-        var novoCInfo = CATEGORIAS_ITENS[novaCat] || CATEGORIAS_ITENS.outro;
-        el("item-titulo").innerHTML = '<span style="margin-right:8px">'+novoCInfo.icon+'</span>'+esc(nome);
-        renderModalBody(descricao);
-      });
-    }
-  }
-
-  // 1) Já produzimos este item?
   if(reg && reg.descricao){
-    renderModalBody(reg.descricao);
+    body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(reg.descricao)+'</p>';
     return;
   }
 
-  // 2) Consulta cache
+  // 2) alguém já perguntou isto antes? A resposta fica no Firebase, então a
+  //    descrição é escrita uma única vez para toda a base de jogadores.
   var chaveCache = "iteminfo:"+normaliza(nome).replace(/[^a-z0-9]+/g,"-").slice(0,60);
   var salvo = await sGet(chaveCache, true);
   if(salvo && salvo.texto){
-    renderModalBody(salvo.texto);
+    body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(salvo.texto)+'</p>';
     return;
   }
 
-  // 3) Pergunta à IA
+  // 3) pergunta à IA, no contexto do personagem
   try{
     var prompt = "Descreva em português do Brasil o item de RPG de fantasia: "+nome+". "+
       "que pertence a "+(character.nome||"um aventureiro")+", "+(character.ancestralidade||"")+" "+
@@ -6253,9 +4788,9 @@ async function mostrarDetalheItem(nome){
       [{role:"user", parts:[{text:prompt}]}]);
     texto = (texto||"").trim();
     if(texto) await sSet(chaveCache, {nome:nome, texto:texto, em:Date.now(), por:session.email}, true);
-    renderModalBody(texto);
+    body.innerHTML = '<div class="item-tags">'+tags+'</div><p class="item-det">'+esc(texto)+'</p>';
   }catch(err){
-    body.innerHTML = '<div class="item-tags"><span class="item-cat-tag cat-'+esc(catId)+'">'+catInfo.icon+' '+esc(catInfo.label)+'</span></div>'+
+    body.innerHTML = '<div class="item-tags">'+tags+'</div>'+
       '<p class="modal-note">Não consegui consultar agora: '+esc(err.message||"")+'</p>';
   }
 }
@@ -6778,14 +5313,9 @@ function renderGear(){
 var adsPushed = {};
 function initAdSlot(slotId){
  try{
+ if(adsPushed[slotId]) return;
  var box = el(slotId);
  if(!box) return;
- if(typeof temPlanoPago === "function" && session && session.email && temPlanoPago(session.email)){
-   box.classList.add("hidden");
-   box.style.display = "none";
-   return;
- }
- if(adsPushed[slotId]) return;
  var ins = box.querySelector("ins.adsbygoogle");
  if(!ins) return;
  if(!ins.getAttribute("data-ad-slot")){
@@ -7220,27 +5750,15 @@ el("admin-overlay").addEventListener("click", function(e){ if(e.target===el("adm
  ========================================================= */
 function updatePlayControls(adv){
  var isPlay = gameMode==="play" && adv;
- var btnStats = el("btn-stats");
- if(btnStats) btnStats.classList.toggle("hidden", !isPlay);
  el("btn-pause").classList.toggle("hidden", !(isPlay && adv.status==="ativa"));
  el("btn-finish").classList.toggle("hidden", !(isPlay && adv.status==="ativa"));
  el("btn-export").classList.toggle("hidden", !(isPlay && adv.status==="encerrada"));
  if(isPlay && adv.status!=="ativa"){
  el("chat-form").classList.add("hidden");
  }
- updateAdventureStats(lastAdventureMsgs);
-}
-var btnStatsEl = el("btn-stats");
-if(btnStatsEl){
- btnStatsEl.addEventListener("click", function(){
-   setActiveTab("dice");
-   var p = el("adv-stats-panel");
-   if(p) p.scrollIntoView({behavior:"smooth", block:"start"});
- });
 }
 el("btn-pause").addEventListener("click", async function(){
  if(!currentAdv) return;
- if(gameSessionTimerId){ clearInterval(gameSessionTimerId); gameSessionTimerId = null; }
  var fresh = await sGet("adv:"+currentAdvId, true) || currentAdv;
  fresh.status = "pausada"; fresh.updatedAt = Date.now();
  await sSet("adv:"+currentAdvId, fresh, true);
