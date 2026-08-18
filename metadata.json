@@ -1,0 +1,8 @@
+{
+  "name": "Mestre Solo",
+  "description": "RPG de fantasia solo guiado por IA",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
