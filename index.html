@@ -655,6 +655,7 @@ a{color:var(--arcane-bright);}
  <button class="icon-btn" id="hub-delete-char" title="Excluir personagem" aria-label="Excluir personagem">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
  </button>
+ <select id="language-select-hub" class="language-select" title="Idioma" aria-label="Idioma"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option></select>
  <button class="icon-btn" id="hub-logout" title="Sair" aria-label="Sair">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
  </button>
@@ -699,7 +700,7 @@ a{color:var(--arcane-bright);}
  <ins class="adsbygoogle"
  style="display:block"
  data-ad-client="ca-pub-5483062241581736"
- data-ad-slot=""
+ data-ad-slot="7714693524"
  data-ad-format="auto"
  data-full-width-responsive="true"></ins>
  </div>
@@ -724,7 +725,7 @@ a{color:var(--arcane-bright);}
  <ins class="adsbygoogle"
  style="display:block"
  data-ad-client="ca-pub-5483062241581736"
- data-ad-slot=""
+ data-ad-slot="7714693524"
  data-ad-format="auto"
  data-full-width-responsive="true"></ins>
  </div>
@@ -4571,18 +4572,21 @@ function renderCatalogo(cat){
     box.scrollTop = box.scrollHeight;
     return;
   }
-  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>';
+  var a = character.atributos||{};
+  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>'+
+    '<div class="ci-d"><b>Artesão:</b> '+esc(cap.pericia)+' · '+esc(cap.posto)+' · modificador '+fmtMod(cap.mod)+
+    ' · <b>FOR</b> '+fmtMod(a.for)+' <b>DES</b> '+fmtMod(a.des)+' <b>CON</b> '+fmtMod(a.con)+' <b>INT</b> '+fmtMod(a.int)+' <b>SAB</b> '+fmtMod(a.sab)+' <b>CAR</b> '+fmtMod(a.car)+'</div>';
   viaveis.forEach(function(it, idx){
     var nivel = parseInt(it.nivelItem,10)||1;
     var rar = String(it.raridade||"comum").toLowerCase();
     var cd = cdDeProducao(nivel, rar), horas = horasDeProducao(nivel, rar), custo = custoDeProducao(nivel, rar);
     catalogoAtual[idx] = {nome:it.nome, raridade:rar, nivelItem:nivel, descricao:it.descricao||"",
-                          consumiveis:it.consumiveis||[], cd:cd, horas:horas, custo:custo};
+                          consumiveis:it.consumiveis||[], categoria:it.categoria||"outro", cd:cd, horas:horas, custo:custo};
     html += '<div class="cat-item"><div class="ci-h"><b>'+esc(it.nome)+
       '</b><span class="rar '+esc(rar)+'">'+esc(LABEL_RARIDADE[rar])+'</span></div>'+
       '<div class="ci-d">'+esc(it.descricao||"")+'</div>'+
       '<div class="ci-m">Materiais: '+esc((it.consumiveis||[]).join(", ")||"nenhum")+'</div>'+
-      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · '+fmtDuracao(horas)+' · '+fmtMoeda(custo)+
+      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · <b>penalidade de tempo: '+fmtDuracao(horas)+'</b> · '+fmtMoeda(custo)+
       ' · vale '+fmtMoeda(precoDoItem(nivel,rar))+'</div>'+
       '<button class="mk-btn" data-produzir="'+idx+'">Produzir</button></div>';
   });
@@ -6354,6 +6358,29 @@ async function boot(){
  }
 }
 boot();
+
+/* FEATURE ENHANCEMENTS */
+var FEATURE_LANG=(function(){try{return localStorage.getItem("mestre-solo-language")||"pt";}catch(e){return "pt";}})();
+var FEATURE_STATS_STARTED_AT=0;
+var FEATURE_I18N={pt:{statsTurns:"Total de turnos",statsEnemies:"Inimigos derrotados",statsTime:"Tempo de sessão",statsEvolution:"Evolução de nível e XP",statsEmpty:"A evolução aparecerá conforme a aventura avançar.",tips:"Dicas",tipsIntro:"Comandos rápidos para conversar com o Mestre:",tipRoll:"pedir uma rolagem",tipInventory:"consultar seu inventário",tipHelp:"pedir ajuda ao Mestre",tipSheet:"consultar um resumo da ficha",yourTurn:"Sua vez de agir",waitTurn:"Aguarde sua vez",chatTips:"Dicas",tabSheet:"Ficha",tabChat:"Mestre",tabDice:"Dados",send:"Enviar",roll:"Rolar"},en:{statsTurns:"Total turns",statsEnemies:"Enemies defeated",statsTime:"Session time",statsEvolution:"Level & XP progression",statsEmpty:"Progress will appear as the adventure advances.",tips:"Tips",tipsIntro:"Quick commands for talking to the Game Master:",tipRoll:"request a dice roll",tipInventory:"check your inventory",tipHelp:"ask the Game Master for help",tipSheet:"show a character summary",yourTurn:"Your turn",waitTurn:"Wait for your turn",chatTips:"Tips",tabSheet:"Sheet",tabChat:"GM",tabDice:"Dice",send:"Send",roll:"Roll"},es:{statsTurns:"Turnos totales",statsEnemies:"Enemigos derrotados",statsTime:"Tiempo de sesión",statsEvolution:"Evolución de nivel y XP",statsEmpty:"La evolución aparecerá a medida que avance la aventura.",tips:"Consejos",tipsIntro:"Comandos rápidos para hablar con el Maestro:",tipRoll:"pedir una tirada",tipInventory:"consultar tu inventario",tipHelp:"pedir ayuda al Maestro",tipSheet:"ver un resumen de la ficha",yourTurn:"Tu turno",waitTurn:"Espera tu turno",chatTips:"Consejos",tabSheet:"Ficha",tabChat:"Maestro",tabDice:"Dados",send:"Enviar",roll:"Tirar"}};
+function ft(k){return(FEATURE_I18N[FEATURE_LANG]||FEATURE_I18N.pt)[k]||FEATURE_I18N.pt[k]||k;}
+function setFeatureLanguage(lang){FEATURE_LANG=/^(en|es)$/.test(lang)?lang:"pt";try{localStorage.setItem("mestre-solo-language",FEATURE_LANG);}catch(e){}var sel=el("language-select");if(sel)sel.value=FEATURE_LANG;var selHub=el("language-select-hub");if(selHub)selHub.value=FEATURE_LANG;document.querySelectorAll("[data-i18n]").forEach(function(n){n.textContent=ft(n.getAttribute("data-i18n"));});var tt=el("tips-title");if(tt)tt.textContent=ft("tips");var tips=el("chat-tips");if(tips){tips.title=ft("chatTips");tips.setAttribute("aria-label",ft("chatTips"));}var tabs=document.querySelectorAll("#tabbar button");if(tabs.length>=3){tabs[0].textContent=ft("tabSheet");tabs[1].textContent=ft("tabChat");tabs[2].textContent=ft("tabDice");}var send=el("chat-send");if(send)send.textContent=ft("send");var sc=el("sc-roll");if(sc)sc.textContent="🎲 "+ft("roll");if(typeof renderAdventureStats==="function")renderAdventureStats();}
+function formatFeatureDuration(ms){ms=Math.max(0,ms||0);var sec=Math.floor(ms/1000),h=Math.floor(sec/3600);sec%=3600;var m=Math.floor(sec/60);sec%=60;return[h,m,sec].map(function(v){return String(v).padStart(2,"0");}).join(":");}
+function enemyHits(text){var t=String(text||"").toLowerCase(),n=0;[/\bderrotad[oa]s?\b/g,/\beliminad[oa]s?\b/g,/\babatid[oa]s?\b/g,/\bdefeat(?:ed)?\b/g,/\bkill(?:ed)?\b/g,/\bslain\b/g,/\bvanquish(?:ed)?\b/g].forEach(function(r){var m=t.match(r);if(m)n+=m.length;});return n;}
+async function collectAdventureMessages(adv){var scenes=adv&&adv.scenes&&adv.scenes.length?adv.scenes:[{id:"principal"}],sets=await Promise.all(scenes.map(function(sc){return sGet("scene-msgs:"+adv.id+":"+sc.id,true).then(function(m){return m||[];});})),out=[];sets.forEach(function(a){out=out.concat(a);});out.sort(function(a,b){return(a.ts||0)-(b.ts||0);});return out;}
+function fallbackStats(all,adv){var v=(all||[]).filter(function(m){return m.display!==false;}),turns=v.filter(function(m){return m.role==="user";}).length,enemies=0;v.filter(function(m){return m.role==="model";}).forEach(function(m){enemies+=enemyHits(m.text);});return{turns:turns,enemies:enemies,startedAt:v.length?v[0].ts:(adv.createdAt||Date.now())};}
+async function ensureAdventureStats(adv){var all=await collectAdventureMessages(adv),fb=fallbackStats(all,adv),st=adv.stats||{};st.turns=Math.max(Number(st.turns)||0,fb.turns);st.enemies=Math.max(Number(st.enemies)||0,fb.enemies);st.startedAt=st.startedAt||fb.startedAt;st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];if(!adv.stats||adv.stats.turns!==st.turns||adv.stats.enemies!==st.enemies){adv.stats=st;try{await sSet("adv:"+adv.id,adv,true);}catch(e){}}return st;}
+async function recordAdventureTurn(advId){try{var adv=await sGet("adv:"+advId,true);if(!adv)return;var all=await collectAdventureMessages(adv),st=adv.stats||{};st.turns=all.filter(function(m){return m.display!==false&&m.role==="user";}).length;st.enemies=st.enemies||0;st.startedAt=st.startedAt||((all[0]&&all[0].ts)||adv.createdAt||Date.now());st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];adv.stats=st;await sSet("adv:"+advId,adv,true);}catch(e){console.warn("stats turn",e);}}
+async function recordAdventureGmStats(advId,text,data){try{var adv=await sGet("adv:"+advId,true);if(!adv)return;var st=adv.stats||{};st.enemies=(Number(st.enemies)||0)+enemyHits(text);st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];(data&&data.xpConcedido||[]).forEach(function(x){var q=Number(x.quantidade)||0;if(!x.email||q<=0)return;st.xpHistory.push({ts:Date.now(),email:normEmail(x.email),amount:q,reason:x.motivo||""});});st.xpHistory=st.xpHistory.slice(-500);var members=(adv.members||[]).filter(function(m){return m.status==="confirmado";});for(var li=0;li<members.length;li++){var cc=await sGet("character:"+members[li].email,true);if(!cc)continue;var lv=Number(cc.nivel)||1;var prev=st.levelHistory.filter(function(e){return normEmail(e.email)===normEmail(members[li].email);}).slice(-1)[0];if(!prev||prev.level!==lv)st.levelHistory.push({ts:Date.now(),email:normEmail(members[li].email),level:lv,xp:Number(cc.experiencia)||0});}st.levelHistory=st.levelHistory.slice(-500);st.startedAt=st.startedAt||adv.createdAt||Date.now();adv.stats=st;await sSet("adv:"+advId,adv,true);}catch(e){console.warn("stats gm",e);}}
+async function renderAdventureStats(){if(!el("adventure-stats")||gameMode!=="play"||!currentAdvId)return;try{var adv=await sGet("adv:"+currentAdvId,true);if(!adv)return;var st=await ensureAdventureStats(adv);el("stat-turns").textContent=String(st.turns||0);el("stat-enemies").textContent=String(st.enemies||0);FEATURE_STATS_STARTED_AT=st.startedAt||Date.now();el("stat-time").textContent=formatFeatureDuration(Date.now()-FEATURE_STATS_STARTED_AT);var ev=[];var me=normEmail(session.email);(st.levelHistory||[]).filter(function(e){return normEmail(e.email)===me;}).forEach(function(e){ev.push({ts:e.ts,t:"l",level:e.level,xp:e.xp});});(st.xpHistory||[]).filter(function(e){return normEmail(e.email)===me;}).forEach(function(e){ev.push({ts:e.ts,t:"x",amount:e.amount,reason:e.reason});});ev.sort(function(a,b){return(a.ts||0)-(b.ts||0);});var box=el("stats-timeline");if(!ev.length){box.innerHTML='<div class="stats-empty">'+esc(ft("statsEmpty"))+'</div>';return;}box.innerHTML=ev.slice(-30).map(function(e){return e.t==="l"?'<div class="stats-event"><b>'+(FEATURE_LANG==="en"?"Level ":FEATURE_LANG==="es"?"Nivel ":"Nível ")+e.level+'</b> · '+(e.xp||0)+' XP</div>':'<div class="stats-event"><span class="xp-gain">+'+e.amount+' XP</span>'+(e.reason?' · '+esc(e.reason):'')+'</div>';}).join("");}catch(e){console.warn("stats render",e);}}
+function updateTurnAlert(){var b=el("turn-alert");if(!b)return;var active=gameMode==="play"&&currentAdv&&currentAdv.mode==="grupo"&&currentTurno&&currentTurno.email&&ehMinhaVez();b.classList.toggle("hidden",!active);b.classList.toggle("is-your-turn",active);b.title=active?ft("yourTurn"):ft("waitTurn");}
+var _rvp=renderVezPill;renderVezPill=function(){_rvp();updateTurnAlert();};var _rtp=renderTimerPill;renderTimerPill=function(){_rtp();updateTurnAlert();};var _ep=enterPlay;enterPlay=async function(a,b){var r=await _ep(a,b);setTimeout(function(){renderAdventureStats();updateTurnAlert();},200);return r;};var _ssm=sendSceneMessage;sendSceneMessage=async function(t,o){var r=await _ssm(t,o);if(currentAdvId){recordAdventureTurn(currentAdvId);setTimeout(renderAdventureStats,400);}return r;};var _rgt=runGmTurn;runGmTurn=async function(a,s){var r=await _rgt(a,s);setTimeout(renderAdventureStats,500);return r;};
+// Keep XP/level history synchronized from the authoritative sheet after each GM turn.
+var _acs=applyGmSheetUpdate;applyGmSheetUpdate=function(existing,incoming){var out=_acs(existing,incoming);if(incoming&&incoming.categoriasItens&&typeof incoming.categoriasItens==="object")out.categoriasItens=Object.assign({},out.categoriasItens||{},incoming.categoriasItens);return out;};
+var _extractFeatureOriginal=extractBlock;extractBlock=function(raw){var r=_extractFeatureOriginal(raw);if(gameMode==="play"&&currentAdvId&&r&&r.data)setTimeout(function(){recordAdventureGmStats(currentAdvId,r.clean||"",r.data);},350);return r;};
+var _bfsp=buildForgeSystemPrompt;buildForgeSystemPrompt=function(c){var lang=FEATURE_LANG==="en"?"English":FEATURE_LANG==="es"?"Spanish":"Brazilian Portuguese";return _bfsp(c)+"\n\nLANGUAGE: Conduct the workshop in "+lang+". The artisan must greet the character, list what can be produced now, show the relevant attributes/modifier and the production-time penalty, then let the player choose. Never start another production while a timed production is active.\n";};
+var _bgsp=buildAdvSystemPrompt;buildAdvSystemPrompt=function(mode,roster,sheets){var lang=FEATURE_LANG==="en"?"English":FEATURE_LANG==="es"?"Spanish":"Brazilian Portuguese";return _bgsp(mode,roster,sheets)+"\n\nLANGUAGE: Answer the player in "+lang+". Preserve all hidden JSON field names and markers exactly; translate only player-facing narrative.\n";};
+el("chat-tips").addEventListener("click",function(){el("tips-overlay").classList.remove("hidden");});el("tips-close").addEventListener("click",function(){el("tips-overlay").classList.add("hidden");});el("tips-overlay").addEventListener("click",function(e){if(e.target===el("tips-overlay"))el("tips-overlay").classList.add("hidden");});document.querySelectorAll(".tip-command").forEach(function(b){b.addEventListener("click",function(){var i=el("chat-input");i.value=b.getAttribute("data-command")+" ";el("tips-overlay").classList.add("hidden");i.focus();});});el("language-select").addEventListener("change",function(){setFeatureLanguage(this.value);});el("language-select-hub").addEventListener("change",function(){setFeatureLanguage(this.value);});setFeatureLanguage(FEATURE_LANG);setInterval(function(){if(gameMode==="play"){updateTurnAlert();if(FEATURE_STATS_STARTED_AT)el("stat-time").textContent=formatFeatureDuration(Date.now()-FEATURE_STATS_STARTED_AT);}},1000);setInterval(function(){if(gameMode==="play")renderAdventureStats();},5000);
 
 })();
 </script>
