@@ -1876,6 +1876,7 @@ function advBody(isGroup){
 "- Avance a história em trechos administráveis, terminando em pontos que convidem a uma ação do jogador.\n- Ao pedir um teste, diga o dado, modificador e CD quando fizer sentido. NUNCA role dados por conta própria — aguarde o jogador informar o resultado.\n- O jogador NÃO tem dados manuais: toda rolagem precisa ser solicitada por você através de \"testeSolicitado\", senão ele não consegue rolar.\n- Em aventura de GRUPO, preencha \"emails\" com quem deve rolar: apenas esses jogadores verao a caixa de rolagem. Se o teste for do grupo todo, liste todos; se for de um personagem so, liste apenas ele. Em aventura solo pode deixar vazio.\n- Para teste de perícia, salvaguarda ou Percepção: preencha \"pericias\" com as opções válidas usando exatamente os nomes da ficha (ex: [\"Furtividade\",\"Acrobacia\"]), \"cd\" quando o jogador puder conhecê-la, e \"descricao\" curta. O aplicativo mostra as opções numa lista e aplica o modificador da ficha automaticamente — nunca peça ao jogador para calcular ou informar modificadores.\n- Para rolagens sem perícia (dano, iniciativa, ataque, cura, quantidade aleatória): deixe \"pericias\": [] e preencha \"formula\" no formato de dados (ex: \"1d8+4\", \"2d6\", \"1d20+7\"), com \"descricao\" dizendo do que se trata (ex: \"dano da espada longa\").\n- Quando não houver rolagem pendente, use \"testeSolicitado\": null.\n- O jogador pode rolar dados de verdade na mesa e digitar o resultado (aparecerá marcado como \"[dado físico]\"). Nesses casos o total já vem com os modificadores aplicados pelo aplicativo — aceite o valor informado como verdadeiro e apenas narre a consequência, sem recalcular nem questionar.\n- Aplique com justiça as regras: os quatro graus de sucesso, três ações por turno, condições e CDs apropriadas ao nível.\n- Atualize pontos de vida, condições, inventário, dinheiro e magias sempre que a narrativa os alterar.\n- O cenário é um mundo de fantasia medieval a combinar com os jogadores — pergunte a preferência deles ou proponha um. Violência de fantasia é aceitável; evite conteúdo explícito ou gratuito.\n\n" +
 "MAESTRIA POR USO: o aplicativo conta quantas vezes cada perícia foi realmente usada em jogo e, nos níveis em que o sistema concede aumento de perícia (3, 5, 7, 9...), promove automaticamente a perícia mais usada, respeitando os limites de nível do sistema. Você não precisa gerenciar isso — apenas narre a evolução quando o aplicativo informar uma promoção.\n\n" +
 "ESPOLIO E EXPLORACAO: sempre que o grupo derrotar ou neutralizar inimigos, ofereca espontaneamente a chance de vasculhar o local — descreva o que encontram em moedas, consumiveis (pocoes, reagentes, componentes, materiais de oficio), equipamento e principalmente INFORMACOES: cartas, mapas, marcas, ordens escritas, algo que empurre a historia adiante. Registre os ganhos em \"itensGanhos\" e o dinheiro na ficha. Da mesma forma, ao narrar deslocamento entre dois lugares, nao faca um corte seco: descreva brevemente o caminho e ofereca algo pelo percurso — um encontro, um vestigio, um recurso colhido ou uma pista. Nunca deixe uma vitoria ou uma viagem passar sem oportunidade de ganho ou descoberta.\n\n" +
+"PRIMEIRO TURNO — CONTADORES: confira a linha \"Usos rastreados\" da ficha. Se houver no inventário, nas magias ou nos talentos algo consumível ou de uso limitado que AINDA NÃO esteja rastreado, declare-o em \"usosDefinidos\" já nesta resposta, com um total coerente (poção comum 1, elixir 1 por dose, bolsa de reagentes 3 a 5, magia de nível baixo 3, habilidade de classe 1 a 2 por dia). Faça isso uma vez, sem comentar no texto. Itens permanentes como armas, armaduras, grimórios e ferramentas NÃO têm contador — ignore-os.\n\n" +
 "USOS LIMITADOS: itens consumíveis (poções, elixires, bombas, pergaminhos), magias por espaço e habilidades com número de vezes por dia têm CONTADOR. Ao conceder um item assim, declare o total em \"usosDefinidos\" (ex.: 3 doses). Sempre que o personagem usar um deles na cena, registre em \"usosConsumidos\" com a quantidade gasta — o aplicativo subtrai e mostra o restante na ficha. Um item consumível que chega a zero é REMOVIDO do inventário automaticamente; não o mencione mais como disponível. Magias e habilidades esgotadas ficam indisponíveis até um descanso longo.\n\n" +
 "DESCANSO LONGO: quando o grupo dormir ou descansar várias horas em segurança, marque \"descansoLongo\" com a lista de e-mails que descansaram (ou true para todos). O aplicativo restaura os pontos de vida ao máximo, recarrega magias e habilidades e remove a fadiga. Narre isso no texto. Itens consumíveis gastos NÃO voltam. Nunca deixe um descanso longo passar sem marcar este campo.\n\n" +
 "PONTOS DE EXPERIÊNCIA (XP): ao final de toda ação bem-sucedida e significativa — vencer ou evitar um combate, completar uma tarefa ou desafio, ter sucesso numa infiltração, resolver um enigma, alcançar um marco da história — conceda pontos de experiência e diga isso no texto (ex: \"Você ganha 30 XP\"). Referência de dificuldade: encontro trivial ~10 XP, baixo ~15, moderado ~20, severo ~30, extremo ~40 por personagem; realizações menores 10, moderadas 20, maiores 30. A cada 1000 XP o personagem sobe um nível — quando isso acontecer, anuncie a subida, atualize \"nivel\" e os valores derivados (PV, testes, talentos novos) e conduza brevemente as escolhas com o jogador. IMPORTANTE: o total de XP é controlado pelo aplicativo — informe o ganho DESTE turno em \"xpConcedido\" e nunca tente corrigir o total no campo \"experiencia\". Não conceda XP por ações triviais ou fracassadas.\n\n" +
@@ -1924,6 +1925,10 @@ function sheetSummaryFor(c){
  if(c.resistencia) bits.push("Salvaguardas: Fort "+fmtMod(c.resistencia.fortitude)+", Ref "+fmtMod(c.resistencia.reflexos)+", Von "+fmtMod(c.resistencia.vontade));
  if(c.atributos) bits.push("Atributos: FOR "+fmtMod(c.atributos.for)+", DES "+fmtMod(c.atributos.des)+", CON "+fmtMod(c.atributos.con)+", INT "+fmtMod(c.atributos.int)+", SAB "+fmtMod(c.atributos.sab)+", CAR "+fmtMod(c.atributos.car));
  if(c.pericias && c.pericias.length) bits.push("Perícias: "+c.pericias.map(function(p){ return p.nome+" "+fmtMod(computeSkillMod(c,p))+" ("+(p.posto||"treinado")+")"; }).join(", "));
+  var comContador = Object.keys(c.usos||{}).map(function(k){
+    var u = c.usos[k]; return u.nome+" "+u.atual+"/"+u.maximo;
+  });
+  bits.push("Usos rastreados: "+(comContador.length ? comContador.join(", ") : "nenhum ainda"));
  if(c.talentos && c.talentos.length) bits.push("Talentos: "+c.talentos.join(", "));
  if(c.equipamento && c.equipamento.length) bits.push("Equipamento: "+c.equipamento.join(", "));
  if(c.dinheiro) bits.push("Dinheiro: "+c.dinheiro);
@@ -3999,13 +4004,24 @@ async function _processarPendencias(){
   for(var i=0;i<chaves.length;i++){
     var p = await sGet(chaves[i], true);
     if(!p) continue;
-    if(p.id && aplicadosAntes.indexOf(p.id)>=0){        // já creditado antes
-      await sDel(chaves[i], true);
+    if(p.aplicado || (p.id && aplicadosAntes.indexOf(p.id)>=0)){   // já creditado
+      sDel(chaves[i], true).catch(function(){});                   // limpeza, se as regras deixarem
       continue;
     }
-    // apaga primeiro: melhor perder um crédito em falha rara do que creditar duas vezes
-    await sDel(chaves[i], true);
+    /* Marcar como aplicado ANTES de creditar, e por ESCRITA e não por remoção:
+       apagar depende da regra "allow delete" do Firestore, que pode não estar
+       publicada — quando falhava em silêncio, o mesmo crédito era aplicado de
+       novo a cada abertura do app. A marca é uma atualização comum, sempre
+       permitida, e é a fonte da verdade. */
+    p.aplicado = true;
+    p.aplicadoEm = Date.now();
+    await sSet(chaves[i], p, true);
     cacheInvalidate(chaves[i]);
+    var conferencia = await sGet(chaves[i], true);
+    if(!conferencia || !conferencia.aplicado){
+      console.warn("Não consegui marcar o crédito como aplicado; adiando para não pagar duas vezes.");
+      continue;                                     // sem marca confiável, não credita
+    }
     if(p.id) marcarCreditoAplicado(p.id);
     if(typeof p.ouro==="number" && p.ouro>0){
       character.dinheiro = fmtMoeda(parseMoeda(character.dinheiro) + p.ouro);
@@ -4023,6 +4039,7 @@ async function _processarPendencias(){
       character.itensComprados = (character.itensComprados||[]).concat([p.adicionarItem]);
     }
     aplicados++;
+    sDel(chaves[i], true).catch(function(){});     // remove se as regras permitirem
   }
   if(aplicados){
     await sSet("character:"+session.email, character, true);
