@@ -211,6 +211,15 @@ a{color:var(--arcane-bright);}
 .item-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
 .uso-cont{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:7px;background:rgba(79,143,124,.2);color:#2c6152;border:1px solid var(--arcane);}
 .uso-cont[data-zero]{background:rgba(176,84,58,.18);color:#8a3c28;border-color:var(--ember);}
+.item-icon{display:inline-block;margin-right:6px;font-size:12px;vertical-align:middle;filter:grayscale(0);}
+.session-stats{margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--void-3);}
+.session-stats .ss-title{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-lo);margin-bottom:8px;font-weight:700;}
+.session-stats .ss-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.session-stats .ss-box{text-align:center;padding:6px 2px;border-radius:8px;background:var(--void-4);}
+.session-stats .ss-v{font-size:15px;font-weight:800;color:var(--brass-bright);}
+.session-stats .ss-l{font-size:9px;color:var(--text-faint);margin-top:2px;line-height:1.2;}
+.lang-select{background:var(--void-3);color:var(--text-hi);border:1px solid var(--line);border-radius:8px;font-size:11px;padding:5px 6px;margin-left:4px;cursor:pointer;}
+.lang-select:focus{outline:none;border-color:var(--brass-dim);}
 .tag-item{font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:999px;margin-left:7px;vertical-align:middle;font-weight:700;}
 .tag-item.vend{background:rgba(79,143,124,.25);color:#2c6152;border:1px solid var(--arcane);}
 .tag-item.comp{background:rgba(43,34,19,.1);color:var(--ink-soft);border:1px solid var(--parchment-line);}
@@ -230,6 +239,8 @@ a{color:var(--arcane-bright);}
 .pdf-banner a{color:var(--arcane-bright);text-decoration:none;font-weight:600;}
 .turno-pill{font-size:11px;padding:5px 11px;border-radius:999px;background:var(--void-3);border:1px solid var(--line);color:var(--text-faint);}
 .turno-pill.minha{background:rgba(79,143,124,.18);border-color:var(--arcane);color:var(--arcane-bright);font-weight:700;}
+#turn-bell.minha-vez{color:var(--arcane-bright);animation:bell-blink 1.4s ease-in-out infinite;}
+@keyframes bell-blink{0%,100%{opacity:1;filter:drop-shadow(0 0 0 rgba(107,179,158,0));}50%{opacity:.45;filter:drop-shadow(0 0 6px rgba(107,179,158,.9));}}
 .timer-pill{margin:10px 16px 0;padding:8px 12px;border-radius:9px;background:rgba(176,71,58,.14);border:1px solid var(--ember);font-size:12px;color:var(--ember-bright);display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-weight:700;}
 .timer-pill.calm{background:var(--void-3);border-color:var(--line-soft);color:var(--text-lo);}
 #chat-scroll{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;}
@@ -544,6 +555,8 @@ a{color:var(--arcane-bright);}
  .icon-btn{width:32px;height:32px;}
  .icon-btn svg{width:15px;height:15px;}
  .brand-mark{width:30px;height:30px;font-size:15px;}
+ #lang-select-game{display:none;}
+ .lang-select{font-size:10px;padding:4px;}
  #view-hub .hub-scroll, #view-lobby .hub-scroll{padding:16px 14px;}
  .hub-header h1{font-size:20px;}
  .modal-overlay{padding:10px;}
@@ -569,9 +582,12 @@ a{color:var(--arcane-bright);}
  <div id="view-auth" class="view centered-screen active">
  <div class="card" id="auth-card">
  <div class="mark-row"><div class="brand-mark">M</div>
- <div><p class="card-title" id="auth-title">Entrar</p><p class="card-sub">Aventuras de RPG narradas por IA</p></div>
+ <div><p class="card-title" id="auth-title">Entrar</p><p class="card-sub" data-i18n="auth.sub">Aventuras de RPG narradas por IA</p></div>
+ <select id="lang-select-auth" class="lang-select" aria-label="Idioma / Language / Idioma">
+   <option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option>
+ </select>
  </div>
- <p class="card-lede" id="auth-lede">Informe seu e-mail para continuar.</p>
+ <p class="card-lede" id="auth-lede" data-i18n="auth.lede">Informe seu e-mail para continuar.</p>
 
  <div class="field" id="auth-email-field"><label for="auth-email">E-mail</label>
  <input id="auth-email" class="text-input" type="email" placeholder="voce@gmail.com" autocomplete="email">
@@ -643,6 +659,9 @@ a{color:var(--arcane-bright);}
  <button class="icon-btn" id="hub-market" title="Mercado de artesãos" aria-label="Mercado de artesãos">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18l-1.5 11a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8Z"/><path d="M3 9l2-5h14l2 5"/><path d="M9 13a3 3 0 0 0 6 0"/></svg>
  </button>
+ <button class="icon-btn" id="hub-stats" title="Dados &amp; Estatísticas" aria-label="Dados e Estatísticas">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>
+ </button>
  <button class="icon-btn hidden" id="hub-event" title="Criar evento global" aria-label="Criar evento global">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V5a2 2 0 0 1 2-2h7l-1 3 1 3H6"/><path d="M4 21h6"/><path d="M17 3v18"/><path d="M14 21h6"/></svg>
  </button>
@@ -655,25 +674,27 @@ a{color:var(--arcane-bright);}
  <button class="icon-btn" id="hub-delete-char" title="Excluir personagem" aria-label="Excluir personagem">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
  </button>
- <select id="language-select-hub" class="language-select" title="Idioma" aria-label="Idioma"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option></select>
  <button class="icon-btn" id="hub-logout" title="Sair" aria-label="Sair">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
  </button>
+ <select id="lang-select-hub" class="lang-select" aria-label="Idioma / Language / Idioma">
+   <option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option>
+ </select>
  </div>
  </header>
  <div class="hub-scroll">
- <div class="hub-header"><div class="info"><h1 id="hub-greeting">Olá</h1><p>Escolha uma aventura ou comece uma nova</p></div></div>
+ <div class="hub-header"><div class="info"><h1 id="hub-greeting">Olá</h1><p data-i18n="hub.sub">Escolha uma aventura ou comece uma nova</p></div></div>
  <div class="char-card" id="hub-char-card"></div>
  <div class="action-grid">
- <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b>Nova aventura solo</b><span>Só você e o Mestre. Pode anexar o livro de regras.</span></div>
- <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b>Nova aventura em grupo</b><span>Convide outros jogadores cadastrados pelo e-mail.</span></div>
+ <div class="action-card" id="hub-new-solo"><div class="glyph">🗡️</div><b data-i18n="hub.novaSolo">Nova aventura solo</b><span data-i18n="hub.novaSoloSub">Só você e o Mestre. Pode anexar o livro de regras.</span></div>
+ <div class="action-card" id="hub-new-group"><div class="glyph">👥</div><b data-i18n="hub.novaGrupo">Nova aventura em grupo</b><span data-i18n="hub.novaGrupoSub">Convide outros jogadores cadastrados pelo e-mail.</span></div>
  </div>
 <div class="events-box hidden" id="events-box">
-        <p class="adv-list-title">Eventos abertos</p>
+        <p class="adv-list-title" data-i18n="hub.eventosAbertos">Eventos abertos</p>
         <div id="events-list"></div>
       </div>
 
- <p class="adv-list-title">Suas aventuras</p>
+ <p class="adv-list-title" data-i18n="hub.suasAventuras">Suas aventuras</p>
  <div id="hub-adv-list"></div>
 
  <div class="support-box hidden" id="support-box">
@@ -741,11 +762,17 @@ a{color:var(--arcane-bright);}
  <div class="brand-text"><b id="game-title">Criação de Personagem</b><span id="game-subtitle">RPG de fantasia</span></div>
  <div id="char-chip" class="hidden"><span class="dot"></span><span id="char-chip-text"></span></div>
  <div class="tabbar" id="tabbar">
- <button data-tab="sheet">Ficha</button>
- <button data-tab="chat" class="active">Mestre</button>
- <button data-tab="dice">Dados</button>
+ <button data-tab="sheet" data-i18n="tab.ficha">Ficha</button>
+ <button data-tab="chat" class="active" data-i18n="tab.mestre">Mestre</button>
+ <button data-tab="dice" data-i18n="tab.dados">Dados</button>
  </div>
  <div class="topbar-actions">
+ <select id="lang-select-game" class="lang-select" aria-label="Idioma / Language / Idioma">
+   <option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option>
+ </select>
+ <button class="icon-btn hidden" id="turn-bell" title="É a sua vez de agir" aria-label="É a sua vez de agir">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+ </button>
  <button class="icon-btn hidden" id="btn-export" title="Exportar roteiro" aria-label="Exportar roteiro">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
  </button>
@@ -759,7 +786,7 @@ a{color:var(--arcane-bright);}
  </header>
  <main id="layout">
  <aside id="sheet-panel" class="panel tab-active">
- <div class="panel-head"><h2>Ficha</h2><div class="spacer"></div>
+ <div class="panel-head"><h2 data-i18n="panel.ficha">Ficha</h2><div class="spacer"></div>
  <button class="icon-btn" id="btn-sheet-pdf" title="Exportar ficha em PDF" aria-label="Exportar ficha em PDF">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h2"/></svg>
  </button>
@@ -770,7 +797,11 @@ a{color:var(--arcane-bright);}
  <div id="sheet-scroll" class="panel-scroll"></div>
  </aside>
  <section id="chat-panel" class="panel tab-active">
- <div class="panel-head"><h2 id="chat-panel-title">O Mestre</h2></div>
+ <div class="panel-head"><h2 id="chat-panel-title" data-i18n="panel.mestre">O Mestre</h2><div class="spacer"></div>
+ <button class="icon-btn" id="chat-tips" title="Comandos rápidos" aria-label="Comandos rápidos">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.05V17h6v-.25c0-.85.4-1.55 1-2.05A7 7 0 0 0 12 2Z"/></svg>
+ </button>
+ </div>
  <div class="turno-pill hidden" id="turno-pill"></div>
  <div id="timer-pill" class="timer-pill hidden">
 </div>
@@ -799,15 +830,23 @@ a{color:var(--arcane-bright);}
  <p id="scene-wait-text">O Mestre está com a atenção em outro grupo agora. Você volta para a história assim que a cena mudar.</p>
  </div>
  <form id="chat-form">
- <textarea id="chat-input" placeholder="Diga o que seu personagem faz…" rows="1"></textarea>
- <button type="submit" class="send-btn" id="chat-send">Enviar</button>
+ <textarea id="chat-input" data-i18n-placeholder="chat.placeholder" placeholder="Diga o que seu personagem faz…" rows="1"></textarea>
+ <button type="submit" class="send-btn" id="chat-send" data-i18n="chat.enviar">Enviar</button>
  </form>
  </section>
  <aside id="dice-panel" class="panel">
- <div class="panel-head"><h2>Rolagens</h2></div>
+ <div class="panel-head"><h2 data-i18n="panel.rolagens">Rolagens</h2></div>
  <div id="dice-scroll" class="panel-scroll">
- <p class="roll-intro">O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.</p>
- <div class="log-title">Histórico</div>
+ <div id="session-stats-panel" class="session-stats">
+   <div class="ss-title" data-i18n="stats.tituloMini">Estatísticas da aventura</div>
+   <div class="ss-grid">
+     <div class="ss-box"><div class="ss-v" id="ss-turnos">0</div><div class="ss-l" data-i18n="stats.turnos">Total de turnos</div></div>
+     <div class="ss-box"><div class="ss-v" id="ss-inimigos">0</div><div class="ss-l" data-i18n="stats.inimigos">Inimigos derrotados</div></div>
+     <div class="ss-box"><div class="ss-v" id="ss-tempo">0min</div><div class="ss-l" data-i18n="stats.tempo">Tempo de sessão</div></div>
+   </div>
+ </div>
+ <p class="roll-intro" data-i18n="dice.intro">O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.</p>
+ <div class="log-title" data-i18n="dice.historico">Histórico</div>
  <div id="roll-log"></div>
  </div>
  </aside>
@@ -856,11 +895,36 @@ a{color:var(--arcane-bright);}
   </div>
 </div>
 
+<!-- COMANDOS RÁPIDOS -->
+<div class="modal-overlay hidden" id="tips-overlay">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-head"><h3 id="tips-titulo" data-i18n="tips.titulo">Comandos rápidos</h3><button class="icon-btn" id="tips-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <ul class="list-plain" id="tips-list">
+        <li><b>/rolar</b> — <span data-i18n="tips.rolar">vai para a aba de Dados para acompanhar rolagens</span></li>
+        <li><b>/inventario</b> — <span data-i18n="tips.inventario">abre sua Ficha com equipamento e itens</span></li>
+        <li><b>/ficha</b> — <span data-i18n="tips.ficha">mesmo atalho que /inventario</span></li>
+        <li><b>/oficina</b> — <span data-i18n="tips.oficina">abre a Oficina para produzir itens</span></li>
+        <li><b>/ajuda</b> — <span data-i18n="tips.ajuda">mostra esta lista de comandos</span></li>
+      </ul>
+      <p class="modal-note" data-i18n="tips.nota">Digite o comando no campo de mensagem e envie — ele não é visto pelo Mestre.</p>
+    </div>
+  </div>
+</div>
+
 <!-- DETALHE DO ITEM -->
 <div class="modal-overlay hidden" id="item-overlay">
   <div class="modal-box" style="max-width:460px;">
     <div class="modal-head"><h3 id="item-titulo">Item</h3><button class="icon-btn" id="item-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
     <div class="modal-body" id="item-body"><p class="modal-note">Consultando…</p></div>
+  </div>
+</div>
+
+<!-- DADOS & ESTATÍSTICAS -->
+<div class="modal-overlay hidden" id="stats-overlay">
+  <div class="modal-box" style="max-width:640px;">
+    <div class="modal-head"><h3 data-i18n="stats.titulo">Dados &amp; Estatísticas</h3><button class="icon-btn" id="stats-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" id="stats-body"><p class="modal-note">Carregando…</p></div>
   </div>
 </div>
 
@@ -1298,6 +1362,7 @@ var gameMode = null; // 'creation' | 'play'
 var creationMessages = [];
 var currentAdv = null; // full adventure object (cached)
 var currentAdvId = null;
+var sessionStartTs = null; // marca o início da sessão de jogo, para "Tempo de sessão"
 var currentSceneId = null;
 var loading = false;
 var authMode = "login"; // 'login' | 'signup'
@@ -2221,7 +2286,8 @@ function renderCharacterSheet(c, rootId){
  : comprado ? '<span class="tag-item comp" title="Comprado de outro jogador — não pode ser revendido">comprado</span>' : '';
  var u = (c.usos||{})[normaliza(x)];
  var cont = u ? '<span class="uso-cont"'+(u.atual===0?' data-zero="1"':'')+'>'+u.atual+'/'+u.maximo+'</span>' : '';
- return '<li>'+esc(x)+cont+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e este item?">?</button></li>';
+ var ic = '<span class="item-icon" title="'+esc(categoriaDoItem(x).chave)+'">'+iconeDoItem(x)+'</span>';
+ return '<li>'+ic+esc(x)+cont+tag+'<button class="item-help" data-item-info="'+esc(x)+'" title="O que e este item?">?</button></li>';
  }).join("")+'</ul>';
  html += sectionHtml("equip","Equipamento", eqBody);
  }
@@ -2617,6 +2683,7 @@ async function enterPlay(advId, preloaded){
  var bloq = await bloqueadoPorProducao();
  if(bloq){ alert(bloq); return; }
  currentAdvId = advId; gameMode="play";
+ sessionStartTs = Date.now();
  var adv = preloaded || await sGet("adv:"+advId, true);
  if(!adv){ enterHub(); return; }
  currentAdv = adv;
@@ -2791,9 +2858,11 @@ function ehMinhaVez(){
 }
 function renderVezPill(){
   var box = el("turno-pill");
+  var bell = el("turn-bell");
   if(!box) return;
   if(!currentAdv || currentAdv.mode!=="grupo" || !currentTurno || !currentTurno.email){
     box.classList.add("hidden");
+    if(bell){ bell.classList.add("hidden"); bell.classList.remove("minha-vez"); }
     el("chat-input").disabled = false;
     el("chat-input").placeholder = "O que você faz?";
     return;
@@ -2805,6 +2874,11 @@ function renderVezPill(){
   box.textContent = meu ? "É a sua vez de agir" : "Vez de "+nome+" — aguarde";
   el("chat-input").disabled = !meu;
   el("chat-input").placeholder = meu ? "O que você faz?" : "Aguardando "+nome+"…";
+  if(bell){
+    bell.classList.remove("hidden");
+    bell.classList.toggle("minha-vez", meu);
+    bell.title = meu ? "É a sua vez de agir" : "Vez de "+nome;
+  }
 }
 function nomeDoMembro(email){
   var m = ((currentAdv && currentAdv.members) || []).filter(function(x){ return normEmail(x.email)===normEmail(email); })[0];
@@ -2915,6 +2989,7 @@ function renderPlayChat(msgs, opts){
  showNewMsgPill();
  }
  }
+ atualizarPainelEstatisticas(msgs);
 }
 function showNewMsgPill(){
  var pill = el("new-msg-pill");
@@ -2925,6 +3000,44 @@ function hideNewMsgPill(){
  var pill = el("new-msg-pill");
  if(pill) pill.classList.add("hidden");
 }
+
+/* ---- Painel de estatísticas da sessão ----
+   Contadores globais, derivados do próprio histórico de mensagens da cena —
+   não exigem nenhum novo campo na ficha nem mudança no formato salvo pela IA.
+   "Inimigos derrotados" é uma estimativa por palavras-chave nas falas do
+   Mestre (derrotou, morto, abatido, vencido em combate…), então pode não ser
+   perfeita, mas dá uma noção real de progresso sem depender de um contrato
+   novo com o modelo. */
+var ultimosMsgsParaStats = [];
+var RX_INIMIGO_DERROTADO = /derrot(ou|ado|ados|a)|abat(eu|ido|idos)|mort[oa]s?\s+(em|no|na)|venceu\s+(o|a|os|as)|caiu\s+(morto|morta)|elimin(ou|ado|ados)/i;
+function contarTurnos(msgs){
+  return (msgs||[]).filter(function(m){ return m.role==="user" && m.kind!=="system"; }).length;
+}
+function contarInimigosDerrotados(msgs){
+  var n = 0;
+  (msgs||[]).forEach(function(m){
+    if(m.role!=="model" || !m.text) return;
+    var matches = m.text.match(new RegExp(RX_INIMIGO_DERROTADO.source, "gi"));
+    if(matches) n += matches.length;
+  });
+  return n;
+}
+function fmtTempoSessao(ms){
+  var min = Math.floor(ms/60000);
+  if(min < 60) return min+"min";
+  var h = Math.floor(min/60), m = min%60;
+  return h+"h"+(m?" "+m+"min":"");
+}
+function atualizarPainelEstatisticas(msgs){
+  if(msgs) ultimosMsgsParaStats = msgs;
+  var box = el("session-stats-panel");
+  if(!box) return;
+  var elT = el("ss-turnos"), elI = el("ss-inimigos"), elS = el("ss-tempo");
+  if(elT) elT.textContent = contarTurnos(ultimosMsgsParaStats);
+  if(elI) elI.textContent = contarInimigosDerrotados(ultimosMsgsParaStats);
+  if(elS) elS.textContent = sessionStartTs ? fmtTempoSessao(Date.now()-sessionStartTs) : "0min";
+}
+setInterval(function(){ if(view==="game" && gameMode==="play") atualizarPainelEstatisticas(); }, 30000);
 
 /* The GM re-sends the whole sheet every turn. Never let it rewrite who the
  character IS, never let progress go backwards, and never blank out fields
@@ -3406,6 +3519,13 @@ async function runGmTurn(advId, sceneId){
  updatedSheet.experiencia = priorXp + gained;
  var earnedLevel = Math.floor(updatedSheet.experiencia / XP_PER_LEVEL) + 1;
  updatedSheet.nivel = Math.max(updatedSheet.nivel || 1, earnedLevel);
+ // histórico de progresso (nível/XP) para o gráfico em "Dados & Estatísticas" —
+ // só grava quando algo realmente mudou, para não inflar o registro a cada turno parado
+ if(gained>0 || updatedSheet.nivel > (existingSheet && existingSheet.nivel || 1)){
+   updatedSheet.progressoHistorico = (existingSheet && Array.isArray(existingSheet.progressoHistorico)) ? existingSheet.progressoHistorico.slice() : [];
+   updatedSheet.progressoHistorico.push({ts:Date.now(), nivel:updatedSheet.nivel, xp:updatedSheet.experiencia, ganho:gained});
+   if(updatedSheet.progressoHistorico.length>200) updatedSheet.progressoHistorico = updatedSheet.progressoHistorico.slice(-200);
+ }
  // skills the GM legitimately trained this turn
  // usos limitados: definir, consumir e descansar
  var defEntry = (data.usosDefinidos||[]).filter(function(x){ return normEmail(x.email)===target; })[0];
@@ -3621,10 +3741,32 @@ function updateSendUI(){ el("chat-send").disabled = loading; el("chat-input").di
 var chatInput = el("chat-input");
 chatInput.addEventListener("input", function(){ lastTypingAt = Date.now(); chatInput.style.height="auto"; chatInput.style.height=Math.min(130,chatInput.scrollHeight)+"px"; });
 chatInput.addEventListener("keydown", function(e){ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); el("chat-form").dispatchEvent(new Event("submit",{cancelable:true})); } });
+/* ---- Comandos rápidos do chat: atalhos locais, nunca chegam ao Mestre ---- */
+function tratarComandoRapido(texto){
+  var t = String(texto||"").trim().toLowerCase();
+  if(t==="/ajuda" || t==="/help"){ el("tips-overlay").classList.remove("hidden"); return true; }
+  if(t==="/inventario" || t==="/inventário" || t==="/ficha"){
+    if(gameMode==="play") setActiveTab("sheet");
+    return true;
+  }
+  if(t==="/rolar" || t==="/roll"){
+    if(gameMode==="play") setActiveTab("dice");
+    return true;
+  }
+  if(t==="/oficina" || t==="/forge"){
+    if(gameMode==="play" && typeof abrirOficina==="function") abrirOficina();
+    return true;
+  }
+  return false;
+}
 el("chat-form").addEventListener("submit", function(e){
  e.preventDefault();
  var text = chatInput.value.trim();
  if(!text || loading) return;
+ if(text.charAt(0)==="/" && tratarComandoRapido(text)){
+   chatInput.value=""; chatInput.style.height="auto";
+   return;
+ }
  chatInput.value=""; chatInput.style.height="auto";
  if(pendingCheck) consumirCheckAtual();
  if(gameMode==="creation") sendCreationMessage(text, {display:true});
@@ -3718,6 +3860,7 @@ function setActiveTab(tab){
  el(map[tab]).classList.add("tab-active");
 }
 document.querySelectorAll("#tabbar button").forEach(function(b){ b.addEventListener("click", function(){ setActiveTab(b.getAttribute("data-tab")); }); });
+el("turn-bell").addEventListener("click", function(){ setActiveTab("chat"); el("chat-input").focus(); });
 
 function rollOne(sides){ var arr=new Uint32Array(1); crypto.getRandomValues(arr); return (arr[0]%sides)+1; }
 var localDiceHistory=[];
@@ -3850,6 +3993,30 @@ async function podeCriarAventura(modo){
   }
   return {ok:true};
 }
+/* ---- Categoria visual do item ----
+   A ficha não tem um campo "categoria" separado por item (só o nome), então
+   inferimos a categoria a partir do nome/descrição para dar um ícone rápido
+   de reconhecer. É só decoração visual — nunca afeta regras ou cálculos. */
+var CATEGORIAS_ITEM = [
+  {chave:"pocao",  icone:"🧪", rx:/po[cç][aã]o|elixir|antidoto|ant[ií]doto|tonico|tônico|filtro/i},
+  {chave:"pergaminho", icone:"📜", rx:/pergaminho|rolo|mapa|tomo|grimorio|grimório|livro/i},
+  {chave:"arma", icone:"⚔️", rx:/espada|adaga|machado|lan[cç]a|arco|besta|maça|clava|florete|cajado|bord[aã]o|martelo|foice|chicote|flecha/i},
+  {chave:"armadura", icone:"🛡️", rx:/armadura|escudo|elmo|capacete|couraça|couraca|cota de malha|brac?adeira/i},
+  {chave:"anel", icone:"💍", rx:/anel|argola/i},
+  {chave:"amuleto", icone:"🔮", rx:/amuleto|talisma|talismã|colar|medalhão|medalhao/i},
+  {chave:"veste", icone:"🧥", rx:/manto|capa|t[uú]nica|roupa|bota|luva/i},
+  {chave:"ferramenta", icone:"🛠️", rx:/kit|ferramenta|corda|tocha|lanterna|pé de cabra|pe de cabra/i},
+  {chave:"comida", icone:"🍖", rx:/ra[cç][aã]o|comida|p[aã]o|carne|fruta|[aá]gua/i}
+];
+function categoriaDoItem(nome){
+  var n = String(nome||"");
+  for(var i=0;i<CATEGORIAS_ITEM.length;i++){
+    if(CATEGORIAS_ITEM[i].rx.test(n)) return CATEGORIAS_ITEM[i];
+  }
+  return {chave:"generico", icone:"🎒", rx:null};
+}
+function iconeDoItem(nome){ return categoriaDoItem(nome).icone; }
+
 var TAXA_MERCADO = 0.05;          // 5% vão para o cofre de prêmios dos eventos globais
 var RARIDADES = ["comum","incomum","raro","lendario"];
 var MULT_RARIDADE = {comum:1, incomum:2.5, raro:6, lendario:15};
@@ -4572,21 +4739,18 @@ function renderCatalogo(cat){
     box.scrollTop = box.scrollHeight;
     return;
   }
-  var a = character.atributos||{};
-  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>'+
-    '<div class="ci-d"><b>Artesão:</b> '+esc(cap.pericia)+' · '+esc(cap.posto)+' · modificador '+fmtMod(cap.mod)+
-    ' · <b>FOR</b> '+fmtMod(a.for)+' <b>DES</b> '+fmtMod(a.des)+' <b>CON</b> '+fmtMod(a.con)+' <b>INT</b> '+fmtMod(a.int)+' <b>SAB</b> '+fmtMod(a.sab)+' <b>CAR</b> '+fmtMod(a.car)+'</div>';
+  var html = '<div class="cat-box"><div class="cat-t">O que você consegue produzir agora</div>';
   viaveis.forEach(function(it, idx){
     var nivel = parseInt(it.nivelItem,10)||1;
     var rar = String(it.raridade||"comum").toLowerCase();
     var cd = cdDeProducao(nivel, rar), horas = horasDeProducao(nivel, rar), custo = custoDeProducao(nivel, rar);
     catalogoAtual[idx] = {nome:it.nome, raridade:rar, nivelItem:nivel, descricao:it.descricao||"",
-                          consumiveis:it.consumiveis||[], categoria:it.categoria||"outro", cd:cd, horas:horas, custo:custo};
+                          consumiveis:it.consumiveis||[], cd:cd, horas:horas, custo:custo};
     html += '<div class="cat-item"><div class="ci-h"><b>'+esc(it.nome)+
       '</b><span class="rar '+esc(rar)+'">'+esc(LABEL_RARIDADE[rar])+'</span></div>'+
       '<div class="ci-d">'+esc(it.descricao||"")+'</div>'+
       '<div class="ci-m">Materiais: '+esc((it.consumiveis||[]).join(", ")||"nenhum")+'</div>'+
-      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · <b>penalidade de tempo: '+fmtDuracao(horas)+'</b> · '+fmtMoeda(custo)+
+      '<div class="ci-s">nível '+nivel+' · CD '+cd+' · '+fmtDuracao(horas)+' · '+fmtMoeda(custo)+
       ' · vale '+fmtMoeda(precoDoItem(nivel,rar))+'</div>'+
       '<button class="mk-btn" data-produzir="'+idx+'">Produzir</button></div>';
   });
@@ -4748,7 +4912,7 @@ el("forge-input").addEventListener("keydown", function(e){
 async function mostrarDetalheItem(nome){
   el("item-overlay").classList.remove("hidden");
   el("item-overlay").classList.toggle("acima", !el("market-overlay").classList.contains("hidden"));
-  el("item-titulo").textContent = nome;
+  el("item-titulo").textContent = iconeDoItem(nome)+" "+nome;
   var body = el("item-body");
   body.innerHTML = '<p class="modal-note">Consultando…</p>';
 
@@ -4801,6 +4965,11 @@ async function mostrarDetalheItem(nome){
 el("item-close").addEventListener("click", function(){
   el("item-overlay").classList.add("hidden");
   el("item-overlay").classList.remove("acima");
+});
+el("chat-tips").addEventListener("click", function(){ el("tips-overlay").classList.remove("hidden"); });
+el("tips-close").addEventListener("click", function(){ el("tips-overlay").classList.add("hidden"); });
+el("tips-overlay").addEventListener("click", function(e){
+  if(e.target===el("tips-overlay")) el("tips-overlay").classList.add("hidden");
 });
 el("item-overlay").addEventListener("click", function(e){
   if(e.target!==el("item-overlay")) return;
@@ -5746,6 +5915,75 @@ async function openAdmin(){
 el("hub-admin").addEventListener("click", openAdmin);
 el("hub-event").addEventListener("click", abrirModalEvento);
 el("hub-market").addEventListener("click", abrirMercado);
+el("hub-stats").addEventListener("click", abrirEstatisticas);
+el("stats-close").addEventListener("click", function(){ el("stats-overlay").classList.add("hidden"); });
+el("stats-overlay").addEventListener("click", function(e){ if(e.target===el("stats-overlay")) el("stats-overlay").classList.add("hidden"); });
+
+/* ---- Dados & Estatísticas: linha do tempo de nível/XP ----
+   Usa o histórico salvo em character.progressoHistorico (gravado a cada
+   ganho de XP/nível durante o jogo — ver applyGmSheetUpdate). Sem histórico
+   ainda, mostra um estado vazio explicando quando ele vai aparecer. */
+async function abrirEstatisticas(){
+  el("stats-overlay").classList.remove("hidden");
+  el("stats-body").innerHTML = '<p class="modal-note">Carregando…</p>';
+  var c = await sGet("character:"+session.email, true) || character;
+  var hist = (c && Array.isArray(c.progressoHistorico)) ? c.progressoHistorico.slice() : [];
+  var body = el("stats-body");
+  if(!hist.length){
+    body.innerHTML =
+      '<div class="ss-grid" style="margin-bottom:14px;">'+
+        '<div class="ss-box"><div class="ss-v">'+(c&&c.nivel||1)+'</div><div class="ss-l">Nível atual</div></div>'+
+        '<div class="ss-box"><div class="ss-v">'+(c&&c.experiencia||0)+'</div><div class="ss-l">XP acumulado</div></div>'+
+        '<div class="ss-box"><div class="ss-v">0</div><div class="ss-l">Marcos registrados</div></div>'+
+      '</div>'+
+      '<p class="modal-note">Ainda não há histórico de evolução — ele começa a ser registrado no próximo ganho de XP em jogo.</p>';
+    return;
+  }
+  var svg = renderGraficoProgresso(hist);
+  var linhas = hist.slice().reverse().slice(0,12).map(function(h){
+    var d = new Date(h.ts);
+    var data = d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+    return '<div class="skill-row"><span class="name">'+esc(data)+'</span>'+
+           '<span class="chip">nível '+h.nivel+'</span>'+
+           '<span class="mod">+'+(h.ganho||0)+' XP</span></div>';
+  }).join("");
+  body.innerHTML =
+    '<div class="ss-grid" style="margin-bottom:14px;">'+
+      '<div class="ss-box"><div class="ss-v">'+(c.nivel||1)+'</div><div class="ss-l">Nível atual</div></div>'+
+      '<div class="ss-box"><div class="ss-v">'+(c.experiencia||0)+'</div><div class="ss-l">XP acumulado</div></div>'+
+      '<div class="ss-box"><div class="ss-v">'+hist.length+'</div><div class="ss-l">Marcos registrados</div></div>'+
+    '</div>'+
+    svg+
+    '<div class="log-title" style="margin-top:14px;">Linha do tempo recente</div>'+
+    '<div style="max-height:220px;overflow-y:auto;">'+linhas+'</div>';
+}
+function renderGraficoProgresso(hist){
+  var w = 560, h = 160, pad = 28;
+  var maxXp = Math.max.apply(null, hist.map(function(x){ return x.xp||0; }).concat([1]));
+  var minTs = hist[0].ts, maxTs = hist[hist.length-1].ts;
+  var span = Math.max(1, maxTs-minTs);
+  function px(i){ return pad + (hist.length<=1 ? 0 : (i/(hist.length-1))*(w-2*pad)); }
+  function py(xp){ return h-pad - (xp/maxXp)*(h-2*pad); }
+  var pathXp = hist.map(function(pt,i){ return (i===0?"M":"L")+px(i).toFixed(1)+","+py(pt.xp).toFixed(1); }).join(" ");
+  var dots = hist.map(function(pt,i){
+    return '<circle cx="'+px(i).toFixed(1)+'" cy="'+py(pt.xp).toFixed(1)+'" r="3" fill="var(--brass-bright)"><title>Nível '+pt.nivel+' · '+pt.xp+' XP</title></circle>';
+  }).join("");
+  // marca visual dos degraus de nível (linha pontilhada quando o nível sobe)
+  var niveis = [];
+  var lvlAnterior = null;
+  hist.forEach(function(pt,i){
+    if(pt.nivel!==lvlAnterior){
+      niveis.push('<text x="'+px(i).toFixed(1)+'" y="14" font-size="9" fill="var(--text-faint)" text-anchor="middle">nv.'+pt.nivel+'</text>');
+      lvlAnterior = pt.nivel;
+    }
+  });
+  return '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:'+h+'px;background:var(--void-3);border:1px solid var(--line);border-radius:10px;">'+
+    '<line x1="'+pad+'" y1="'+(h-pad)+'" x2="'+(w-pad)+'" y2="'+(h-pad)+'" stroke="var(--line)"/>'+
+    '<path d="'+pathXp+'" fill="none" stroke="var(--brass-bright)" stroke-width="2"/>'+
+    dots+niveis+
+    '</svg>';
+}
+
 el("admin-close").addEventListener("click", function(){ el("admin-overlay").classList.add("hidden"); });
 el("admin-overlay").addEventListener("click", function(e){ if(e.target===el("admin-overlay")) el("admin-overlay").classList.add("hidden"); });
 
@@ -6357,30 +6595,115 @@ async function boot(){
  showView("auth");
  }
 }
-boot();
+/* =========================================================
+ IDIOMA (i18n) — PT / EN / ES
+ Cobre a interface fixa do app (menus, painéis, rótulos, botões).
+ A narrativa do Mestre continua em português: é a língua em que o
+ modelo foi instruído a jogar, e traduzir isso mudaria o comportamento
+ da IA em vez de só a interface — por isso fica fora do escopo aqui.
+ ========================================================= */
+var I18N_DICT = {
+  pt: {
+    "auth.sub":"Aventuras de RPG narradas por IA",
+    "auth.lede":"Informe seu e-mail para continuar.",
+    "hub.sub":"Escolha uma aventura ou comece uma nova",
+    "hub.novaSolo":"Nova aventura solo",
+    "hub.novaSoloSub":"Só você e o Mestre. Pode anexar o livro de regras.",
+    "hub.novaGrupo":"Nova aventura em grupo",
+    "hub.novaGrupoSub":"Convide outros jogadores cadastrados pelo e-mail.",
+    "hub.eventosAbertos":"Eventos abertos",
+    "hub.suasAventuras":"Suas aventuras",
+    "tab.ficha":"Ficha", "tab.mestre":"Mestre", "tab.dados":"Dados",
+    "panel.ficha":"Ficha", "panel.mestre":"O Mestre", "panel.rolagens":"Rolagens",
+    "chat.placeholder":"Diga o que seu personagem faz…",
+    "chat.enviar":"Enviar",
+    "dice.intro":"O Mestre solicita as rolagens durante a aventura, e o modificador da sua ficha é aplicado automaticamente. Seu histórico fica registrado aqui.",
+    "dice.historico":"Histórico",
+    "stats.tituloMini":"Estatísticas da aventura",
+    "stats.turnos":"Total de turnos",
+    "stats.inimigos":"Inimigos derrotados",
+    "stats.tempo":"Tempo de sessão",
+    "stats.titulo":"Dados & Estatísticas",
+    "tips.titulo":"Comandos rápidos"
+  },
+  en: {
+    "auth.sub":"AI-narrated fantasy RPG adventures",
+    "auth.lede":"Enter your email to continue.",
+    "hub.sub":"Choose an adventure or start a new one",
+    "hub.novaSolo":"New solo adventure",
+    "hub.novaSoloSub":"Just you and the Game Master. You can attach the rulebook.",
+    "hub.novaGrupo":"New group adventure",
+    "hub.novaGrupoSub":"Invite other registered players by email.",
+    "hub.eventosAbertos":"Open events",
+    "hub.suasAventuras":"Your adventures",
+    "tab.ficha":"Sheet", "tab.mestre":"GM", "tab.dados":"Dice",
+    "panel.ficha":"Sheet", "panel.mestre":"The Game Master", "panel.rolagens":"Rolls",
+    "chat.placeholder":"Say what your character does…",
+    "chat.enviar":"Send",
+    "dice.intro":"The GM requests rolls during the adventure, and your sheet's modifier is applied automatically. Your history is logged here.",
+    "dice.historico":"History",
+    "stats.tituloMini":"Adventure stats",
+    "stats.turnos":"Total turns",
+    "stats.inimigos":"Enemies defeated",
+    "stats.tempo":"Session time",
+    "stats.titulo":"Data & Statistics",
+    "tips.titulo":"Quick commands"
+  },
+  es: {
+    "auth.sub":"Aventuras de rol de fantasía narradas por IA",
+    "auth.lede":"Indica tu correo para continuar.",
+    "hub.sub":"Elige una aventura o comienza una nueva",
+    "hub.novaSolo":"Nueva aventura en solitario",
+    "hub.novaSoloSub":"Solo tú y el Máster. Puedes adjuntar el libro de reglas.",
+    "hub.novaGrupo":"Nueva aventura en grupo",
+    "hub.novaGrupoSub":"Invita a otros jugadores registrados por correo.",
+    "hub.eventosAbertos":"Eventos abiertos",
+    "hub.suasAventuras":"Tus aventuras",
+    "tab.ficha":"Hoja", "tab.mestre":"Máster", "tab.dados":"Dados",
+    "panel.ficha":"Hoja", "panel.mestre":"El Máster", "panel.rolagens":"Tiradas",
+    "chat.placeholder":"Di qué hace tu personaje…",
+    "chat.enviar":"Enviar",
+    "dice.intro":"El Máster solicita tiradas durante la aventura, y el modificador de tu hoja se aplica automáticamente. Tu historial queda registrado aquí.",
+    "dice.historico":"Historial",
+    "stats.tituloMini":"Estadísticas de la aventura",
+    "stats.turnos":"Turnos totales",
+    "stats.inimigos":"Enemigos derrotados",
+    "stats.tempo":"Tiempo de sesión",
+    "stats.titulo":"Datos y Estadísticas",
+    "tips.titulo":"Comandos rápidos"
+  }
+};
+var idiomaAtual = "pt";
+function aplicarIdioma(lang){
+  if(!I18N_DICT[lang]) lang = "pt";
+  idiomaAtual = lang;
+  var dict = I18N_DICT[lang];
+  document.querySelectorAll("[data-i18n]").forEach(function(elm){
+    var key = elm.getAttribute("data-i18n");
+    if(dict[key]) elm.textContent = dict[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(function(elm){
+    var key = elm.getAttribute("data-i18n-placeholder");
+    if(dict[key]) elm.setAttribute("placeholder", dict[key]);
+  });
+  document.documentElement.setAttribute("lang", lang==="pt"?"pt-BR":lang);
+  ["lang-select-auth","lang-select-hub","lang-select-game"].forEach(function(id){
+    var s = document.getElementById(id);
+    if(s) s.value = lang;
+  });
+  try{ localStorage.setItem("mestre-solo-lang", lang); }catch(e){}
+}
+["lang-select-auth","lang-select-hub","lang-select-game"].forEach(function(id){
+  var s = document.getElementById(id);
+  if(s) s.addEventListener("change", function(){ aplicarIdioma(s.value); });
+});
+(function(){
+  var saved = null;
+  try{ saved = localStorage.getItem("mestre-solo-lang"); }catch(e){}
+  aplicarIdioma(saved || "pt");
+})();
 
-/* FEATURE ENHANCEMENTS */
-var FEATURE_LANG=(function(){try{return localStorage.getItem("mestre-solo-language")||"pt";}catch(e){return "pt";}})();
-var FEATURE_STATS_STARTED_AT=0;
-var FEATURE_I18N={pt:{statsTurns:"Total de turnos",statsEnemies:"Inimigos derrotados",statsTime:"Tempo de sessão",statsEvolution:"Evolução de nível e XP",statsEmpty:"A evolução aparecerá conforme a aventura avançar.",tips:"Dicas",tipsIntro:"Comandos rápidos para conversar com o Mestre:",tipRoll:"pedir uma rolagem",tipInventory:"consultar seu inventário",tipHelp:"pedir ajuda ao Mestre",tipSheet:"consultar um resumo da ficha",yourTurn:"Sua vez de agir",waitTurn:"Aguarde sua vez",chatTips:"Dicas",tabSheet:"Ficha",tabChat:"Mestre",tabDice:"Dados",send:"Enviar",roll:"Rolar"},en:{statsTurns:"Total turns",statsEnemies:"Enemies defeated",statsTime:"Session time",statsEvolution:"Level & XP progression",statsEmpty:"Progress will appear as the adventure advances.",tips:"Tips",tipsIntro:"Quick commands for talking to the Game Master:",tipRoll:"request a dice roll",tipInventory:"check your inventory",tipHelp:"ask the Game Master for help",tipSheet:"show a character summary",yourTurn:"Your turn",waitTurn:"Wait for your turn",chatTips:"Tips",tabSheet:"Sheet",tabChat:"GM",tabDice:"Dice",send:"Send",roll:"Roll"},es:{statsTurns:"Turnos totales",statsEnemies:"Enemigos derrotados",statsTime:"Tiempo de sesión",statsEvolution:"Evolución de nivel y XP",statsEmpty:"La evolución aparecerá a medida que avance la aventura.",tips:"Consejos",tipsIntro:"Comandos rápidos para hablar con el Maestro:",tipRoll:"pedir una tirada",tipInventory:"consultar tu inventario",tipHelp:"pedir ayuda al Maestro",tipSheet:"ver un resumen de la ficha",yourTurn:"Tu turno",waitTurn:"Espera tu turno",chatTips:"Consejos",tabSheet:"Ficha",tabChat:"Maestro",tabDice:"Dados",send:"Enviar",roll:"Tirar"}};
-function ft(k){return(FEATURE_I18N[FEATURE_LANG]||FEATURE_I18N.pt)[k]||FEATURE_I18N.pt[k]||k;}
-function setFeatureLanguage(lang){FEATURE_LANG=/^(en|es)$/.test(lang)?lang:"pt";try{localStorage.setItem("mestre-solo-language",FEATURE_LANG);}catch(e){}var sel=el("language-select");if(sel)sel.value=FEATURE_LANG;var selHub=el("language-select-hub");if(selHub)selHub.value=FEATURE_LANG;document.querySelectorAll("[data-i18n]").forEach(function(n){n.textContent=ft(n.getAttribute("data-i18n"));});var tt=el("tips-title");if(tt)tt.textContent=ft("tips");var tips=el("chat-tips");if(tips){tips.title=ft("chatTips");tips.setAttribute("aria-label",ft("chatTips"));}var tabs=document.querySelectorAll("#tabbar button");if(tabs.length>=3){tabs[0].textContent=ft("tabSheet");tabs[1].textContent=ft("tabChat");tabs[2].textContent=ft("tabDice");}var send=el("chat-send");if(send)send.textContent=ft("send");var sc=el("sc-roll");if(sc)sc.textContent="🎲 "+ft("roll");if(typeof renderAdventureStats==="function")renderAdventureStats();}
-function formatFeatureDuration(ms){ms=Math.max(0,ms||0);var sec=Math.floor(ms/1000),h=Math.floor(sec/3600);sec%=3600;var m=Math.floor(sec/60);sec%=60;return[h,m,sec].map(function(v){return String(v).padStart(2,"0");}).join(":");}
-function enemyHits(text){var t=String(text||"").toLowerCase(),n=0;[/\bderrotad[oa]s?\b/g,/\beliminad[oa]s?\b/g,/\babatid[oa]s?\b/g,/\bdefeat(?:ed)?\b/g,/\bkill(?:ed)?\b/g,/\bslain\b/g,/\bvanquish(?:ed)?\b/g].forEach(function(r){var m=t.match(r);if(m)n+=m.length;});return n;}
-async function collectAdventureMessages(adv){var scenes=adv&&adv.scenes&&adv.scenes.length?adv.scenes:[{id:"principal"}],sets=await Promise.all(scenes.map(function(sc){return sGet("scene-msgs:"+adv.id+":"+sc.id,true).then(function(m){return m||[];});})),out=[];sets.forEach(function(a){out=out.concat(a);});out.sort(function(a,b){return(a.ts||0)-(b.ts||0);});return out;}
-function fallbackStats(all,adv){var v=(all||[]).filter(function(m){return m.display!==false;}),turns=v.filter(function(m){return m.role==="user";}).length,enemies=0;v.filter(function(m){return m.role==="model";}).forEach(function(m){enemies+=enemyHits(m.text);});return{turns:turns,enemies:enemies,startedAt:v.length?v[0].ts:(adv.createdAt||Date.now())};}
-async function ensureAdventureStats(adv){var all=await collectAdventureMessages(adv),fb=fallbackStats(all,adv),st=adv.stats||{};st.turns=Math.max(Number(st.turns)||0,fb.turns);st.enemies=Math.max(Number(st.enemies)||0,fb.enemies);st.startedAt=st.startedAt||fb.startedAt;st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];if(!adv.stats||adv.stats.turns!==st.turns||adv.stats.enemies!==st.enemies){adv.stats=st;try{await sSet("adv:"+adv.id,adv,true);}catch(e){}}return st;}
-async function recordAdventureTurn(advId){try{var adv=await sGet("adv:"+advId,true);if(!adv)return;var all=await collectAdventureMessages(adv),st=adv.stats||{};st.turns=all.filter(function(m){return m.display!==false&&m.role==="user";}).length;st.enemies=st.enemies||0;st.startedAt=st.startedAt||((all[0]&&all[0].ts)||adv.createdAt||Date.now());st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];adv.stats=st;await sSet("adv:"+advId,adv,true);}catch(e){console.warn("stats turn",e);}}
-async function recordAdventureGmStats(advId,text,data){try{var adv=await sGet("adv:"+advId,true);if(!adv)return;var st=adv.stats||{};st.enemies=(Number(st.enemies)||0)+enemyHits(text);st.xpHistory=Array.isArray(st.xpHistory)?st.xpHistory:[];st.levelHistory=Array.isArray(st.levelHistory)?st.levelHistory:[];(data&&data.xpConcedido||[]).forEach(function(x){var q=Number(x.quantidade)||0;if(!x.email||q<=0)return;st.xpHistory.push({ts:Date.now(),email:normEmail(x.email),amount:q,reason:x.motivo||""});});st.xpHistory=st.xpHistory.slice(-500);var members=(adv.members||[]).filter(function(m){return m.status==="confirmado";});for(var li=0;li<members.length;li++){var cc=await sGet("character:"+members[li].email,true);if(!cc)continue;var lv=Number(cc.nivel)||1;var prev=st.levelHistory.filter(function(e){return normEmail(e.email)===normEmail(members[li].email);}).slice(-1)[0];if(!prev||prev.level!==lv)st.levelHistory.push({ts:Date.now(),email:normEmail(members[li].email),level:lv,xp:Number(cc.experiencia)||0});}st.levelHistory=st.levelHistory.slice(-500);st.startedAt=st.startedAt||adv.createdAt||Date.now();adv.stats=st;await sSet("adv:"+advId,adv,true);}catch(e){console.warn("stats gm",e);}}
-async function renderAdventureStats(){if(!el("adventure-stats")||gameMode!=="play"||!currentAdvId)return;try{var adv=await sGet("adv:"+currentAdvId,true);if(!adv)return;var st=await ensureAdventureStats(adv);el("stat-turns").textContent=String(st.turns||0);el("stat-enemies").textContent=String(st.enemies||0);FEATURE_STATS_STARTED_AT=st.startedAt||Date.now();el("stat-time").textContent=formatFeatureDuration(Date.now()-FEATURE_STATS_STARTED_AT);var ev=[];var me=normEmail(session.email);(st.levelHistory||[]).filter(function(e){return normEmail(e.email)===me;}).forEach(function(e){ev.push({ts:e.ts,t:"l",level:e.level,xp:e.xp});});(st.xpHistory||[]).filter(function(e){return normEmail(e.email)===me;}).forEach(function(e){ev.push({ts:e.ts,t:"x",amount:e.amount,reason:e.reason});});ev.sort(function(a,b){return(a.ts||0)-(b.ts||0);});var box=el("stats-timeline");if(!ev.length){box.innerHTML='<div class="stats-empty">'+esc(ft("statsEmpty"))+'</div>';return;}box.innerHTML=ev.slice(-30).map(function(e){return e.t==="l"?'<div class="stats-event"><b>'+(FEATURE_LANG==="en"?"Level ":FEATURE_LANG==="es"?"Nivel ":"Nível ")+e.level+'</b> · '+(e.xp||0)+' XP</div>':'<div class="stats-event"><span class="xp-gain">+'+e.amount+' XP</span>'+(e.reason?' · '+esc(e.reason):'')+'</div>';}).join("");}catch(e){console.warn("stats render",e);}}
-function updateTurnAlert(){var b=el("turn-alert");if(!b)return;var active=gameMode==="play"&&currentAdv&&currentAdv.mode==="grupo"&&currentTurno&&currentTurno.email&&ehMinhaVez();b.classList.toggle("hidden",!active);b.classList.toggle("is-your-turn",active);b.title=active?ft("yourTurn"):ft("waitTurn");}
-var _rvp=renderVezPill;renderVezPill=function(){_rvp();updateTurnAlert();};var _rtp=renderTimerPill;renderTimerPill=function(){_rtp();updateTurnAlert();};var _ep=enterPlay;enterPlay=async function(a,b){var r=await _ep(a,b);setTimeout(function(){renderAdventureStats();updateTurnAlert();},200);return r;};var _ssm=sendSceneMessage;sendSceneMessage=async function(t,o){var r=await _ssm(t,o);if(currentAdvId){recordAdventureTurn(currentAdvId);setTimeout(renderAdventureStats,400);}return r;};var _rgt=runGmTurn;runGmTurn=async function(a,s){var r=await _rgt(a,s);setTimeout(renderAdventureStats,500);return r;};
-// Keep XP/level history synchronized from the authoritative sheet after each GM turn.
-var _acs=applyGmSheetUpdate;applyGmSheetUpdate=function(existing,incoming){var out=_acs(existing,incoming);if(incoming&&incoming.categoriasItens&&typeof incoming.categoriasItens==="object")out.categoriasItens=Object.assign({},out.categoriasItens||{},incoming.categoriasItens);return out;};
-var _extractFeatureOriginal=extractBlock;extractBlock=function(raw){var r=_extractFeatureOriginal(raw);if(gameMode==="play"&&currentAdvId&&r&&r.data)setTimeout(function(){recordAdventureGmStats(currentAdvId,r.clean||"",r.data);},350);return r;};
-var _bfsp=buildForgeSystemPrompt;buildForgeSystemPrompt=function(c){var lang=FEATURE_LANG==="en"?"English":FEATURE_LANG==="es"?"Spanish":"Brazilian Portuguese";return _bfsp(c)+"\n\nLANGUAGE: Conduct the workshop in "+lang+". The artisan must greet the character, list what can be produced now, show the relevant attributes/modifier and the production-time penalty, then let the player choose. Never start another production while a timed production is active.\n";};
-var _bgsp=buildAdvSystemPrompt;buildAdvSystemPrompt=function(mode,roster,sheets){var lang=FEATURE_LANG==="en"?"English":FEATURE_LANG==="es"?"Spanish":"Brazilian Portuguese";return _bgsp(mode,roster,sheets)+"\n\nLANGUAGE: Answer the player in "+lang+". Preserve all hidden JSON field names and markers exactly; translate only player-facing narrative.\n";};
-el("chat-tips").addEventListener("click",function(){el("tips-overlay").classList.remove("hidden");});el("tips-close").addEventListener("click",function(){el("tips-overlay").classList.add("hidden");});el("tips-overlay").addEventListener("click",function(e){if(e.target===el("tips-overlay"))el("tips-overlay").classList.add("hidden");});document.querySelectorAll(".tip-command").forEach(function(b){b.addEventListener("click",function(){var i=el("chat-input");i.value=b.getAttribute("data-command")+" ";el("tips-overlay").classList.add("hidden");i.focus();});});el("language-select").addEventListener("change",function(){setFeatureLanguage(this.value);});el("language-select-hub").addEventListener("change",function(){setFeatureLanguage(this.value);});setFeatureLanguage(FEATURE_LANG);setInterval(function(){if(gameMode==="play"){updateTurnAlert();if(FEATURE_STATS_STARTED_AT)el("stat-time").textContent=formatFeatureDuration(Date.now()-FEATURE_STATS_STARTED_AT);}},1000);setInterval(function(){if(gameMode==="play")renderAdventureStats();},5000);
+boot();
 
 })();
 </script>
